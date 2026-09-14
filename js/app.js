@@ -31,6 +31,15 @@ class AppedietApp {
     // Initialize Dual Theme
     this.initTheme();
 
+    if (!window.Auth.isLoggedIn()) {
+      this.showAuthScreen();
+      return;
+    }
+    
+    // Hide auth screen if logged in
+    const authScreen = document.getElementById('auth-screen');
+    if (authScreen) authScreen.classList.add('hidden');
+
     // Initialize components
     this.googleAuth = new window.GoogleAuthManager();
     this.scanner = new window.NutritionScanner();
@@ -58,6 +67,63 @@ class AppedietApp {
         window.OnboardingWizard.open();
       }
     }, 600);
+  }
+
+  showAuthScreen() {
+    const authScreen = document.getElementById('auth-screen');
+    if (authScreen) authScreen.classList.remove('hidden');
+    this.bindAuthEvents();
+  }
+
+  bindAuthEvents() {
+    const toggleBtn = document.getElementById('auth-toggle-btn');
+    const toggleText = document.getElementById('auth-toggle-text');
+    const title = document.getElementById('auth-title');
+    const nameGroup = document.getElementById('auth-name-group');
+    const submitBtn = document.getElementById('auth-submit-btn');
+    const form = document.getElementById('auth-form');
+    const errorBox = document.getElementById('auth-error');
+
+    let isLogin = true;
+
+    toggleBtn?.addEventListener('click', () => {
+      isLogin = !isLogin;
+      errorBox.classList.add('hidden');
+      if (isLogin) {
+        title.textContent = 'تسجيل الدخول';
+        toggleText.textContent = 'ليس لديك حساب؟';
+        toggleBtn.textContent = 'إنشاء حساب جديد';
+        submitBtn.textContent = 'تسجيل الدخول';
+        nameGroup.classList.add('hidden');
+      } else {
+        title.textContent = 'إنشاء حساب جديد';
+        toggleText.textContent = 'لديك حساب بالفعل؟';
+        toggleBtn.textContent = 'تسجيل الدخول';
+        submitBtn.textContent = 'إنشاء الحساب';
+        nameGroup.classList.remove('hidden');
+      }
+    });
+
+    form?.addEventListener('submit', () => {
+      const email = document.getElementById('auth-email').value;
+      const password = document.getElementById('auth-password').value;
+      const name = document.getElementById('auth-name').value;
+      
+      let result;
+      if (isLogin) {
+        result = window.Auth.login(email, password);
+      } else {
+        result = window.Auth.signup(name || 'مستخدم جديد', email, password);
+      }
+
+      if (result.success) {
+        // Reload page to re-initialize everything properly for the new user
+        window.location.reload();
+      } else {
+        errorBox.textContent = result.message;
+        errorBox.classList.remove('hidden');
+      }
+    });
   }
 
   /* ==========================================================================
@@ -364,10 +430,13 @@ class AppedietApp {
       windowBadge.textContent = windowInfo.statusText;
     }
 
-    const cups = document.querySelectorAll('.water-cup-item');
-    cups.forEach((c, idx) => {
-      c.classList.toggle('filled', idx < currentWater);
-    });
+    // Dynamic water glass update
+    const goalMl = profile.waterGoal ? Math.round(profile.waterGoal * 29.5735) : 2000;
+    const fillPercent = Math.min(100, Math.round((waterMl / goalMl) * 100));
+    const fillEl = document.getElementById('water-glass-fill');
+    if (fillEl) fillEl.style.height = `${fillPercent}%`;
+    const fillText = document.getElementById('water-glass-text');
+    if (fillText) fillText.textContent = `${fillPercent}%`;
 
     // 4. Weight Card Updates
     const curW = profile.currentWeight || 95;
@@ -490,6 +559,11 @@ class AppedietApp {
     document.getElementById('btn-theme-toggle')?.addEventListener('click', () => {
       this.toggleTheme();
     });
+    // Logout Button
+    document.getElementById('btn-logout')?.addEventListener('click', () => {
+      window.Auth.logout();
+      window.location.reload();
+    });
     // Eaten Card "Log Now" button -> Trigger Food Camera / Scan
     document.getElementById('btn-eaten-log-now')?.addEventListener('click', () => {
       this.scanner.openWithCapture('Breakfast');
@@ -511,19 +585,15 @@ class AppedietApp {
       this.openWaterAdjustModal();
     });
 
-    // Water cups click
-    document.querySelectorAll('.water-cup-item').forEach((cup, idx) => {
-      cup.addEventListener('click', () => {
-        const dayData = window.AppedietDB.getDayLog(this.selectedDate);
-        let newGlasses = idx + 1;
-        // If already clicked this cup, allow deselecting
-        if (dayData.water === idx + 1) {
-          newGlasses = idx;
-        }
-        window.AppedietDB.updateWater(this.selectedDate, newGlasses, 'glasses');
-        window.GoogleWorkspaceSync?.syncWater(this.selectedDate, newGlasses, dayData.burned || 0);
-        this.refreshDashboard();
-      });
+    // Water glass click (add 250ml)
+    document.getElementById('water-glass-container')?.addEventListener('click', () => {
+      const dayData = window.AppedietDB.getDayLog(this.selectedDate);
+      const currentWaterMl = dayData.waterMl || (dayData.water * 250) || 0;
+      const newWaterMl = currentWaterMl + 250;
+      window.AppedietDB.updateWater(this.selectedDate, newWaterMl, 'ml');
+      window.GoogleWorkspaceSync?.syncWater(this.selectedDate, dayData.water + 1, dayData.burned || 0);
+      this.showToast('تمت إضافة 250 مل ماء 💧');
+      this.refreshDashboard();
     });
 
     // Add Workout / Steps buttons

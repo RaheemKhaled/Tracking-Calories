@@ -8,7 +8,9 @@ const STORAGE_KEYS = {
   DAILY_LOGS: 'appediet_daily_logs',
   BODY_HISTORY: 'appediet_body_history',
   SETTINGS: 'appediet_settings',
-  SELECTED_DATE: 'appediet_selected_date'
+  SELECTED_DATE: 'appediet_selected_date',
+  USERS_DB: 'appediet_users_db',
+  CURRENT_USER_ID: 'appediet_current_user_id'
 };
 
 const DEFAULT_PROFILE = {
@@ -34,14 +36,20 @@ class AppedietStorage {
     this.init();
   }
 
+  getKey(baseKey) {
+    const userId = localStorage.getItem(STORAGE_KEYS.CURRENT_USER_ID);
+    if (!userId) return STORAGE_KEYS[baseKey];
+    return `${STORAGE_KEYS[baseKey]}_${userId}`;
+  }
+
   init() {
-    if (!localStorage.getItem(STORAGE_KEYS.PROFILE)) {
+    if (!localStorage.getItem(this.getKey('PROFILE'))) {
       this.saveProfile(DEFAULT_PROFILE);
     }
-    if (!localStorage.getItem(STORAGE_KEYS.DAILY_LOGS)) {
+    if (!localStorage.getItem(this.getKey('DAILY_LOGS'))) {
       this.saveDailyLogs({});
     }
-    if (!localStorage.getItem(STORAGE_KEYS.BODY_HISTORY)) {
+    if (!localStorage.getItem(this.getKey('BODY_HISTORY'))) {
       // Seed an initial analysis matching the 95kg profile
       const initialBody = {
         date: new Date().toISOString(),
@@ -62,13 +70,13 @@ class AppedietStorage {
         },
         aiNotes: 'تتركز الدهون بشكل أساسي في منطقة البطن والحشوية والخواصر (Visceral & Abdominal). يوصى بعجز سعرات معتدل (400-500 سعر)، والتركيز على البروتين لحماية العضلات وزيادة النشاط اليومي NEAT (8000 إلى 10000 خطوة).'
       };
-      localStorage.setItem(STORAGE_KEYS.BODY_HISTORY, JSON.stringify([initialBody]));
+      localStorage.setItem(this.getKey('BODY_HISTORY'), JSON.stringify([initialBody]));
     }
   }
 
   getProfile() {
     try {
-      const data = localStorage.getItem(STORAGE_KEYS.PROFILE);
+      const data = localStorage.getItem(this.getKey('PROFILE'));
       return data ? { ...DEFAULT_PROFILE, ...JSON.parse(data) } : DEFAULT_PROFILE;
     } catch (e) {
       console.error('Error reading profile:', e);
@@ -77,7 +85,7 @@ class AppedietStorage {
   }
 
   saveProfile(profile) {
-    localStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(profile));
+    localStorage.setItem(this.getKey('PROFILE'), JSON.stringify(profile));
   }
 
   getUserAccount() {
@@ -227,7 +235,7 @@ class AppedietStorage {
 
   getDailyLogs() {
     try {
-      const data = localStorage.getItem(STORAGE_KEYS.DAILY_LOGS);
+      const data = localStorage.getItem(this.getKey('DAILY_LOGS'));
       return data ? JSON.parse(data) : {};
     } catch (e) {
       return {};
@@ -235,7 +243,7 @@ class AppedietStorage {
   }
 
   saveDailyLogs(logs) {
-    localStorage.setItem(STORAGE_KEYS.DAILY_LOGS, JSON.stringify(logs));
+    localStorage.setItem(this.getKey('DAILY_LOGS'), JSON.stringify(logs));
   }
 
   /**
@@ -472,7 +480,7 @@ class AppedietStorage {
    */
   getBodyHistory() {
     try {
-      const data = localStorage.getItem(STORAGE_KEYS.BODY_HISTORY);
+      const data = localStorage.getItem(this.getKey('BODY_HISTORY'));
       return data ? JSON.parse(data) : [];
     } catch (e) {
       return [];
@@ -488,7 +496,7 @@ class AppedietStorage {
       analysis.id = 'body_' + Date.now();
     }
     history.unshift(analysis);
-    localStorage.setItem(STORAGE_KEYS.BODY_HISTORY, JSON.stringify(history));
+    localStorage.setItem(this.getKey('BODY_HISTORY'), JSON.stringify(history));
 
     // Also update current weight in profile
     if (analysis.weight) {
@@ -558,7 +566,7 @@ class AppedietStorage {
   getSettings() {
     const defaultKey = '';
     try {
-      const data = localStorage.getItem(STORAGE_KEYS.SETTINGS);
+      const data = localStorage.getItem(this.getKey('SETTINGS'));
       if (!data) {
         return { gemini_api_key: defaultKey, gemini_model: 'gemini-3.6-flash' };
       }
@@ -570,7 +578,7 @@ class AppedietStorage {
   }
 
   saveSettings(settings) {
-    localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
+    localStorage.setItem(this.getKey('SETTINGS'), JSON.stringify(settings));
   }
 }
 

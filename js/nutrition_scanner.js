@@ -130,14 +130,6 @@ class NutritionScannerComponent {
       this.setMealType(nextMeal);
     });
 
-    // Unlock Insights button
-    this.btnUnlockInsights?.addEventListener('click', () => {
-      this.insightsUnlocked = true;
-      this.insightsExpandedBox?.classList.remove('hidden');
-      this.btnUnlockInsights.textContent = 'Insights Unlocked ✓';
-      this.btnUnlockInsights.style.backgroundColor = '#10b981';
-    });
-
     // Log to Meal button
     this.btnLogToMeal?.addEventListener('click', () => this.saveAndLogMeal());
 
@@ -411,13 +403,9 @@ class NutritionScannerComponent {
       if (this.insightWhatToEatNext) this.insightWhatToEatNext.textContent = data.insights.what_to_eat_next || 'أضف سناك بروتيني متوازن لدعم البناء العضلي.';
     }
 
-    // Reset insights expander
-    this.insightsUnlocked = false;
-    this.insightsExpandedBox?.classList.add('hidden');
-    if (this.btnUnlockInsights) {
-      this.btnUnlockInsights.textContent = 'View Once for Free';
-      this.btnUnlockInsights.style.backgroundColor = '#252c3d';
-    }
+    // Insights are always unlocked now
+    this.insightsUnlocked = true;
+    this.insightsExpandedBox?.classList.remove('hidden');
   }
 
   updateQuantity(newQty) {
