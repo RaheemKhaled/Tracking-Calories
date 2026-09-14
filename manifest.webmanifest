@@ -1,0 +1,25 @@
+{
+  "name": "Raheem Coach - تتبع السعرات وتحليل الجسم",
+  "short_name": "Raheem Coach",
+  "description": "تطبيق ذكي لتتبع السعرات والماكروز، وتحليل صور ومقاسات الجسم لتقدير نسبة وتوزيع الدهون، ومستشار للتحكم في الجوع",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0e121a",
+  "theme_color": "#0e121a",
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

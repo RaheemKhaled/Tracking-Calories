@@ -1,0 +1,362 @@
+/* ==========================================================================
+   Appediet Dark Theme & Core Design System
+   Matches Appediet Mobile Application UI
+   ========================================================================== */
+
+:root {
+  --bg-app: #0c0f17;
+  --bg-surface: #141721;
+  --bg-card: #181d28;
+  --bg-card-elevated: #1e2433;
+  --bg-chip: #232a3b;
+  
+  --border-subtle: rgba(255, 255, 255, 0.07);
+  --border-card: rgba(255, 255, 255, 0.1);
+  --border-active: rgba(59, 130, 246, 0.5);
+
+  --primary-blue: #3b82f6;
+  --primary-blue-dark: #2563eb;
+  --primary-blue-light: #60a5fa;
+  --primary-blue-soft: rgba(59, 130, 246, 0.15);
+
+  --calorie-flame: #ff6b2b;
+  --carb-wheat: #f59e0b;
+  --protein-fish: #10b981;
+  --fat-drop: #f97316;
+
+  --text-primary: #ffffff;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-dark: #0f172a;
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans Arabic', 'Segoe UI Arabic', sans-serif;
+  --safe-bottom: env(safe-area-inset-bottom, 16px);
+  --safe-top: env(safe-area-inset-top, 0px);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: #06080d;
+  color: var(--text-primary);
+  font-family: var(--font-family);
+  direction: ltr; /* Appediet has English interface with Arabic support */
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-x: hidden;
+  user-select: none;
+}
+
+/* Outer Shell for Desktop & Fullscreen for Mobile */
+#mobile-shell {
+  width: 100%;
+  max-width: 440px;
+  min-height: 100vh;
+  background-color: var(--bg-app);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+  padding-bottom: calc(75px + var(--safe-bottom));
+}
+
+/* ==========================================================================
+   Header Bar (Matches Screenshot 3 & 4)
+   ========================================================================== */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(14px + var(--safe-top)) 16px 12px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background-color: rgba(12, 15, 23, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.btn-ask-appediet {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--bg-surface);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-full);
+  padding: 5px 14px 5px 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-ask-appediet:hover {
+  background-color: var(--bg-card);
+  border-color: var(--primary-blue);
+}
+
+.btn-ask-appediet .app-logo-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6, #22c55e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.btn-ask-appediet .app-logo-badge img,
+.btn-ask-appediet .app-logo-badge svg {
+  width: 22px;
+  height: 22px;
+}
+
+.btn-ask-appediet .ask-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.badge-pill.badge-crown {
+  color: #f59e0b;
+}
+
+.badge-pill.badge-streak {
+  color: var(--text-primary);
+}
+
+.badge-pill.badge-streak .fire-icon {
+  color: var(--calorie-flame);
+}
+
+/* ==========================================================================
+   Calendar Date Strip (Screenshot 4)
+   ========================================================================== */
+.calendar-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 14px 14px 14px;
+}
+
+.cal-day-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease;
+  min-width: 44px;
+}
+
+.cal-day-name {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.cal-day-number {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background-color: transparent;
+  transition: all 0.2s ease;
+}
+
+.cal-day-item.active .cal-day-name {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.cal-day-item.active .cal-day-number {
+  background-color: #1e2433;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* ==========================================================================
+   Main Content Views
+   ========================================================================== */
+.view-container {
+  padding: 0 12px 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Section Header Titles */
+.section-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.2px;
+}
+
+.section-more-link {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+}
+
+.section-more-link:hover {
+  color: var(--primary-blue-light);
+}
+
+/* ==========================================================================
+   Card Component Base (Compact & Modern for Mobile Ratio)
+   ========================================================================== */
+.app-card {
+  background-color: var(--bg-card);
+  border-radius: 16px;
+  border: 1px solid var(--border-card);
+  padding: 13px 15px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* ==========================================================================
+   Bottom Navigation Dock (Screenshot 3 & 4)
+   ========================================================================== */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  max-width: 440px;
+  height: calc(64px + var(--safe-bottom));
+  background-color: rgba(18, 22, 31, 0.96);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 8px var(--safe-bottom) 8px;
+  z-index: 50;
+}
+
+.nav-tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: var(--text-muted);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 6px 12px;
+  transition: all 0.2s ease;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.nav-tab-item svg {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  transition: all 0.2s ease;
+}
+
+.nav-tab-item.active {
+  color: var(--primary-blue);
+}
+
+.nav-tab-item.active svg {
+  stroke: var(--primary-blue);
+}
+
+/* Floating Center Camera Button (Blue elevated circle) */
+.nav-camera-fab-container {
+  position: relative;
+  top: -14px;
+}
+
+.nav-camera-fab {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4f46e5, #3b82f6);
+  border: 4px solid var(--bg-app);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.45);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.nav-camera-fab:active {
+  transform: scale(0.92);
+}
+
+.nav-camera-fab svg {
+  width: 26px;
+  height: 26px;
+  fill: #ffffff;
+}

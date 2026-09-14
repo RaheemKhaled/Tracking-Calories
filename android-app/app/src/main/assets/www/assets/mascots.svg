@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none;">
+  <!-- Rainbow Mascot from Insights For You (Screenshot 1) -->
+  <g id="mascot-rainbow">
+    <path d="M 10 70 A 35 35 0 0 1 80 70" fill="none" stroke="#f59e0b" stroke-width="7" stroke-linecap="round"/>
+    <path d="M 18 70 A 27 27 0 0 1 72 70" fill="none" stroke="#fb7185" stroke-width="6" stroke-linecap="round"/>
+    <path d="M 25 70 A 20 20 0 0 1 65 70" fill="none" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
+    <!-- Cute Eyes looking left-down -->
+    <g transform="translate(18, 62)">
+      <circle cx="6" cy="6" r="6" fill="#1e293b"/>
+      <circle cx="5" cy="5" r="2" fill="#ffffff"/>
+      <circle cx="18" cy="6" r="6" fill="#1e293b"/>
+      <circle cx="17" cy="5" r="2" fill="#ffffff"/>
+    </g>
+    <!-- Little star sparkle -->
+    <path d="M 75 25 Q 77 30 82 32 Q 77 34 75 39 Q 73 34 68 32 Q 73 30 75 25 Z" fill="#ffffff" opacity="0.85"/>
+  </g>
+
+  <!-- Mood Mascots: Blue Smiling, Green Winking, Orange Wavy (Screenshot 3) -->
+  <g id="mascot-mood-group">
+    <!-- Blue smiling pill -->
+    <rect x="0" y="24" width="55" height="34" rx="17" fill="#38bdf8"/>
+    <circle cx="18" cy="38" r="2.5" fill="#0f172a"/>
+    <circle cx="36" cy="38" r="2.5" fill="#0f172a"/>
+    <path d="M 22 45 Q 27 50 32 45" stroke="#0f172a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+    <!-- Green winking blob -->
+    <ellipse cx="68" cy="36" rx="24" ry="24" fill="#10b981"/>
+    <!-- Left eye open -->
+    <circle cx="60" cy="32" r="3" fill="#0f172a"/>
+    <!-- Right eye wink -->
+    <path d="M 74 34 Q 78 30 82 34" stroke="#0f172a" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <!-- Smile -->
+    <path d="M 64 42 Q 70 48 76 42" stroke="#0f172a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <!-- Small star sparkle near green blob -->
+    <path d="M 45 10 Q 46 14 50 15 Q 46 16 45 20 Q 44 16 40 15 Q 44 14 45 10 Z" fill="#38bdf8"/>
+
+    <!-- Orange wavy surprised monster -->
+    <path d="M 94 14 Q 102 18 108 14 Q 116 18 124 14 Q 132 18 138 14 L 138 42 Q 130 38 122 42 Q 114 38 106 42 Q 98 38 94 42 Z" fill="#f97316"/>
+    <!-- Eyes -->
+    <circle cx="106" cy="26" r="2.5" fill="#0f172a"/>
+    <circle cx="120" cy="26" r="2.5" fill="#0f172a"/>
+    <!-- Wavy mouth -->
+    <path d="M 105 34 Q 110 32 113 34 Q 116 36 119 34 Q 122 32 125 34" stroke="#0f172a" stroke-width="2" fill="none" stroke-linecap="round"/>
+  </g>
+</svg>

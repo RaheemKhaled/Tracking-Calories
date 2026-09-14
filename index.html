@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0c0f17">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Raheem Coach | تتبع السعرات وتحليل الجسم</title>
+
+  <!-- PWA Manifest & Icons -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/raheem-coach.css?v=2.0">
+  <link rel="stylesheet" href="css/appediet.css?v=2.0">
+  <link rel="stylesheet" href="css/components.css?v=2.0">
+  <link rel="stylesheet" href="css/responsive.css?v=2.0">
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        for (let registration of registrations) {
+          registration.update();
+        }
+      });
+    }
+  </script>
+</head>
+<body>
+
+  <!-- Main Mobile Application Shell -->
+  <div id="mobile-shell">
+
+    <!-- Raheem Coach Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <button class="btn-ask-appediet" id="btn-header-ask-appediet" title="اسأل كوتش رحيم الذكي">
+          <div class="app-logo-badge">
+            <svg viewBox="0 0 100 100" width="20" height="20">
+              <path d="M 52 18 C 32 18 24 38 24 58 C 24 74 38 82 50 82 C 68 82 76 66 76 46 Z" fill="#ffffff"/>
+            </svg>
+          </div>
+          <span class="ask-text">Ask Raheem Coach</span>
+        </button>
+      </div>
+
+      <div class="header-right">
+        <!-- Google Account Profile Avatar Button -->
+        <button class="badge-pill badge-user-profile" id="btn-user-profile" title="حسابي والملف الشخصي">
+          <img id="header-user-avatar" src="" class="header-avatar-img hidden" alt="صورة حساب Google">
+          <span id="header-user-placeholder-icon" style="font-size: 15px;">👤</span>
+        </button>
+        <!-- VIP Crown -->
+        <button class="badge-pill badge-crown" id="badge-crown-vip" title="إعدادات المفتاح والاشتراك VIP">
+          <span>👑</span>
+        </button>
+        <!-- Streak Flame -->
+        <div class="badge-pill badge-streak" id="badge-streak">
+          <span class="fire-icon">🔥</span>
+          <span id="dash-streak-count">0</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Android PWA Installation Banner -->
+    <div id="pwa-install-banner" class="pwa-install-banner hidden" style="margin: 0 16px 10px 16px;">
+      <div class="pwa-banner-left">
+        <img src="assets/icon-192.png" alt="Raheem Coach" class="pwa-banner-icon" style="border-radius: 8px;">
+        <div>
+          <div class="pwa-banner-title">تطبيق Raheem Coach على هاتفك</div>
+          <div class="pwa-banner-sub">ثبّت التطبيق ليعمل بملء الشاشة</div>
+        </div>
+      </div>
+      <button class="btn-pwa-install-action" id="btn-pwa-install">تثبيت الآن</button>
+    </div>
+
+    <!-- Calendar Date Strip (Matches Screenshot 4) -->
+    <div class="calendar-strip" id="calendar-strip-container">
+      <!-- Injected by JavaScript -->
+    </div>
+
+    <!-- VIEW 1: MAIN TRACKER DASHBOARD (Matches Screenshots 3 & 4) -->
+    <main id="view-tracker" class="view-container">
+
+      <!-- Budget Section Header -->
+      <div class="section-title-row">
+        <h2 class="section-title">Budget</h2>
+      </div>
+
+      <!-- Budget Card (Semi-arc Radial & Macros) -->
+      <div class="app-card budget-card">
+        <!-- Radial Semi-Arc Gauge -->
+        <div class="budget-radial-container">
+          <svg class="radial-svg" viewBox="0 0 220 125">
+            <defs>
+              <linearGradient id="radialGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#3b82f6" />
+                <stop offset="100%" stop-color="#60a5fa" />
+              </linearGradient>
+            </defs>
+            <!-- Background Arc -->
+            <path class="radial-track" d="M 20 115 A 90 90 0 0 1 200 115" />
+            <!-- Active Progress Arc -->
+            <path class="radial-progress" id="dash-radial-arc" d="M 20 115 A 90 90 0 0 1 200 115" stroke-dasharray="283" stroke-dashoffset="283" />
+          </svg>
+          <div class="radial-center-content">
+            <span class="radial-label">Remaining</span>
+            <span class="radial-value" id="dash-remaining-kcal">1400</span>
+            <div class="radial-unit">
+              <span>kcal</span>
+              <span style="cursor: pointer; opacity: 0.8;" title="مبني على وزنك والهدف">❔</span>
+            </div>
+            <div class="budget-goal-pill" id="dash-goal-kcal-badge" style="margin-top: 6px;">
+              Goal: 1400 kcal &gt;
+            </div>
+          </div>
+        </div>
+
+        <!-- Left / Right Stats (Eaten vs Burned) -->
+        <div class="budget-stats-row">
+          <div class="budget-side-stat">
+            <div class="stat-icon-wrapper">🍴</div>
+            <div class="stat-content">
+              <span class="stat-title">Eaten</span>
+              <span class="stat-num" id="dash-eaten-kcal">0 kcal</span>
+            </div>
+          </div>
+          <div class="budget-side-stat">
+            <div class="stat-icon-wrapper">🔥</div>
+            <div class="stat-content">
+              <span class="stat-title">Burned</span>
+              <span class="stat-num" id="dash-burned-kcal">0 kcal</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3 Macro Progress Bars -->
+        <div class="budget-macros-row">
+          <!-- Carb -->
+          <div class="macro-col">
+            <div class="macro-header">
+              <span class="macro-name">Carb</span>
+              <span class="macro-val" id="dash-carb-val">0 / 140 g</span>
+            </div>
+            <div class="macro-bar-track">
+              <div class="macro-bar-fill carb" id="dash-carb-fill" style="width: 0%;"></div>
+            </div>
+          </div>
+          <!-- Protein -->
+          <div class="macro-col">
+            <div class="macro-header">
+              <span class="macro-name">Protein</span>
+              <span class="macro-val" id="dash-protein-val">0 / 88 g</span>
+            </div>
+            <div class="macro-bar-track">
+              <div class="macro-bar-fill protein" id="dash-protein-fill" style="width: 0%;"></div>
+            </div>
+          </div>
+          <!-- Fat -->
+          <div class="macro-col">
+            <div class="macro-header">
+              <span class="macro-name">Fat</span>
+              <span class="macro-val" id="dash-fat-val">0 / 54 g</span>
+            </div>
+            <div class="macro-bar-track">
+              <div class="macro-bar-fill fat" id="dash-fat-fill" style="width: 0%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Eaten Section Header -->
+      <div class="section-title-row">
+        <h2 class="section-title">Eaten</h2>
+      </div>
+
+      <!-- Eaten Hero Card (Matches Screenshot 3 & 4) -->
+      <div class="eaten-hero-card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div>
+            <div class="eaten-hero-title">Daily Meals & Tracking</div>
+            <div class="eaten-hero-subtitle" id="eaten-health-report-link" style="cursor:pointer;" title="اضغط لفتح التقرير الأسبوعي">
+              Your Health Report 📊
+            </div>
+          </div>
+          <button class="btn-quick-report-tag" id="btn-open-weekly-report" style="background:rgba(59,130,246,0.2); border:1px solid rgba(59,130,246,0.4); color:#93c5fd; padding:4px 10px; border-radius:20px; font-size:11px; font-weight:700; cursor:pointer;">
+            📊 تقرير التقييم
+          </button>
+        </div>
+
+        <!-- 3 Meals Status Row -->
+        <div class="eaten-meals-status-row">
+          <div class="meal-status-bubble" id="meal-status-breakfast" title="Breakfast">☕</div>
+          <div class="meal-status-bubble" id="meal-status-lunch" title="Lunch">🍲</div>
+          <div class="meal-status-bubble" id="meal-status-dinner" title="Dinner">🔔</div>
+        </div>
+
+        <div class="eaten-meals-desc" id="dash-eaten-meals-desc">3 meals to complete today's log</div>
+        <button class="btn-eaten-log" id="btn-eaten-log-now">Log Now</button>
+
+        <!-- Logged Meals List Container (Allows clicking to review and re-edit) -->
+        <div id="dash-logged-meals-list" class="logged-meals-container" style="margin-top:14px; border-top:1px solid rgba(255,255,255,0.08); padding-top:12px; display:flex; flex-direction:column; gap:8px;">
+          <!-- Dynamically populated by AppedietApp.refreshDashboard() -->
+        </div>
+      </div>
+
+      <!-- Burned Section Header & Card -->
+      <div class="section-title-row">
+        <h2 class="section-title">Burned</h2>
+        <a class="section-more-link" id="link-more-burned">More &gt;</a>
+      </div>
+      <div class="app-card">
+        <div class="card-single-stat-row">
+          <span class="card-stat-label">Calories Burned</span>
+          <span class="card-stat-big-val" id="dash-calories-burned-val">0 kcal</span>
+        </div>
+        <button class="btn-card-action" id="btn-add-workout">+ Add Workout</button>
+      </div>
+
+      <!-- Water Section Header & Card (Matches Screenshot 3 & 4) -->
+      <div class="section-title-row">
+        <h2 class="section-title">Water</h2>
+        <a class="section-more-link" id="link-more-water">تعديل &gt;</a>
+      </div>
+      <div class="app-card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div>
+            <div class="card-stat-label">Today's Intake</div>
+            <div class="card-stat-big-val" id="dash-water-intake-val" style="margin-top: 4px;">0 مل (0 كوب)</div>
+          </div>
+          <button class="btn-update-weight" id="btn-open-water-modal" style="background:#0284c7; color:#fff; border:none; padding:6px 12px; font-size:11.5px; border-radius:10px; cursor:pointer;">
+            💧 تعديل كمية الماء
+          </button>
+        </div>
+
+        <!-- 4:00 AM to 12:00 AM Cutoff Indicator -->
+        <div id="dash-water-window-badge" style="background:rgba(2,132,199,0.15); border:1px solid rgba(2,132,199,0.3); border-radius:8px; padding:6px 10px; font-size:11px; color:#7dd3fc; margin:8px 0 10px 0; text-align:center; line-height:1.4;">
+          ⏱️ فترة التسجيل والتعديل اليومية نشطة (من 4:00 فجراً حتى 12:00 منتصف الليل)
+        </div>
+
+        <!-- 8 Glass Cups Row -->
+        <div class="water-cups-grid">
+          <div class="water-cup-item first-add" title="انقر لإضافة كوب">+</div>
+          <div class="water-cup-item" title="كوب 2"></div>
+          <div class="water-cup-item" title="كوب 3"></div>
+          <div class="water-cup-item" title="كوب 4"></div>
+          <div class="water-cup-item" title="كوب 5"></div>
+          <div class="water-cup-item" title="كوب 6"></div>
+          <div class="water-cup-item" title="كوب 7"></div>
+          <div class="water-cup-item" title="كوب 8"></div>
+        </div>
+
+        <div class="water-footer-goal" id="dash-water-goal-val">Goal: 64 fl oz (حوالي 2000 مل)</div>
+      </div>
+
+      <!-- Weight Section Header & Card (Matches Screenshot 3 & 4) -->
+      <div class="section-title-row">
+        <h2 class="section-title">Weight</h2>
+        <a class="section-more-link" id="link-more-weight">More &gt;</a>
+      </div>
+      <div class="app-card">
+        <span class="card-stat-label">Current Weight</span>
+        <div class="weight-row-main">
+          <div class="weight-current-block">
+            <div class="weight-val-unit">
+              <span class="weight-number" id="dash-current-weight-val">95</span>
+              <span class="weight-unit">kg</span>
+            </div>
+            <span class="weight-bmi-badge" id="dash-weight-bmi">BMI: 29.3</span>
+          </div>
+          <button class="btn-update-weight" id="btn-update-weight-modal">+ Update Weight</button>
+        </div>
+
+        <div class="weight-footer-goals">
+          <span id="dash-goal-weight-val">Goal Weight: 80 kg</span>
+          <span id="dash-weight-to-lose-val">Weight to Lose: 15 kg</span>
+        </div>
+      </div>
+
+      <!-- Mood Section Header & Card (Matches Screenshot 3) -->
+      <div class="section-title-row">
+        <h2 class="section-title">Mood</h2>
+        <a class="section-more-link" id="link-more-mood">More &gt;</a>
+      </div>
+      <div class="app-card mood-card">
+        <div class="mood-title-ask">How are you feeling right now?</div>
+
+        <!-- Mascot Cartoon Blobs Graphic -->
+        <div class="mood-mascots-preview">
+          <svg viewBox="0 0 140 52">
+            <!-- Blue pill smiling -->
+            <rect x="0" y="16" width="48" height="30" rx="15" fill="#38bdf8"/>
+            <circle cx="16" cy="28" r="2" fill="#0f172a"/>
+            <circle cx="32" cy="28" r="2" fill="#0f172a"/>
+            <path d="M 20 34 Q 24 38 28 34" stroke="#0f172a" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+            <!-- Green winking blob -->
+            <circle cx="62" cy="28" r="20" fill="#10b981"/>
+            <circle cx="56" cy="25" r="2.5" fill="#0f172a"/>
+            <path d="M 66 26 Q 70 23 74 26" stroke="#0f172a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <path d="M 59 34 Q 63 38 67 34" stroke="#0f172a" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <path d="M 46 6 Q 47 10 51 11 Q 47 12 46 16 Q 45 12 41 11 Q 45 10 46 6 Z" fill="#38bdf8"/>
+
+            <!-- Orange wavy blob -->
+            <path d="M 88 12 Q 96 15 104 12 Q 112 15 120 12 Q 128 15 136 12 L 136 36 Q 128 33 120 36 Q 112 33 104 36 Q 96 33 88 36 Z" fill="#f97316"/>
+            <circle cx="100" cy="22" r="2" fill="#0f172a"/>
+            <circle cx="114" cy="22" r="2" fill="#0f172a"/>
+            <path d="M 98 28 Q 104 26 108 28 Q 112 30 116 28" stroke="#0f172a" stroke-width="2" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+
+        <button class="btn-log-feeling" id="btn-log-feeling-modal">+ Log Feeling</button>
+      </div>
+
+    </main>
+
+    <!-- VIEW 2: BODY COMPOSITION & FAT DISTRIBUTION (User Core Request) -->
+    <section id="view-body-progress" class="view-container hidden">
+      <div class="section-title-row">
+        <h2 class="section-title">Body Composition & Fat Map</h2>
+      </div>
+
+      <!-- Semi-Monthly (15-Day) Body & Weight Tracking Card -->
+      <div id="semi-monthly-tracking-card" style="margin-bottom: 12px;"></div>
+
+      <div class="app-card" style="padding: 12px 10px;">
+        <form id="body-analysis-form" class="compact-form-grid">
+          <p style="font-size: 11.5px; color: var(--text-secondary); line-height: 1.4; margin-bottom: 2px;">
+            أدخل مقاسات جسمك والتقط صوراً لتحليل نسبة الدهون وخريطة توزيعها ومناطق تركزها بدقة:
+          </p>
+
+          <!-- Core Stats: Weight, Height, Goal -->
+          <div class="form-row-3col">
+            <div class="compact-field-card">
+              <label for="input-body-weight" class="compact-field-label">الوزن (كجم)</label>
+              <input type="number" step="0.1" id="input-body-weight" class="compact-field-input" value="95" required>
+            </div>
+            <div class="compact-field-card">
+              <label for="input-body-height" class="compact-field-label">الطول (سم)</label>
+              <input type="number" id="input-body-height" class="compact-field-input" value="180" required>
+            </div>
+            <div class="compact-field-card">
+              <label for="input-body-goal-weight" class="compact-field-label">الهدف (كجم)</label>
+              <input type="number" step="0.1" id="input-body-goal-weight" class="compact-field-input" value="80" required>
+            </div>
+          </div>
+
+          <!-- Circumferences: Waist & Neck (Essential for US Navy fat formula) -->
+          <div class="form-row-2col">
+            <div class="compact-field-card">
+              <label for="input-body-waist" class="compact-field-label">الخصر (سم) *</label>
+              <input type="number" step="0.5" id="input-body-waist" class="compact-field-input" value="98" required>
+            </div>
+            <div class="compact-field-card">
+              <label for="input-body-neck" class="compact-field-label">الرقبة (سم) *</label>
+              <input type="number" step="0.5" id="input-body-neck" class="compact-field-input" value="40" required>
+            </div>
+          </div>
+
+          <!-- Secondary Circumferences: Hips & Chest -->
+          <div class="form-row-2col">
+            <div class="compact-field-card">
+              <label for="input-body-hip" class="compact-field-label">الأرداف / الحوض (سم)</label>
+              <input type="number" step="0.5" id="input-body-hip" class="compact-field-input" value="104">
+            </div>
+            <div class="compact-field-card">
+              <label for="input-body-chest" class="compact-field-label">الصدر (سم)</label>
+              <input type="number" step="0.5" id="input-body-chest" class="compact-field-input" value="102">
+            </div>
+          </div>
+
+          <!-- Demographics: Gender & Age -->
+          <div class="form-row-2col">
+            <div class="compact-field-card">
+              <label for="input-body-gender" class="compact-field-label">الجنس</label>
+              <select id="input-body-gender" class="compact-field-select">
+                <option value="male" selected>ذكر (Male)</option>
+                <option value="female">أنثى (Female)</option>
+              </select>
+            </div>
+            <div class="compact-field-card">
+              <label for="input-body-age" class="compact-field-label">العمر (سنة)</label>
+              <input type="number" id="input-body-age" class="compact-field-input" value="28">
+            </div>
+          </div>
+
+          <!-- Body Photos Upload -->
+          <div style="border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 6px; margin-top: 2px;">
+            <div style="display: flex; gap: 8px;">
+              <label class="compact-photo-btn" style="flex:1;">
+                <span>📷 صورة أمامية</span>
+                <input type="file" id="body-front-photo-input" accept="image/*" class="hidden">
+              </label>
+              <label class="compact-photo-btn" style="flex:1;">
+                <span>📷 صورة جانبية</span>
+                <input type="file" id="body-side-photo-input" accept="image/*" class="hidden">
+              </label>
+            </div>
+            <!-- Thumbnails -->
+            <div style="display: flex; gap: 8px; margin-top: 6px;">
+              <img id="front-photo-thumb" class="hidden" style="width: 48px; height: 60px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-active);" alt="Front">
+              <img id="side-photo-thumb" class="hidden" style="width: 48px; height: 60px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-active);" alt="Side">
+            </div>
+          </div>
+
+          <button type="submit" class="dialog-btn-primary" style="margin-top: 4px; padding: 11px 16px; font-size: 13.5px;">
+            🧬 تحليل نسبة وتوزيع الدهون الآن
+          </button>
+        </form>
+      </div>
+
+      <!-- Analysis Results Card -->
+      <div id="body-analysis-results" class="body-analysis-container">
+        <!-- Hero Metrics -->
+        <div class="body-fat-card-hero">
+          <div class="body-fat-gauge-row">
+            <div class="fat-pct-circle">
+              <span class="fat-pct-number" id="res-body-fat-pct">26.8%</span>
+              <span class="fat-pct-label">نسبة الدهون</span>
+            </div>
+            <div class="body-mass-split-col">
+              <div class="mass-item-badge">
+                <span class="mass-dot fat"></span>
+                <div>
+                  <div style="font-size: 11px; color: var(--text-muted);">كتلة الدهون</div>
+                  <div style="font-size: 15px; font-weight: 700;" id="res-fat-mass-kg">25.5 kg</div>
+                </div>
+              </div>
+              <div class="mass-item-badge">
+                <span class="mass-dot muscle"></span>
+                <div>
+                  <div style="font-size: 11px; color: var(--text-muted);">الكتلة العضلية</div>
+                  <div style="font-size: 15px; font-weight: 700;" id="res-lean-mass-kg">69.5 kg</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BMI Quick Badge -->
+          <div style="display:flex; justify-content:space-between; font-size:12px; border-top:1px solid var(--border-subtle); padding-top:10px;">
+            <span style="color:var(--text-muted);">مؤشر كتلة الجسم (BMI):</span>
+            <span style="font-weight:700; color:#ffffff;" id="res-body-bmi">29.3</span>
+          </div>
+        </div>
+
+        <!-- Interactive Body Silhouette Heatmap (Where is fat stored?) -->
+        <div class="body-silhouette-card">
+          <h3 style="font-size:15px; font-weight:700; color:#fff;">خريطة توزيع الدهون (Fat Distribution Map)</h3>
+          
+          <div class="silhouette-layout">
+            <!-- Vector Silhouette Graphic -->
+            <div class="silhouette-svg-box">
+              <svg viewBox="0 0 100 200" width="100%" height="100%">
+                <!-- Head -->
+                <circle cx="50" cy="18" r="14" fill="#334155" />
+                <!-- Neck -->
+                <rect x="46" y="32" width="8" height="8" rx="2" fill="#334155" />
+                
+                <!-- Chest / Upper Torso Heat Zone -->
+                <path id="svg-heat-chest" d="M 28 42 C 34 38 66 38 72 42 L 70 70 L 30 70 Z" fill="rgba(245, 158, 11, 0.7)" />
+                <!-- Chest line border -->
+                <path d="M 28 42 C 34 38 66 38 72 42 L 70 70 L 30 70 Z" fill="none" stroke="#64748b" stroke-width="1.5" />
+
+                <!-- Abdomen / Visceral Belly Heat Zone -->
+                <ellipse id="svg-heat-belly" cx="50" cy="94" rx="22" ry="20" fill="rgba(239, 68, 68, 0.85)" />
+                <ellipse cx="50" cy="94" rx="22" ry="20" fill="none" stroke="#64748b" stroke-width="1.5" />
+
+                <!-- Flanks / Love Handles (Left & Right) -->
+                <path id="svg-heat-flanks" d="M 26 80 Q 20 95 28 112 L 32 110 Q 25 95 30 80 Z M 74 80 Q 80 95 72 112 L 68 110 Q 75 95 70 80 Z" fill="rgba(249, 115, 22, 0.8)" />
+
+                <!-- Pelvis / Hips -->
+                <path d="M 28 112 C 36 122 64 122 72 112 L 66 130 L 34 130 Z" fill="#334155" />
+
+                <!-- Thighs Heat Zone -->
+                <path id="svg-heat-thighs" d="M 33 130 L 46 130 L 44 165 L 30 165 Z M 54 130 L 67 130 L 70 165 L 56 165 Z" fill="rgba(16, 185, 129, 0.5)" stroke="#64748b" stroke-width="1" />
+
+                <!-- Lower Legs -->
+                <rect x="31" y="166" width="10" height="26" rx="4" fill="#334155" />
+                <rect x="59" y="166" width="10" height="26" rx="4" fill="#334155" />
+                <!-- Feet -->
+                <ellipse cx="35" cy="195" rx="9" ry="4" fill="#1e293b" />
+                <ellipse cx="65" cy="195" rx="9" ry="4" fill="#1e293b" />
+              </svg>
+            </div>
+
+            <!-- Distribution Breakdown Bars -->
+            <div class="fat-distribution-breakdown-list">
+              <!-- Abdominal / Visceral -->
+              <div class="dist-bar-item">
+                <div class="dist-bar-header">
+                  <span style="color:#ef4444;">البطن والأحشاء (Visceral)</span>
+                  <span id="dist-val-abdomen">42%</span>
+                </div>
+                <div class="dist-track">
+                  <div class="dist-fill" id="dist-bar-abdomen" style="width: 42%; background-color: #ef4444;"></div>
+                </div>
+              </div>
+
+              <!-- Flanks / Love Handles -->
+              <div class="dist-bar-item">
+                <div class="dist-bar-header">
+                  <span style="color:#f97316;">الخواصر وأسفل الظهر</span>
+                  <span id="dist-val-flanks">24%</span>
+                </div>
+                <div class="dist-track">
+                  <div class="dist-fill" id="dist-bar-flanks" style="width: 24%; background-color: #f97316;"></div>
+                </div>
+              </div>
+
+              <!-- Chest / Torso -->
+              <div class="dist-bar-item">
+                <div class="dist-bar-header">
+                  <span style="color:#f59e0b;">الصدر والجزء العلوي</span>
+                  <span id="dist-val-chest">22%</span>
+                </div>
+                <div class="dist-track">
+                  <div class="dist-fill" id="dist-bar-chest" style="width: 22%; background-color: #f59e0b;"></div>
+                </div>
+              </div>
+
+              <!-- Thighs & Legs -->
+              <div class="dist-bar-item">
+                <div class="dist-bar-header">
+                  <span style="color:#10b981;">الأفخاذ والساقين</span>
+                  <span id="dist-val-thighs">12%</span>
+                </div>
+                <div class="dist-track">
+                  <div class="dist-fill" id="dist-bar-thighs" style="width: 12%; background-color: #10b981;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Strategy & Recommendations -->
+          <div style="background-color:rgba(0,0,0,0.25); border-radius:12px; padding:12px; margin-top:8px;">
+            <div style="font-size:12px; font-weight:700; color:#60a5fa; margin-bottom:4px;">💡 التوصية الغذائية المخصصة لنوع توزيع دهونك:</div>
+            <div id="res-fat-strategy" style="font-size:12px; color:#cbd5e1; line-height:1.5;">
+              تتركز الدهون بشكل أساسي في منطقة البطن والحشوية والخواصر (Visceral & Abdominal). يوصى بعجز سعرات معتدل (400-500 سعر)، والتركيز على البروتين لحماية العضلات وزيادة النشاط اليومي NEAT (8000 إلى 10000 خطوة).
+            </div>
+          </div>
+
+          <button class="dialog-btn-primary" id="btn-apply-goals-to-profile" style="margin-top:4px;">
+            🎯 تحديث ميزانية السعرات اليومية تلقائياً
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 3: RECIPES -->
+    <section id="view-recipes" class="view-container hidden">
+      <div class="section-title-row">
+        <h2 class="section-title">Healthy Recipes</h2>
+      </div>
+      <div class="app-card" style="display:flex; flex-direction:column; gap:12px;">
+        <div style="font-size:15px; font-weight:700; color:#fff;">وجبات سريعة عالية البروتين للشبع</div>
+        
+        <div style="background:#1e2434; padding:12px; border-radius:12px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <div style="font-weight:700; color:#f1f5f9;">أومليت البيض والشوفان الصحي</div>
+            <div style="font-size:12px; color:var(--text-muted);">280 kcal • 22g Protein • 18g Carb</div>
+          </div>
+          <button class="btn-update-weight" onclick="(window.RaheemCoachApp || window.AppedietApp).scanner.openWithCustomMeal('أومليت البيض والشوفان الصحي', 280, 22, 18, 12)">عرض</button>
+        </div>
+
+        <div style="background:#1e2434; padding:12px; border-radius:12px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <div style="font-weight:700; color:#f1f5f9;">سلطة التونة بالليمون والخيار</div>
+            <div style="font-size:12px; color:var(--text-muted);">190 kcal • 30g Protein • 4g Carb</div>
+          </div>
+          <button class="btn-update-weight" onclick="(window.RaheemCoachApp || window.AppedietApp).scanner.openWithCustomMeal('سلطة التونة بالليمون والخيار', 190, 30, 4, 3)">عرض</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 4: FRIENDS & SOCIAL STREAK -->
+    <section id="view-friends" class="view-container hidden">
+      <div class="section-title-row">
+        <h2 class="section-title">Friends & Community</h2>
+      </div>
+      <div class="app-card" style="text-align:center; padding:28px 16px;">
+        <div style="font-size:36px; margin-bottom:8px;">👥</div>
+        <h3 style="font-size:16px; font-weight:700; color:#fff;">تحديات الأصدقاء والالتزام</h3>
+        <p style="font-size:13px; color:var(--text-secondary); margin:8px 0 16px 0;">
+          شارك أيام التزامك (Streak) وتنافس مع أصدقائك في تحقيق مستهدفات الماء والرياضة.
+        </p>
+        <button class="dialog-btn-primary" onclick="alert('رابط مشاركة التحدي: https://appediet.app/invite')">مشاركة رابط التحدي</button>
+      </div>
+    </section>
+
+    <!-- Fixed Bottom Navigation Bar (Matches Screenshot 3 & 4) -->
+    <nav class="bottom-nav">
+      <!-- Tab 1: Tracker -->
+      <button class="nav-tab-item active" data-view="tracker">
+        <svg viewBox="0 0 24 24">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <span>Tracker</span>
+      </button>
+
+      <!-- Tab 2: Recipes -->
+      <button class="nav-tab-item" data-view="recipes">
+        <svg viewBox="0 0 24 24">
+          <path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/>
+          <line x1="6" y1="17" x2="18" y2="17"/>
+        </svg>
+        <span>Recipes</span>
+      </button>
+
+      <!-- Tab 3: Center Elevated Camera FAB -->
+      <div class="nav-camera-fab-container">
+        <button class="nav-camera-fab" id="nav-fab-camera" title="مسح وجبة أو مشروب بالكاميرا">
+          <svg viewBox="0 0 24 24">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Tab 4: Friends -->
+      <button class="nav-tab-item" data-view="friends">
+        <svg viewBox="0 0 24 24">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        <span>Friends</span>
+      </button>
+
+      <!-- Tab 5: Progress / Body -->
+      <button class="nav-tab-item" data-view="body-progress">
+        <svg viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+          <line x1="9" y1="9" x2="9.01" y2="9"/>
+          <line x1="15" y1="9" x2="15.01" y2="9"/>
+        </svg>
+        <span>Progress</span>
+      </button>
+    </nav>
+
+  </div><!-- /mobile-shell -->
+
+
+  <!-- ==========================================================================
+       MODAL 1: FOOD SCANNER & DETAILS (Matches Screenshots 1 & 2)
+       ========================================================================== -->
+  <div class="food-modal-overlay" id="food-scanner-modal">
+    <div class="food-modal-container">
+      
+      <!-- Modal Header -->
+      <div class="food-modal-header">
+        <button class="food-nav-icon-btn" id="btn-close-food-modal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="meal-type-selector-btn" id="current-meal-type-badge">Lunch ▾</button>
+        <div style="display:flex; gap:10px;">
+          <button class="food-nav-icon-btn" title="مساعدة">❔</button>
+          <button class="food-nav-icon-btn" title="مفضلة">⭐</button>
+        </div>
+      </div>
+
+      <!-- Hidden file input for capturing meals -->
+      <input type="file" id="food-camera-file-input" accept="image/*" class="hidden">
+
+      <!-- Scrollable Body -->
+      <div class="food-modal-scrollable">
+        
+        <!-- Top Photo Display (Matches Screenshot 1 & 2) -->
+        <div class="food-photo-hero-area" style="background:#131824; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden;">
+          <img id="food-photo-preview" src="" alt="صورة الوجبة" style="display:none; width:100%; height:100%; object-fit:cover;">
+          <div id="food-photo-placeholder" style="display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--text-muted); padding:30px; text-align:center;">
+            <span style="font-size:52px; margin-bottom:8px;">🥗</span>
+            <span style="font-size:14px; font-weight:600; color:#cbd5e1;">صورة الوجبة المحللة عبر الذكاء الاصطناعي</span>
+            <span style="font-size:11px; color:var(--text-muted); margin-top:4px;">اضغط تصوير بالأسفل لفحص أي فطار أو غداء أو عشاء</span>
+          </div>
+          <button class="food-camera-retake-btn" id="btn-retake-photo">
+            <span>📷 إعادة تصوير</span>
+          </button>
+        </div>
+
+        <!-- Food Details Bottom Sheet -->
+        <div class="food-details-sheet">
+          
+          <!-- Ingredient Details Box (User Precision Input) -->
+          <div class="food-notes-card" id="food-notes-card">
+            <div class="food-notes-header" id="btn-notes-header-toggle">
+              <div class="notes-header-left">
+                <span class="notes-icon">✍️</span>
+                <div>
+                  <div class="notes-title">تدقيق المكونات (لدقة حسابية 100%)</div>
+                  <div class="notes-sub">اكتب مثلاً: كم بيضة، ملاعق سكر، زيت، كمية أرز أو خبز...</div>
+                </div>
+              </div>
+              <button type="button" class="btn-toggle-notes" id="btn-toggle-notes" title="طي / إظهار الملاحظات">▴</button>
+            </div>
+
+            <div class="food-notes-body" id="food-notes-body">
+              <textarea id="food-user-notes-input" class="food-notes-textarea" rows="2" placeholder="اكتب تفاصيل إضافية للمكونات إن أردت (مثال: 3 بيضات، نصف رغيف بلدي، ملعقة زيت زيتون، وشاي بملعقة سكر)..."></textarea>
+              
+              <!-- Quick Tap Suggestions -->
+              <div class="notes-quick-tags">
+                <button type="button" class="quick-tag-chip" data-tag="+ معلقة سكر">+ معلقة سكر</button>
+                <button type="button" class="quick-tag-chip" data-tag="+ بدون سكر">+ بدون سكر</button>
+                <button type="button" class="quick-tag-chip" data-tag="+ 2 بيضة مسلوقة">+ 2 بيضة مسلوقة</button>
+                <button type="button" class="quick-tag-chip" data-tag="+ 3 بيضات">+ 3 بيضات</button>
+                <button type="button" class="quick-tag-chip" data-tag="+ نصف رغيف بلدي">+ نصف رغيف بلدي</button>
+                <button type="button" class="quick-tag-chip" data-tag="+ معلقة زيت زيتون">+ معلقة زيت زيتون</button>
+                <button type="button" class="quick-tag-chip" data-tag="+ 5 ملاعق أرز">+ 5 ملاعق أرز</button>
+                <button type="button" class="quick-tag-chip" data-tag="+ بطاطس مسلوقة">+ بطاطس مسلوقة</button>
+              </div>
+
+              <div class="notes-action-row">
+                <button type="button" class="btn-analyze-with-notes" id="btn-analyze-with-notes">
+                  <span id="btn-analyze-notes-icon">⚡</span>
+                  <span id="btn-analyze-notes-text">تحليل الوجبة بالصورة والمكونات المكتوبة</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Title & Quantity Stepper Row -->
+          <div class="food-title-stepper-row">
+            <div class="food-title-box">
+              <span class="food-name-title" id="modal-food-name">وجبة طعام</span>
+              <button class="btn-edit-pencil" id="btn-edit-food-name">✎</button>
+            </div>
+            <!-- Stepper -->
+            <div class="stepper-control">
+              <button class="stepper-btn minus" id="btn-stepper-minus">-</button>
+              <span class="stepper-count" id="modal-stepper-count">1</span>
+              <button class="stepper-btn plus" id="btn-stepper-plus">+</button>
+            </div>
+          </div>
+
+          <!-- Calories Card (Matches Screenshot 1 & 2) -->
+          <div class="food-calories-pill-card">
+            <div class="calorie-flame-icon-box">🔥</div>
+            <div class="calorie-texts">
+              <span class="calorie-label-small">Calories</span>
+              <div class="calorie-val-with-pencil">
+                <span id="modal-calorie-val">1</span>
+                <button class="btn-edit-pencil" id="btn-edit-calories">✎</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3 Macro Cards Row (Matches Screenshot 1 & 2) -->
+          <div class="food-macros-3col">
+            <!-- Carb -->
+            <div class="macro-box-item">
+              <div class="macro-box-icon">🌾</div>
+              <div class="macro-box-texts">
+                <span class="macro-box-label">Carb</span>
+                <span class="macro-box-val" id="modal-carb-val">0 g</span>
+              </div>
+            </div>
+            <!-- Protein -->
+            <div class="macro-box-item">
+              <div class="macro-box-icon">🐟</div>
+              <div class="macro-box-texts">
+                <span class="macro-box-label">Protein</span>
+                <span class="macro-box-val" id="modal-protein-val">0.1 g</span>
+              </div>
+            </div>
+            <!-- Fat -->
+            <div class="macro-box-item">
+              <div class="macro-box-icon">💧</div>
+              <div class="macro-box-texts">
+                <span class="macro-box-label">Fat</span>
+                <span class="macro-box-val" id="modal-fat-val">0 g</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Show More Toggle -->
+          <div class="btn-show-more-toggle" id="btn-show-more-nutrition">Show More ▾</div>
+          <div id="modal-extended-nutrients" class="hidden" style="display:flex; justify-content:space-around; background:#141822; padding:8px; border-radius:10px; font-size:12px;">
+            <span>ألياف: <strong id="modal-fiber-val">0 g</strong></span>
+            <span>سكريات: <strong id="modal-sugar-val">0 g</strong></span>
+            <span>صوديوم: <strong id="modal-sodium-val">4 mg</strong></span>
+          </div>
+
+          <!-- Food List Section (Matches Screenshot 1 & 2) -->
+          <div class="food-list-section">
+            <span class="food-list-title">Food List</span>
+            <div class="food-list-chips-row" id="modal-food-list-container">
+              <!-- Injected by JavaScript -->
+            </div>
+          </div>
+
+          <!-- Insights For You Card (Matches Screenshot 1) -->
+          <div class="insights-for-you-card">
+            <div class="insights-header-row">
+              <div class="insights-heading-text">Unlock AI insights for your meal</div>
+              <!-- Rainbow Mascot Graphic -->
+              <div class="insights-mascot-graphic">
+                <svg viewBox="0 0 90 75" width="100%" height="100%">
+                  <!-- Rainbow Arcs -->
+                  <path d="M 12 70 A 32 32 0 0 1 76 70" fill="none" stroke="#f59e0b" stroke-width="7" stroke-linecap="round"/>
+                  <path d="M 20 70 A 24 24 0 0 1 68 70" fill="none" stroke="#fb7185" stroke-width="6" stroke-linecap="round"/>
+                  <path d="M 28 70 A 16 16 0 0 1 60 70" fill="none" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
+                  <!-- Cute Eyes -->
+                  <circle cx="28" cy="62" r="5" fill="#1e293b"/>
+                  <circle cx="27" cy="61" r="1.5" fill="#ffffff"/>
+                  <circle cx="39" cy="62" r="5" fill="#1e293b"/>
+                  <circle cx="38" cy="61" r="1.5" fill="#ffffff"/>
+                  <!-- Sparkle -->
+                  <path d="M 74 25 Q 76 29 80 30 Q 76 31 74 35 Q 72 31 68 30 Q 72 29 74 25 Z" fill="#ffffff"/>
+                </svg>
+              </div>
+            </div>
+            <div class="insights-subtext">
+              See what's good, what to improve, and what to eat next
+            </div>
+
+            <!-- Insights details revealed on click -->
+            <div id="insights-expanded-box" class="insights-expanded-bullets hidden">
+              <div>✅ <strong>الجيد:</strong> <span id="insight-whats-good">خالٍ من السعرات، غني بمضادات الأكسدة ومحفز للحرق.</span></div>
+              <div>⚠️ <strong>التحسين:</strong> <span id="insight-what-to-improve">تناوله بدون سكر أبيض أو مبيضات مضافة.</span></div>
+              <div>🥗 <strong>ماذا تأكل تالياً:</strong> <span id="insight-what-to-eat-next">سناك بروتيني كبيضة مسلوقة لضبط الشبع.</span></div>
+            </div>
+
+            <button class="btn-view-insights-free" id="btn-unlock-insights">View Once for Free</button>
+          </div>
+
+        </div><!-- /food-details-sheet -->
+
+      </div><!-- /food-modal-scrollable -->
+
+      <!-- Fixed Bottom Action Button (Matches Screenshot 1 & 2) -->
+      <div class="food-modal-bottom-bar" style="display:flex; align-items:center; gap:8px;">
+        <button type="button" class="btn-delete-meal-action hidden" id="btn-delete-meal-modal" style="background:rgba(239,68,68,0.2); border:1px solid rgba(239,68,68,0.4); color:#fca5a5; width:48px; height:48px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:18px; cursor:pointer;" title="حذف الوجبة">🗑️</button>
+        <button class="btn-log-to-meal-primary" id="btn-log-to-meal-action" style="flex:1;">
+          <span id="log-btn-text">Log to Lunch</span>
+          <span class="btn-badge-left">3 left</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ==========================================================================
+       MODAL 2: ASK APPEDIET & HUNGER COACH ("لو جعان")
+       ========================================================================== -->
+  <div class="dialog-modal-overlay" id="ask-appediet-modal">
+    <div class="coach-modal-container">
+      <div class="coach-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:20px;">🥗</span>
+          <div>
+            <div style="font-size:15px; font-weight:700; color:#fff;">كوتش رحيم الذكي (Raheem Coach)</div>
+            <div style="font-size:11px; color:#10b981;">● متصل لمساعدتك عند الجوع وتوجيه أكلك</div>
+          </div>
+        </div>
+        <button class="dialog-close-btn" id="btn-close-coach-modal">✕</button>
+      </div>
+
+      <!-- Chat History -->
+      <div class="coach-chat-history" id="coach-chat-history">
+        <!-- Hunger Emergency Card -->
+        <div class="hunger-emergency-card">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:22px;">🚨</span>
+            <div style="font-size:14px; font-weight:800; color:#fff;">تشعر بالجوع الشديد الآن؟</div>
+          </div>
+          <div style="font-size:12px; color:#fed7aa; line-height:1.4;">
+            اضغط بالأسفل فوراً لتحليل ميزانيتك المتبقية واقتراح أفضل سناك يملأ بطنك دون أن يكسر الدايت.
+          </div>
+          <button class="btn-pwa-install-action" id="btn-hunger-emergency" style="background:#fff; color:#7c2d12; align-self:flex-start;">
+            أنا جعان دلوقتي.. آكل إيه؟
+          </button>
+        </div>
+
+        <!-- Quick Prompt Chips -->
+        <div style="display:flex; gap:6px; overflow-x:auto; padding:4px 0;">
+          <button class="coach-quick-chip" data-prompt="نفسي في حاجة حلوة ومش عاوز أبوظ الدايت" style="background:#1e2434; border:1px solid rgba(255,255,255,0.1); color:#93c5fd; border-radius:14px; padding:6px 12px; font-size:12px; white-space:nowrap; cursor:pointer;">نفسي في سكر/حلو 🍫</button>
+          <button class="coach-quick-chip" data-prompt="عشاء خفيف ميزودش وزني ويساعدني أنام" style="background:#1e2434; border:1px solid rgba(255,255,255,0.1); color:#93c5fd; border-radius:14px; padding:6px 12px; font-size:12px; white-space:nowrap; cursor:pointer;">عشاء خفيف ومشبع 🌙</button>
+          <button class="coach-quick-chip" data-prompt="أنا معزوم في مطعم برة أتصرف إزاي؟" style="background:#1e2434; border:1px solid rgba(255,255,255,0.1); color:#93c5fd; border-radius:14px; padding:6px 12px; font-size:12px; white-space:nowrap; cursor:pointer;">الأكل في المطاعم 🍔</button>
+        </div>
+      </div>
+
+      <!-- Chat Input -->
+      <div class="coach-chat-input-bar">
+        <input type="text" id="coach-user-input" class="coach-input-field" placeholder="اسألني أي شيء عن الجوع أو الأكل..." dir="rtl">
+        <button class="coach-send-btn" id="btn-send-coach-msg">➤</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 3: VIP SETTINGS & GOOGLE WORKSPACE DATABASE SYNC
+       ========================================================================== -->
+  <div class="dialog-modal-overlay" id="settings-sync-modal">
+    <div class="coach-modal-container" style="max-height: 85vh; overflow-y: auto;">
+      <div class="coach-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:20px;">⚙️</span>
+          <div>
+            <div style="font-size:15px; font-weight:700; color:#fff;">إعدادات السحابة و Google Workspace</div>
+            <div style="font-size:11px; color:#38bdf8;">حفظ ومعالجة أونلاين 24/7 بدون الحاجة للكمبيوتر</div>
+          </div>
+        </div>
+        <button class="dialog-close-btn" id="btn-close-settings-modal">✕</button>
+      </div>
+
+      <div style="padding: 16px; display:flex; flex-direction:column; gap:14px;">
+        
+        <!-- Status Card: 24/7 Standalone -->
+        <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 12px;">
+          <div style="display:flex; align-items:center; gap:8px; color: #10b981; font-weight:700; font-size:13px;">
+            <span>🟢</span>
+            <span>معالجة الذكاء الاصطناعي أونلاين مباشرة عبر Google Cloud</span>
+          </div>
+          <p style="font-size: 11.5px; color: #94a3b8; margin-top: 4px; line-height: 1.4; margin-bottom: 0;">
+            تطبيق Raheem Coach مبرمج للاتصال مباشرة بخوادم Google Gemini السحابية. يعمل التطبيق على هاتفك المحمول بشكل مستقل تماماً ودون الحاجة لتشغيل اللابتوب!
+          </p>
+        </div>
+
+        <!-- Google Gemini API Key Section -->
+        <div style="background:#131722; border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:8px;">
+          <label style="color:#94a3b8; font-size:11.5px; font-weight:600;">مفتاح Google Gemini API:</label>
+          <div style="display:flex; width:100%; gap:8px;">
+            <input type="password" id="settings-api-key-input" style="flex:1; background:rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.1); color:#fff; font-size:12px; border-radius:8px; padding:8px;" placeholder="أدخل مفتاح Gemini API (اختياري - السيرفر يعمل تلقائياً)">
+            <button id="btn-save-api-key" style="background:#3b82f6; color:#fff; border:none; border-radius:8px; padding:6px 14px; font-weight:700; font-size:12px; cursor:pointer;">حفظ</button>
+          </div>
+        </div>
+
+        <!-- Google Workspace / Sheets Cloud Database Section -->
+        <div style="background: #141824; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 14px; display:flex; flex-direction:column; gap:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:18px;">📊</span>
+              <strong style="color:#fff; font-size:13px;">قاعدة بيانات Google Sheets أونلاين</strong>
+            </div>
+            <span id="google-sync-status-badge" style="background:rgba(239, 68, 68, 0.2); color:#fca5a5; font-size:10.5px; padding:3px 8px; border-radius:12px; font-weight:600;">غير متصل</span>
+          </div>
+
+          <p style="font-size: 11.5px; color: #94a3b8; line-height: 1.4; margin:0;">
+            اربط جدول Google Sheets في Google Workspace لتخزين كل وجبة، كالوري، وقياسات دهون سحابياً للأبد.
+          </p>
+
+          <input type="url" id="google-webhook-url-input" style="background:rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.1); color:#fff; font-size:11px; border-radius:8px; padding:8px;" placeholder="رابط الويب هوك: https://script.google.com/macros/s/.../exec">
+
+          <div style="display:flex; gap:8px;">
+            <button id="btn-save-google-webhook" class="dialog-btn-primary" style="flex:1; padding:9px; font-size:12px;">💾 حفظ وتفعيل الربط</button>
+            <button id="btn-test-google-sync" style="background:#1e293b; color:#93c5fd; border:1px solid rgba(255,255,255,0.1); border-radius:var(--radius-full); padding:9px 14px; font-size:12px; font-weight:700; cursor:pointer;">⚡ تجربة مزامنة</button>
+          </div>
+
+          <!-- Instructions Accordion -->
+          <details style="margin-top:6px; font-size:11.5px; color:#cbd5e1; background:rgba(0,0,0,0.25); padding:8px 10px; border-radius:8px;">
+            <summary style="cursor:pointer; color:#60a5fa; font-weight:600;">📋 خطوات ربط شيت جوجل في دقيقة واحدة:</summary>
+            <ol style="padding-right: 18px; margin: 8px 0 0 0; line-height: 1.6;">
+              <li>افتح Google Sheets وأنشئ جدولاً جديداً باسم <strong>Raheem Coach Database</strong>.</li>
+              <li>من القائمة اضغط <strong>Extensions > Apps Script</strong>.</li>
+              <li>امسح ما بداخله والصق الكود الجاهز من ملف <code>google_apps_script.js</code> الموجود بمشروعك.</li>
+              <li>اضغط <strong>Deploy > New deployment > Web app</strong> واختر <em>Who has access: Anyone</em>.</li>
+              <li>انسخ الرابط النهائي والصقه في الخانة بالأعلى واضغط حفظ.</li>
+            </ol>
+          </details>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 4: USER ACCOUNT & GOOGLE SIGN-IN
+       ========================================================================== -->
+  <div class="dialog-modal-overlay" id="user-account-modal">
+    <div class="coach-modal-container" style="max-height: 85vh; overflow-y: auto;">
+      
+      <!-- Modal Header -->
+      <div class="coach-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:20px;">👤</span>
+          <div>
+            <div style="font-size:15px; font-weight:700; color:#fff;">حساب المستخدم و Google</div>
+            <div style="font-size:11px; color:#60a5fa;">مزامنة البيانات والحساب الشخصي</div>
+          </div>
+        </div>
+        <button class="dialog-close-btn" id="btn-close-account-modal">✕</button>
+      </div>
+
+      <!-- Hidden File Input for Avatar Upload -->
+      <input type="file" id="account-avatar-file-input" accept="image/*" class="hidden">
+
+      <div style="padding: 16px; display:flex; flex-direction:column; gap:14px;">
+        
+        <!-- ================= VIEW A: LOGGED IN ================= -->
+        <div id="account-view-logged-in" class="hidden" style="display:flex; flex-direction:column; gap:16px;">
+          
+          <!-- Profile Card -->
+          <div style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.95)); border: 1px solid rgba(59, 130, 246, 0.35); border-radius: 16px; padding: 18px; display:flex; flex-direction:column; align-items:center; text-align:center; position:relative;">
+            
+            <!-- Avatar Container with Edit Badge -->
+            <div style="position:relative; margin-bottom:12px;">
+              <img id="account-profile-avatar-img" src="" alt="Google Profile" style="width:78px; height:78px; border-radius:50%; object-fit:cover; border:3px solid #3b82f6; box-shadow:0 0 20px rgba(59, 130, 246, 0.45);">
+              <button id="btn-change-avatar-photo" style="position:absolute; bottom:-2px; right:-2px; background:#2563eb; color:#fff; border:2px solid #0f172a; border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:13px;" title="تغيير الصورة الشخصية">📷</button>
+            </div>
+
+            <!-- Name & Email -->
+            <h3 id="account-profile-name" style="color:#ffffff; font-size:17px; font-weight:800; margin-bottom:4px;">مستخدم Raheem Coach</h3>
+            <p id="account-profile-email" style="color:#94a3b8; font-size:12px; margin-bottom:10px;">user@raheemcoach.app</p>
+            
+            <!-- Verified Google Badge -->
+            <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(37, 99, 235, 0.15); border:1px solid rgba(59, 130, 246, 0.4); padding:4px 12px; border-radius:20px; font-size:11.5px; color:#93c5fd; font-weight:600;">
+              <svg width="14" height="14" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+              </svg>
+              <span>حساب Google متصل ونشط</span>
+            </div>
+          </div>
+
+          <!-- Stats Grid -->
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <div style="background:#131824; border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:12px; text-align:center;">
+              <span style="font-size:11px; color:#94a3b8; display:block; margin-bottom:4px;">وجبات اليوم</span>
+              <strong id="account-stat-meals" style="font-size:20px; color:#38bdf8;">0</strong>
+            </div>
+            <div style="background:#131824; border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:12px; text-align:center;">
+              <span style="font-size:11px; color:#94a3b8; display:block; margin-bottom:4px;">أيام الالتزام</span>
+              <strong id="account-stat-streak" style="font-size:20px; color:#f59e0b;">3 🔥</strong>
+            </div>
+          </div>
+
+          <!-- Logout Action -->
+          <button id="btn-account-logout" style="background:rgba(239, 68, 68, 0.15); border:1px solid rgba(239, 68, 68, 0.35); color:#fca5a5; padding:11px; border-radius:12px; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
+            <span>🚪</span>
+            <span>تسجيل الخروج من الحساب</span>
+          </button>
+        </div>
+
+        <!-- ================= VIEW B: LOGGED OUT ================= -->
+        <div id="account-view-logged-out" style="display:flex; flex-direction:column; gap:14px;">
+          
+          <!-- Banner -->
+          <div style="text-align:center; padding:10px 0;">
+            <div style="width:54px; height:54px; border-radius:50%; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center; margin:0 auto 10px auto;">
+              <svg width="28" height="28" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+              </svg>
+            </div>
+            <h3 style="font-size:16px; font-weight:800; color:#fff;">تسجيل الدخول باستخدام Google</h3>
+            <p style="font-size:12px; color:#94a3b8; margin-top:4px; line-height:1.4;">
+              اربط حسابك لحفظ صورتك الشخصية ومزامنة وجباتك وتحليلاتك سحابياً 24/7.
+            </p>
+          </div>
+
+          <!-- 1-Click Fast Google Sign-In -->
+          <button id="btn-quick-google-login" style="background:#ffffff; color:#1f2937; border:none; border-radius:12px; padding:12px 16px; font-size:13.5px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; box-shadow:0 4px 12px rgba(0,0,0,0.3); transition:transform 0.2s;">
+            <svg width="18" height="18" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+            </svg>
+            <span>تسجيل دخول سريع بحساب Google</span>
+          </button>
+
+          <!-- Official Google Identity Services Button Container -->
+          <div id="google-signin-btn-container" style="display:flex; justify-content:center; margin:4px 0;"></div>
+
+          <!-- Divider -->
+          <div style="display:flex; align-items:center; gap:10px; margin:4px 0;">
+            <div style="flex:1; height:1px; background:rgba(255,255,255,0.1);"></div>
+            <span style="font-size:11px; color:#64748b;">أو حساب آخر</span>
+            <div style="flex:1; height:1px; background:rgba(255,255,255,0.1);"></div>
+          </div>
+
+          <!-- Custom Account Inputs -->
+          <div style="background:#131824; border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:8px;">
+            <input type="text" id="input-custom-google-name" placeholder="الاسم (مثال: رحيم خالد)" style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); color:#fff; border-radius:8px; padding:8px 10px; font-size:12px; direction:rtl;">
+            <input type="email" id="input-custom-google-email" placeholder="بريدك في جوجل (Gmail)" style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); color:#fff; border-radius:8px; padding:8px 10px; font-size:12px; direction:ltr;">
+            <button id="btn-custom-google-login" style="background:#2563eb; color:#fff; border:none; border-radius:8px; padding:9px; font-size:12px; font-weight:700; cursor:pointer;">دخول بحساب Google المخصص</button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL: WEEKLY HEALTH & NUTRITION REPORT
+       ========================================================================== -->
+  <div class="dialog-modal-overlay" id="weekly-report-modal">
+    <div class="report-modal-container" style="background:#0e131f; border:1px solid rgba(59,130,246,0.35); border-radius:24px; width:92%; max-width:440px; max-height:88vh; overflow-y:auto; padding:20px 16px; box-shadow:0 20px 60px rgba(0,0,0,0.85); color:#fff; position:relative;">
+      
+      <!-- Header -->
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px;">
+        <div>
+          <div style="font-size:16px; font-weight:800; display:flex; align-items:center; gap:8px;">
+            <span>📊</span>
+            <span>تقرير التقييم الأسبوعي للوجبات</span>
+          </div>
+          <div style="font-size:11.5px; color:#94a3b8; margin-top:3px;" id="weekly-report-dates-range">
+            تحليل الالتزام والأكل الصحي مقابل الضار (آخر 7 أيام)
+          </div>
+        </div>
+        <button class="dialog-close-btn" id="btn-close-weekly-report-modal">✕</button>
+      </div>
+
+      <!-- Score Hero -->
+      <div style="background:linear-gradient(135deg, #1e293b, #0f172a); border:1px solid rgba(59,130,246,0.3); border-radius:16px; padding:16px; text-align:center; margin-bottom:14px; position:relative;">
+        <div style="font-size:11.5px; color:#94a3b8; margin-bottom:4px;">درجة الالتزام الأسبوعي العامة</div>
+        <div style="display:flex; align-items:center; justify-content:center; gap:8px;">
+          <span style="font-size:36px; font-weight:900; color:#38bdf8;" id="report-score-val">--</span>
+          <span style="font-size:18px; color:#94a3b8;">/ 100</span>
+          <span style="background:#2563eb; color:#fff; padding:2px 8px; border-radius:12px; font-size:13px; font-weight:800;" id="report-score-badge">A</span>
+        </div>
+        <div style="font-size:13px; font-weight:700; color:#34d399; margin-top:4px;" id="report-score-rating">
+          أداء رائع ومتقدم 🌟
+        </div>
+      </div>
+
+      <!-- 7-Day Matrix Table -->
+      <div style="margin-bottom:14px;">
+        <div style="font-size:12px; font-weight:700; color:#cbd5e1; margin-bottom:8px;">📅 تتبع الأيام (الأكل الصحي 🟢 مقابل غير الملتزم 🔴):</div>
+        <div id="weekly-days-grid" style="display:flex; flex-direction:column; gap:6px;">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+
+      <!-- Detailed Breakdown of Junk vs Healthy -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;">
+        <div style="background:#131824; border:1px solid rgba(16,185,129,0.3); border-radius:12px; padding:10px; text-align:center;">
+          <div style="font-size:11px; color:#34d399; font-weight:700;">🟢 وجبات صحية ممتازة</div>
+          <div style="font-size:20px; font-weight:800; color:#fff; margin-top:2px;" id="report-healthy-count">0</div>
+          <div style="font-size:10px; color:#94a3b8;">عالية البروتين والألياف</div>
+        </div>
+        <div style="background:#131824; border:1px solid rgba(239,68,68,0.3); border-radius:12px; padding:10px; text-align:center;">
+          <div style="font-size:11px; color:#f87171; font-weight:700;">🔴 وجبات/أصناف ضارة</div>
+          <div style="font-size:20px; font-weight:800; color:#fff; margin-top:2px;" id="report-junk-count">0</div>
+          <div style="font-size:10px; color:#94a3b8;">عالية الدهون/السكريات</div>
+        </div>
+      </div>
+
+      <!-- Coach Raheem AI Insights Box -->
+      <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:14px; margin-bottom:14px;">
+        <div style="font-size:13px; font-weight:800; color:#60a5fa; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+          <span>💡</span>
+          <span>تحليل وتوجيهات كوتش رحيم للأسبوع:</span>
+        </div>
+        <div id="report-ai-content" style="font-size:12px; color:#cbd5e1; line-height:1.6; white-space:pre-line; direction:rtl;">
+          جاري تجهيز تقرير كوتش رحيم الذكي... ⏳
+        </div>
+      </div>
+
+      <button type="button" class="dialog-btn-primary" id="btn-close-weekly-report-done" style="width:100%; padding:11px; font-size:13px; border-radius:12px;">
+        استمرار وتطبيق الخطة للأسبوع القادم 🚀
+      </button>
+
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL: WATER INTAKE ADJUSTMENT (4 AM to 12 AM Cutoff)
+       ========================================================================== -->
+  <div class="dialog-modal-overlay" id="water-adjust-modal">
+    <div style="background:#0f172a; border:1px solid rgba(2,132,199,0.4); border-radius:22px; width:88%; max-width:380px; padding:20px 16px; box-shadow:0 20px 50px rgba(0,0,0,0.85); color:#fff; position:relative;">
+      
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:22px;">💧</span>
+          <div>
+            <h3 style="font-size:15px; font-weight:800; color:#fff;">تعديل كمية الماء اليومية</h3>
+            <span style="font-size:11px; color:#7dd3fc;" id="water-modal-date-display">تعديل ماء اليوم</span>
+          </div>
+        </div>
+        <button class="dialog-close-btn" id="btn-close-water-modal">✕</button>
+      </div>
+
+      <!-- Time Window Explanation Notice -->
+      <div style="background:rgba(2,132,199,0.12); border:1px solid rgba(2,132,199,0.25); border-radius:10px; padding:8px 10px; font-size:11px; color:#bae6fd; line-height:1.4; margin-bottom:14px; text-align:right;">
+        ⏱️ <strong>قاعدة التسجيل:</strong> التعديل نشط من الساعة 4:00 فجراً حتى 12:00 منتصف الليل على نفس اليوم. بعد 12:00 منتصف الليل يُحتسب التسجيل تلقائياً لليوم الجديد.
+      </div>
+
+      <!-- Water Stepper & Direct ML Input -->
+      <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:16px;">
+        <div style="background:#1e293b; border-radius:12px; padding:12px; text-align:center;">
+          <span style="font-size:11px; color:#94a3b8; display:block; margin-bottom:4px;">الكمية بالمليلتر (ml):</span>
+          <div style="display:flex; align-items:center; justify-content:center; gap:10px;">
+            <button id="btn-water-minus-250" style="background:#334155; color:#fff; border:none; width:36px; height:36px; border-radius:50%; font-size:18px; font-weight:800; cursor:pointer;">-</button>
+            <input type="number" id="input-water-ml" value="1500" step="50" min="0" max="6000" style="width:110px; background:#0f172a; border:1px solid rgba(255,255,255,0.2); color:#38bdf8; font-size:22px; font-weight:800; text-align:center; border-radius:8px; padding:4px;">
+            <button id="btn-water-plus-250" style="background:#334155; color:#fff; border:none; width:36px; height:36px; border-radius:50%; font-size:18px; font-weight:800; cursor:pointer;">+</button>
+          </div>
+          <span style="font-size:11.5px; color:#94a3b8; margin-top:6px; display:block;" id="water-modal-cups-calc">يساوي تقريباً 6 أكواب (250 مل لكل كوب)</span>
+        </div>
+
+        <!-- Quick Presets -->
+        <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:6px;">
+          <button class="water-preset-btn" data-ml="500" style="background:#1e293b; border:1px solid rgba(255,255,255,0.08); color:#cbd5e1; border-radius:8px; padding:6px; font-size:11px; cursor:pointer;">500 مل</button>
+          <button class="water-preset-btn" data-ml="1000" style="background:#1e293b; border:1px solid rgba(255,255,255,0.08); color:#cbd5e1; border-radius:8px; padding:6px; font-size:11px; cursor:pointer;">1 لتر</button>
+          <button class="water-preset-btn" data-ml="1500" style="background:#1e293b; border:1px solid rgba(255,255,255,0.08); color:#cbd5e1; border-radius:8px; padding:6px; font-size:11px; cursor:pointer;">1.5 لتر</button>
+          <button class="water-preset-btn" data-ml="2000" style="background:#1e293b; border:1px solid rgba(255,255,255,0.08); color:#cbd5e1; border-radius:8px; padding:6px; font-size:11px; cursor:pointer;">2 لتر</button>
+        </div>
+      </div>
+
+      <button type="button" class="dialog-btn-primary" id="btn-save-custom-water" style="width:100%; padding:11px; font-size:13px; background:linear-gradient(135deg, #0284c7, #0369a1); border-radius:12px;">
+        حفظ كمية الماء لليوم 💧
+      </button>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container"></div>
+
+  <!-- Application Scripts with Cache-Busters -->
+  <script src="js/storage.js?v=2.2"></script>
+  <script src="js/google_auth.js?v=2.2"></script>
+  <script src="js/gemini_api.js?v=2.2"></script>
+  <script src="js/google_workspace_sync.js?v=2.2"></script>
+  <script src="js/nutrition_scanner.js?v=2.2"></script>
+  <script src="js/weekly_report.js?v=2.2"></script>
+  <script src="js/body_analyzer.js?v=2.2"></script>
+  <script src="js/hunger_coach.js?v=2.2"></script>
+  <script src="js/app.js?v=2.2"></script>
+
+</body>
+</html>

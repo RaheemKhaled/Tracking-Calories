@@ -1,0 +1,1149 @@
+/* ==========================================================================
+   Appediet Components Styling
+   Matches screenshots for Budget, Eaten, Water, Weight, Mood, Food Modal, Body Fat
+   ========================================================================== */
+
+/* ==========================================================================
+   1. BUDGET CARD (Compact Mobile Proportions)
+   ========================================================================== */
+.budget-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 14px 12px 14px;
+}
+
+.budget-radial-container {
+  position: relative;
+  width: 190px;
+  height: 105px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.radial-svg {
+  width: 190px;
+  height: 105px;
+  overflow: visible;
+}
+
+.radial-track {
+  fill: none;
+  stroke: #252b3b;
+  stroke-width: 9;
+  stroke-linecap: round;
+}
+
+.radial-progress {
+  fill: none;
+  stroke: url(#radialGrad);
+  stroke-width: 9;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.6s ease;
+}
+
+.radial-center-content {
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.radial-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 1px;
+}
+
+.radial-value {
+  font-size: 28px;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1;
+  letter-spacing: -0.5px;
+}
+
+.radial-unit {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 2px;
+}
+
+.budget-stats-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: -4px;
+}
+
+.budget-side-stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stat-icon-wrapper {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: var(--bg-chip);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-title {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.stat-num {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.budget-goal-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.budget-goal-pill:hover {
+  border-color: var(--border-active);
+  color: #fff;
+}
+
+/* Macro Bars Underneath Budget */
+.budget-macros-row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 10px;
+}
+
+.macro-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.macro-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.macro-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.macro-val {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.macro-val .macro-target {
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.macro-bar-track {
+  width: 100%;
+  height: 4px;
+  border-radius: var(--radius-full);
+  background-color: #242b3b;
+  overflow: hidden;
+}
+
+.macro-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 0.4s ease;
+}
+
+.macro-bar-fill.carb { background-color: var(--carb-wheat); }
+.macro-bar-fill.protein { background-color: var(--protein-fish); }
+.macro-bar-fill.fat { background-color: var(--fat-drop); }
+
+/* ==========================================================================
+   2. EATEN CARD (Screenshot 3 & 4)
+   ========================================================================== */
+.eaten-hero-card {
+  background: linear-gradient(180deg, #1e3a8a 0%, #172554 100%);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 16px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  box-shadow: 0 4px 16px rgba(30, 58, 138, 0.3);
+}
+
+.eaten-hero-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.2px;
+}
+
+.eaten-hero-subtitle {
+  font-size: 13px;
+  font-style: italic;
+  font-weight: 500;
+  color: #93c5fd;
+  margin-top: -6px;
+}
+
+.eaten-meals-status-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 2px 0;
+}
+
+.meal-status-bubble {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 16px;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.meal-status-bubble.logged {
+  background-color: #10b981;
+}
+
+.eaten-meals-desc {
+  font-size: 11px;
+  font-weight: 500;
+  color: #bfdbfe;
+}
+
+.btn-eaten-log {
+  background-color: #0b0f19;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-full);
+  padding: 9px 36px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+  width: 75%;
+}
+
+.btn-eaten-log:hover {
+  background-color: #000000;
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   3. BURNED CARD
+   ========================================================================== */
+.card-single-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 4px 0 10px 0;
+}
+
+.card-stat-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.card-stat-big-val {
+  font-size: 22px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.btn-card-action {
+  width: 100%;
+  background-color: var(--bg-chip);
+  color: var(--primary-blue-light);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-card-action:hover {
+  background-color: var(--primary-blue-soft);
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   4. WATER CARD (Screenshot 3 & 4)
+   ========================================================================== */
+.water-cups-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 5px;
+  margin: 10px 0;
+}
+
+.water-cup-item {
+  height: 30px;
+  background-color: #242c3d;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 3px 3px 6px 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.water-cup-item.first-add {
+  border: 1px dashed var(--primary-blue);
+  color: var(--primary-blue-light);
+}
+
+.water-cup-item.filled {
+  background: linear-gradient(180deg, #38bdf8, #0284c7);
+  color: #ffffff;
+  border-color: #38bdf8;
+  box-shadow: 0 2px 8px rgba(56, 189, 248, 0.3);
+}
+
+.water-footer-goal {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* ==========================================================================
+   5. WEIGHT CARD (Screenshot 3 & 4)
+   ========================================================================== */
+.weight-row-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 6px 0 10px 0;
+}
+
+.weight-current-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.weight-val-unit {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+}
+
+.weight-number {
+  font-size: 26px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.weight-unit {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.weight-bmi-badge {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
+.btn-update-weight {
+  background-color: #1e293b;
+  color: #60a5fa;
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  border-radius: 10px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-update-weight:hover {
+  background-color: rgba(96, 165, 250, 0.2);
+  color: #ffffff;
+}
+
+.weight-footer-goals {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* ==========================================================================
+   6. MOOD CARD (Screenshot 3)
+   ========================================================================== */
+.mood-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.mood-title-ask {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  text-align: center;
+}
+
+.mood-mascots-preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6px 0;
+}
+
+.mood-mascots-preview svg {
+  width: 140px;
+  height: 52px;
+}
+
+.btn-log-feeling {
+  background-color: #1e2538;
+  color: #60a5fa;
+  border: 1px solid rgba(96, 165, 250, 0.2);
+  border-radius: var(--radius-md);
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+}
+
+/* ==========================================================================
+   7. FOOD LOGGING / SCANNER MODAL (Screenshot 1 & 2)
+   ========================================================================== */
+.food-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.food-modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.food-modal-container {
+  width: 100%;
+  max-width: 440px;
+  height: 94vh;
+  background-color: #0b0e14;
+  border-radius: 24px 24px 0 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.7);
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.food-modal-overlay.active .food-modal-container {
+  transform: translateY(0);
+}
+
+.food-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background-color: rgba(11, 14, 20, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  z-index: 10;
+}
+
+.food-nav-icon-btn {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.meal-type-selector-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #171b26;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-full);
+  padding: 6px 14px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.food-modal-scrollable {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 90px;
+}
+
+/* Photo Display Area (Top Half) */
+.food-photo-hero-area {
+  width: 100%;
+  height: 220px;
+  background-color: #141824;
+  position: relative;
+  overflow: hidden;
+}
+
+.food-photo-hero-area img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.food-camera-retake-btn {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background-color: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-full);
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Bottom Sheet Content Area */
+.food-details-sheet {
+  background-color: #0d1017;
+  border-radius: 20px 20px 0 0;
+  margin-top: -16px;
+  position: relative;
+  padding: 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.food-title-stepper-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.food-title-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.food-name-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.btn-edit-pencil {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.stepper-control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stepper-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #1a2233;
+  color: #ffffff;
+  border: none;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stepper-btn.plus {
+  background-color: #3b82f6;
+}
+
+.stepper-count {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* Calories Card (Screenshot 1 & 2) */
+.food-calories-pill-card {
+  background-color: #171a22;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.calorie-flame-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background-color: #2b1f1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+.calorie-texts {
+  display: flex;
+  flex-direction: column;
+}
+
+.calorie-label-small {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.calorie-val-with-pencil {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 24px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+/* 3 Macro Cards Row (Screenshot 1 & 2) */
+.food-macros-3col {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+
+.macro-box-item {
+  background-color: #171a22;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.macro-box-icon {
+  font-size: 18px;
+}
+
+.macro-box-texts {
+  display: flex;
+  flex-direction: column;
+}
+
+.macro-box-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.macro-box-val {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.btn-show-more-toggle {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: -4px 0 4px 0;
+}
+
+/* Food List Cards (Screenshot 1 & 2) */
+.food-list-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.food-list-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.food-list-chips-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  overflow-x: auto;
+}
+
+.food-item-chip-card {
+  min-width: 140px;
+  background-color: #181d28;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.food-item-chip-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.food-item-chip-kcal {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.food-item-chip-serv {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.food-item-chip-add {
+  min-width: 110px;
+  height: 82px;
+  background-color: #181d28;
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Insights For You Card (Screenshot 1) */
+.insights-for-you-card {
+  background: linear-gradient(135deg, #171b26, #1e2434);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.insights-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.insights-heading-text {
+  font-size: 16px;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.3;
+  max-width: 70%;
+}
+
+.insights-mascot-graphic {
+  width: 70px;
+  height: 48px;
+}
+
+.insights-subtext {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.insights-expanded-bullets {
+  background-color: rgba(0, 0, 0, 0.25);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12px;
+  color: #e2e8f0;
+}
+
+.btn-view-insights-free {
+  background-color: #252c3d;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-full);
+  padding: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-view-insights-free:hover {
+  background-color: #2f384d;
+}
+
+/* Bottom Floating Log Button (Screenshot 1 & 2) */
+.food-modal-bottom-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 12px 18px calc(14px + var(--safe-bottom)) 18px;
+  background: linear-gradient(180deg, transparent, #0b0e14 40%);
+  display: flex;
+  justify-content: center;
+}
+
+.btn-log-to-meal-primary {
+  width: 100%;
+  background: linear-gradient(135deg, #4f46e5, #3b82f6);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-full);
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  position: relative;
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+  transition: transform 0.2s ease;
+}
+
+.btn-log-to-meal-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-badge-left {
+  position: absolute;
+  top: -8px;
+  right: 14px;
+  background-color: #fef08a;
+  color: #854d0e;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* ==========================================================================
+   8. BODY FAT & COMPOSITION VIEW
+   ========================================================================== */
+.body-analysis-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.body-fat-card-hero {
+  background: linear-gradient(135deg, #182030, #131926);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.body-fat-gauge-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.fat-pct-circle {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  border: 6px solid #3b82f6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+.fat-pct-number {
+  font-size: 26px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.fat-pct-label {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.body-mass-split-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mass-item-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #1e2536;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+}
+
+.mass-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.mass-dot.fat { background-color: #f97316; }
+.mass-dot.muscle { background-color: #10b981; }
+
+/* Interactive Body Silhouette Heatmap */
+.body-silhouette-card {
+  background-color: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.silhouette-layout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.silhouette-svg-box {
+  width: 120px;
+  height: 220px;
+}
+
+.fat-distribution-breakdown-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dist-bar-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dist-bar-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.dist-track {
+  width: 100%;
+  height: 6px;
+  background-color: #242c3d;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.dist-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+}
+
+/* ==========================================================================
+   9. ASK APPEDIET / HUNGER COACH MODAL
+   ========================================================================== */
+.coach-modal-container {
+  width: 100%;
+  max-width: 440px;
+  height: 90vh;
+  background-color: #0d111a;
+  border-radius: 24px 24px 0 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.coach-header {
+  padding: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #141824;
+}
+
+.coach-chat-history {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.chat-bubble {
+  max-width: 85%;
+  padding: 12px 16px;
+  border-radius: 18px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.chat-bubble.ai {
+  align-self: flex-start;
+  background-color: #182030;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #f1f5f9;
+  border-bottom-left-radius: 4px;
+}
+
+.chat-bubble.user {
+  align-self: flex-end;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #ffffff;
+  border-bottom-right-radius: 4px;
+}
+
+.hunger-emergency-card {
+  background: linear-gradient(135deg, #431407, #7c2d12);
+  border: 1px solid #ea580c;
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.coach-chat-input-bar {
+  padding: 12px 16px calc(14px + var(--safe-bottom)) 16px;
+  background-color: #131722;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  gap: 8px;
+}
+
+.coach-input-field {
+  flex: 1;
+  background-color: #1e2434;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-full);
+  padding: 10px 16px;
+  color: #ffffff;
+  font-size: 14px;
+  outline: none;
+}
+
+.coach-send-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background-color: #3b82f6;
+  border: none;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}

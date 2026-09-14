@@ -1,0 +1,385 @@
+/* ==========================================================================
+   Responsive & Modal Overlays for Appediet Android
+   ========================================================================== */
+
+/* Universal Dialog Modal (Settings, Weight update, Mood, Workouts) */
+.dialog-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.dialog-modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.dialog-card {
+  width: 100%;
+  max-width: 380px;
+  background-color: #141824;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
+  transform: scale(0.94);
+  transition: transform 0.25s ease;
+}
+
+.dialog-modal-overlay.active .dialog-card {
+  transform: scale(1);
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dialog-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.dialog-close-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.dialog-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dialog-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.dialog-input, .dialog-select {
+  background-color: #171b26;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  color: #ffffff;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s ease;
+  width: 100%;
+}
+
+.dialog-input:focus, .dialog-select:focus {
+  border-color: var(--primary-blue);
+  background-color: #1c2233;
+}
+
+.dialog-btn-primary {
+  background: linear-gradient(135deg, #4f46e5, #3b82f6);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-full);
+  padding: 11px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 4px;
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);
+  transition: all 0.2s ease;
+}
+
+.dialog-btn-primary:active {
+  transform: scale(0.98);
+}
+
+/* ==========================================================================
+   Compact Mobile Form Inputs & Grid (Optimized for Screen Ratio)
+   ========================================================================== */
+.compact-form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-row-3col {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+}
+
+.form-row-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.compact-field-card {
+  background-color: #131722;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 11px;
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  transition: all 0.2s ease;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.compact-field-card:focus-within {
+  border-color: var(--primary-blue);
+  background-color: #171d2b;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.compact-field-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+  width: 100%;
+  line-height: 1.2;
+}
+
+.compact-field-input {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 1px 0;
+  outline: none;
+  width: 100%;
+  text-align: center;
+  font-family: inherit;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+}
+
+.compact-field-input::-webkit-inner-spin-button,
+.compact-field-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.compact-field-select {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 2px 0;
+  outline: none;
+  width: 100%;
+  cursor: pointer;
+  text-align: center;
+  text-align-last: center;
+  font-family: inherit;
+}
+
+.compact-field-select option {
+  background-color: #181d2a;
+  color: #ffffff;
+}
+
+.compact-photo-btn {
+  background-color: #131722;
+  border: 1px dashed rgba(59, 130, 246, 0.4);
+  border-radius: 11px;
+  padding: 8px 10px;
+  color: #60a5fa;
+  font-size: 11.5px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 38px;
+}
+
+.compact-photo-btn:hover, .compact-photo-btn:active {
+  background-color: rgba(59, 130, 246, 0.15);
+  border-color: #3b82f6;
+  color: #ffffff;
+}
+
+/* Toast Notifications */
+#toast-container {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.app-toast {
+  background-color: #1e293b;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-full);
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  animation: fadeInDown 0.3s ease forwards;
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Android PWA Install Banner */
+.pwa-install-banner {
+  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3);
+}
+
+.pwa-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pwa-banner-icon {
+  width: 32px;
+  height: 32px;
+}
+
+.pwa-banner-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.pwa-banner-sub {
+  font-size: 11px;
+  color: #dbeafe;
+}
+
+.btn-pwa-install-action {
+  background-color: #ffffff;
+  color: #1e3a8a;
+  border: none;
+  border-radius: var(--radius-full);
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+/* Adjustments for smaller mobile screens (< 440px) */
+@media (max-width: 440px) {
+  .view-container {
+    padding: 0 10px 14px 10px;
+    gap: 10px;
+  }
+  .app-card {
+    padding: 12px 12px;
+    border-radius: 14px;
+  }
+  .section-title {
+    font-size: 15px;
+  }
+  .compact-form-grid {
+    gap: 7px;
+  }
+  .form-row-3col {
+    gap: 5px;
+  }
+  .form-row-2col {
+    gap: 6px;
+  }
+  .compact-field-card {
+    padding: 5px 6px;
+    min-height: 46px;
+    border-radius: 10px;
+  }
+  .compact-field-label {
+    font-size: 10px;
+  }
+  .compact-field-input {
+    font-size: 15px;
+  }
+  .compact-photo-btn {
+    min-height: 36px;
+    padding: 6px 8px;
+    font-size: 11px;
+    border-radius: 10px;
+  }
+  .body-fat-card-hero {
+    padding: 14px 12px;
+    border-radius: 14px;
+    gap: 10px;
+  }
+  .fat-pct-circle {
+    width: 94px;
+    height: 94px;
+    border-width: 5px;
+  }
+  .fat-pct-number {
+    font-size: 22px;
+  }
+  .body-silhouette-card {
+    padding: 14px 12px;
+    border-radius: 14px;
+  }
+  .silhouette-layout {
+    gap: 10px;
+  }
+  .silhouette-svg-box {
+    width: 100px;
+    height: 190px;
+  }
+  .water-cups-grid {
+    gap: 4px;
+  }
+  .food-macros-3col {
+    gap: 6px;
+  }
+  .macro-box-item {
+    padding: 8px;
+    gap: 6px;
+  }
+  .macro-box-val {
+    font-size: 12px;
+  }
+}
+

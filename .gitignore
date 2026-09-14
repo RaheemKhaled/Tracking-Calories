@@ -1,0 +1,35 @@
+# Environment Secrets & API Keys
+.env
+*.env
+.env.local
+.env.*.local
+
+# Android & Gradle
+.gradle/
+build/
+android-app/.gradle/
+android-app/app/build/
+android-app/local.properties
+*.apk
+*.aab
+
+# Logs & Temporary Files
+*.log
+scratch/
+tunnel_url.txt
+cloudflared.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+env/
+venv/
+
+# Operating System & IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
