@@ -1406,20 +1406,20 @@
 
 .wizard-result-hero .res-subtitle {
   font-size: 12px;
-  color: #93c5fd;
+  color: var(--primary-blue, #3b82f6);
   font-weight: 600;
 }
 
 .wizard-result-hero .res-calories-val {
   font-size: 32px;
   font-weight: 900;
-  color: #ffffff;
+  color: #1e3a8a;
   letter-spacing: -0.5px;
 }
 
 .wizard-result-hero .res-badge {
   background: rgba(16, 185, 129, 0.2);
-  color: #34d399;
+  color: #059669;
   border: 1px solid rgba(16, 185, 129, 0.3);
   padding: 4px 12px;
   border-radius: 99px;
@@ -1446,13 +1446,13 @@
 
 .meta-stat-box .meta-label {
   font-size: 11px;
-  color: var(--text-muted, #94a3b8);
+  color: var(--text-secondary, #475569);
 }
 
 .meta-stat-box .meta-val {
   font-size: 14px;
   font-weight: 800;
-  color: var(--text-main, #fff);
+  color: var(--text-primary, #1e293b);
   direction: ltr;
 }
 
@@ -1482,13 +1482,13 @@
 .res-macro-title {
   font-size: 12.5px;
   font-weight: 700;
-  color: var(--text-main, #fff);
+  color: var(--text-primary, #1e293b);
 }
 
 .res-macro-qty {
   font-size: 13px;
   font-weight: 800;
-  color: #38bdf8;
+  color: var(--primary-blue, #2563eb);
   direction: ltr;
 }
 
@@ -1512,7 +1512,7 @@
 
 .res-macro-kcal {
   font-size: 10.5px;
-  color: var(--text-muted, #94a3b8);
+  color: var(--text-secondary, #475569);
   direction: ltr;
   text-align: left;
 }
@@ -1533,12 +1533,12 @@
 }
 
 .res-coach-advice-box {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(0, 0, 0, 0.04);
   border-right: 3px solid #10b981;
   border-radius: 8px;
   padding: 10px 12px;
   font-size: 11.5px;
-  color: #cbd5e1;
+  color: var(--text-secondary, #475569);
   line-height: 1.6;
 }
 
@@ -1553,9 +1553,9 @@
 }
 
 .wizard-btn-prev {
-  background: var(--bg-chip, rgba(255, 255, 255, 0.08));
-  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.1));
-  color: var(--text-main, #fff);
+  background: var(--bg-chip, rgba(0, 0, 0, 0.04));
+  border: 1px solid var(--border-subtle, rgba(0, 0, 0, 0.1));
+  color: var(--text-primary, #1e293b);
   border-radius: var(--radius-full);
   padding: 10px 18px;
   font-size: 13px;
