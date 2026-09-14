@@ -355,7 +355,10 @@
           <!-- Dynamic Water Glass Tracker -->
           <div class="dynamic-water-glass" id="water-glass-container" title="انقر لإضافة 250 مل ماء">
             <div class="water-fill-level" id="water-glass-fill"></div>
-            <div class="water-glass-text" id="water-glass-text">0%</div>
+            <div class="water-glass-text-container">
+              <span class="water-glass-text" id="water-glass-text">0%</span>
+              <span class="water-glass-hint">انقر للكوب +250 مل 💧</span>
+            </div>
           </div>
 
           <div class="water-footer-goal" id="dash-water-goal-val">Goal: 64 fl oz (حوالي 2000 مل)</div>
@@ -371,7 +374,12 @@
                 <a class="section-more-link" id="link-more-burned">تفاصيل النشاط &gt;</a>
               </div>
             </div>
-            <span class="bento-burn-big" id="dash-calories-burned-val">0 kcal</span>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="bento-burn-big" id="dash-calories-burned-val">0 kcal</span>
+              <button type="button" class="btn-bento-action" id="btn-quick-add-workout" style="background:linear-gradient(135deg, #f97316, #ea580c); color:#fff; border:none; font-weight:800; padding:5px 10px; border-radius:8px; cursor:pointer;">
+                + تمرين
+              </button>
+            </div>
           </div>
 
           <div class="bento-workouts-header">
@@ -384,7 +392,7 @@
             <!-- Dynamically populated -->
           </div>
 
-          <button class="btn-card-action bento-add-workout-btn" id="btn-add-workout">
+          <button class="btn-card-action bento-add-workout-btn" id="btn-add-workout" style="background:linear-gradient(135deg, #f97316, #ea580c); color:#fff; border:none; border-radius:12px; font-weight:800; padding:12px; font-size:13.5px; box-shadow:0 4px 12px rgba(249,115,22,0.25);">
             <span>⚡ تسجيل تمرين رياضي أو خطوات</span>
           </button>
         </div>
@@ -1314,46 +1322,46 @@
        MODAL: WATER INTAKE ADJUSTMENT (4 AM to 12 AM Cutoff)
        ========================================================================== -->
   <div class="dialog-modal-overlay" id="water-adjust-modal">
-    <div style="background:#0f172a; border:1px solid rgba(2,132,199,0.4); border-radius:22px; width:88%; max-width:380px; padding:20px 16px; box-shadow:0 20px 50px rgba(0,0,0,0.85); color:#fff; position:relative;">
+    <div class="dialog-card" style="background:#ffffff; border:1px solid #e2e8f0; border-radius:24px; width:90%; max-width:390px; padding:22px 18px; box-shadow:0 25px 60px rgba(15,23,42,0.15); color:#0f172a; position:relative;">
       
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-        <div style="display:flex; align-items:center; gap:8px;">
-          <span style="font-size:22px;">💧</span>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid #f1f5f9; padding-bottom:10px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:24px; background:#e0f2fe; width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center;">💧</span>
           <div>
-            <h3 style="font-size:15px; font-weight:800; color:#fff;">تعديل كمية الماء اليومية</h3>
-            <span style="font-size:11px; color:#7dd3fc;" id="water-modal-date-display">تعديل ماء اليوم</span>
+            <h3 style="font-size:16px; font-weight:800; color:#0f172a; margin:0;">تعديل كمية الماء اليومية</h3>
+            <span style="font-size:11.5px; font-weight:700; color:#0284c7;" id="water-modal-date-display">تعديل ماء اليوم</span>
           </div>
         </div>
-        <button class="dialog-close-btn" id="btn-close-water-modal">✕</button>
+        <button class="dialog-close-btn" id="btn-close-water-modal" style="background:#f1f5f9; color:#475569; border:none; width:32px; height:32px; border-radius:50%; font-size:14px; cursor:pointer;">✕</button>
       </div>
 
       <!-- Time Window Explanation Notice -->
-      <div style="background:rgba(2,132,199,0.12); border:1px solid rgba(2,132,199,0.25); border-radius:10px; padding:8px 10px; font-size:11px; color:#bae6fd; line-height:1.4; margin-bottom:14px; text-align:right;">
+      <div style="background:#f0f9ff; border:1px solid #bae6fd; border-radius:12px; padding:10px 12px; font-size:11.5px; color:#0369a1; line-height:1.5; margin-bottom:16px; text-align:right;">
         ⏱️ <strong>قاعدة التسجيل:</strong> التعديل نشط من الساعة 4:00 فجراً حتى 12:00 منتصف الليل على نفس اليوم. بعد 12:00 منتصف الليل يُحتسب التسجيل تلقائياً لليوم الجديد.
       </div>
 
       <!-- Water Stepper & Direct ML Input -->
-      <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:16px;">
-        <div style="background:#1e293b; border-radius:12px; padding:12px; text-align:center;">
-          <span style="font-size:11px; color:#94a3b8; display:block; margin-bottom:4px;">الكمية بالمليلتر (ml):</span>
-          <div style="display:flex; align-items:center; justify-content:center; gap:10px;">
-            <button id="btn-water-minus-250" style="background:#334155; color:#fff; border:none; width:36px; height:36px; border-radius:50%; font-size:18px; font-weight:800; cursor:pointer;">-</button>
-            <input type="number" id="input-water-ml" value="1500" step="50" min="0" max="6000" style="width:110px; background:#0f172a; border:1px solid rgba(255,255,255,0.2); color:#38bdf8; font-size:22px; font-weight:800; text-align:center; border-radius:8px; padding:4px;">
-            <button id="btn-water-plus-250" style="background:#334155; color:#fff; border:none; width:36px; height:36px; border-radius:50%; font-size:18px; font-weight:800; cursor:pointer;">+</button>
+      <div style="display:flex; flex-direction:column; gap:14px; margin-bottom:18px;">
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:16px; padding:14px; text-align:center;">
+          <span style="font-size:12px; font-weight:700; color:#475569; display:block; margin-bottom:8px;">الكمية بالمليلتر (ml):</span>
+          <div style="display:flex; align-items:center; justify-content:center; gap:12px;">
+            <button id="btn-water-minus-250" style="background:#ffffff; color:#0284c7; border:1px solid #cbd5e1; width:42px; height:42px; border-radius:50%; font-size:22px; font-weight:800; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.06);">-</button>
+            <input type="number" id="input-water-ml" value="1500" step="50" min="0" max="6000" style="width:120px; background:#ffffff; border:2px solid #38bdf8; color:#0284c7; font-size:24px; font-weight:900; text-align:center; border-radius:12px; padding:6px; box-shadow:inset 0 1px 3px rgba(0,0,0,0.05);">
+            <button id="btn-water-plus-250" style="background:#ffffff; color:#0284c7; border:1px solid #cbd5e1; width:42px; height:42px; border-radius:50%; font-size:22px; font-weight:800; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.06);">+</button>
           </div>
-          <span style="font-size:11.5px; color:#94a3b8; margin-top:6px; display:block;" id="water-modal-cups-calc">يساوي تقريباً 6 أكواب (250 مل لكل كوب)</span>
+          <span style="font-size:12px; font-weight:700; color:#64748b; margin-top:8px; display:block;" id="water-modal-cups-calc">يساوي تقريباً 6 أكواب (250 مل لكل كوب)</span>
         </div>
 
         <!-- Quick Presets -->
-        <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:6px;">
-          <button class="water-preset-btn" data-ml="500" style="background:#1e293b; border:1px solid rgba(255,255,255,0.08); color:#cbd5e1; border-radius:8px; padding:6px; font-size:11px; cursor:pointer;">500 مل</button>
-          <button class="water-preset-btn" data-ml="1000" style="background:#1e293b; border:1px solid rgba(255,255,255,0.08); color:#cbd5e1; border-radius:8px; padding:6px; font-size:11px; cursor:pointer;">1 لتر</button>
-          <button class="water-preset-btn" data-ml="1500" style="background:#1e293b; border:1px solid rgba(255,255,255,0.08); color:#cbd5e1; border-radius:8px; padding:6px; font-size:11px; cursor:pointer;">1.5 لتر</button>
-          <button class="water-preset-btn" data-ml="2000" style="background:#1e293b; border:1px solid rgba(255,255,255,0.08); color:#cbd5e1; border-radius:8px; padding:6px; font-size:11px; cursor:pointer;">2 لتر</button>
+        <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:8px;">
+          <button class="water-preset-btn" data-ml="500" style="background:#ffffff; border:1px solid #cbd5e1; color:#0f172a; border-radius:10px; padding:9px 4px; font-size:12px; font-weight:700; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,0.04);">500 مل</button>
+          <button class="water-preset-btn" data-ml="1000" style="background:#ffffff; border:1px solid #cbd5e1; color:#0f172a; border-radius:10px; padding:9px 4px; font-size:12px; font-weight:700; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,0.04);">1 لتر</button>
+          <button class="water-preset-btn" data-ml="1500" style="background:#ffffff; border:1px solid #cbd5e1; color:#0f172a; border-radius:10px; padding:9px 4px; font-size:12px; font-weight:700; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,0.04);">1.5 لتر</button>
+          <button class="water-preset-btn" data-ml="2000" style="background:#ffffff; border:1px solid #cbd5e1; color:#0f172a; border-radius:10px; padding:9px 4px; font-size:12px; font-weight:700; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,0.04);">2 لتر</button>
         </div>
       </div>
 
-      <button type="button" class="dialog-btn-primary" id="btn-save-custom-water" style="width:100%; padding:11px; font-size:13px; background:linear-gradient(135deg, #0284c7, #0369a1); border-radius:12px;">
+      <button type="button" class="dialog-btn-primary" id="btn-save-custom-water" style="width:100%; padding:13px; font-size:14px; font-weight:800; background:linear-gradient(135deg, #0284c7, #0369a1); border:none; color:#ffffff; border-radius:14px; box-shadow:0 4px 14px rgba(2,132,199,0.35); cursor:pointer;">
         حفظ كمية الماء لليوم 💧
       </button>
 
@@ -1612,52 +1620,52 @@
        MODAL: WORKOUT IMPACT & DIET DETAILS (View Any Logged Workout)
        ========================================================================== -->
   <div class="dialog-modal-overlay" id="workout-impact-details-modal">
-    <div style="background:#0e1422; border:1px solid rgba(59,130,246,0.4); border-radius:22px; width:92%; max-width:420px; max-height:85vh; overflow-y:auto; padding:20px 16px; box-shadow:0 20px 60px rgba(0,0,0,0.85); color:#fff; position:relative;">
+    <div class="dialog-card" style="background:#ffffff; border:1px solid #e2e8f0; border-radius:24px; width:92%; max-width:420px; max-height:85vh; overflow-y:auto; padding:22px 18px; box-shadow:0 25px 60px rgba(15,23,42,0.15); color:#0f172a; position:relative;">
       
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:10px;">
-        <div style="display:flex; align-items:center; gap:8px;">
-          <span style="font-size:22px;" id="detail-workout-icon">🏋️</span>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid #f1f5f9; padding-bottom:10px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:24px; background:#eff6ff; width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center;" id="detail-workout-icon">🏋️</span>
           <div>
-            <h3 style="font-size:15px; font-weight:800; color:#fff;" id="detail-workout-name">تفاصيل التمرين</h3>
-            <span style="font-size:11px; color:#38bdf8;" id="detail-workout-quantity">30 تكرار</span>
+            <h3 style="font-size:16px; font-weight:800; color:#0f172a; margin:0;" id="detail-workout-name">تفاصيل التمرين</h3>
+            <span style="font-size:11.5px; font-weight:700; color:#0284c7;" id="detail-workout-quantity">30 تكرار</span>
           </div>
         </div>
-        <button class="dialog-close-btn" id="btn-close-workout-detail-modal">✕</button>
+        <button class="dialog-close-btn" id="btn-close-workout-detail-modal" style="background:#f1f5f9; color:#475569; border:none; width:32px; height:32px; border-radius:50%; font-size:14px; cursor:pointer;">✕</button>
       </div>
 
       <!-- Detail Badges -->
-      <div class="impact-badge-grid" style="margin-bottom:12px;">
-        <div class="impact-badge-item">
-          <span class="badge-label">السعرات المحروقة</span>
-          <span class="badge-value" style="color:#f59e0b;" id="detail-workout-burned">0 kcal</span>
+      <div class="impact-badge-grid" style="margin-bottom:14px;">
+        <div class="impact-badge-item" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:10px;">
+          <span class="badge-label" style="font-size:11px; color:#64748b; font-weight:600; display:block;">🔥 السعرات المحروقة</span>
+          <span class="badge-value" style="color:#d97706; font-size:15px; font-weight:800; display:block; margin-top:2px;" id="detail-workout-burned">0 kcal</span>
         </div>
-        <div class="impact-badge-item">
-          <span class="badge-label">احتياج البروتين</span>
-          <span class="badge-value" style="color:#34d399;" id="detail-workout-protein">25-30 جم</span>
+        <div class="impact-badge-item" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:10px;">
+          <span class="badge-label" style="font-size:11px; color:#64748b; font-weight:600; display:block;">🥩 احتياج البروتين</span>
+          <span class="badge-value" style="color:#059669; font-size:15px; font-weight:800; display:block; margin-top:2px;" id="detail-workout-protein">25-30 جم</span>
         </div>
-        <div class="impact-badge-item">
-          <span class="badge-label">العضلات المشتركة</span>
-          <span class="badge-value" style="color:#38bdf8; font-size:12px;" id="detail-workout-muscles">الصدر والذراعين</span>
+        <div class="impact-badge-item" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:10px;">
+          <span class="badge-label" style="font-size:11px; color:#64748b; font-weight:600; display:block;">🎯 العضلات المشتركة</span>
+          <span class="badge-value" style="color:#0284c7; font-size:13px; font-weight:800; display:block; margin-top:2px;" id="detail-workout-muscles">الصدر والذراعين</span>
         </div>
-        <div class="impact-badge-item">
-          <span class="badge-label">حرق دهون صافية</span>
-          <span class="badge-value" style="color:#ec4899;" id="detail-workout-fat">~3 جم دهون</span>
+        <div class="impact-badge-item" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:10px;">
+          <span class="badge-label" style="font-size:11px; color:#64748b; font-weight:600; display:block;">📉 حرق دهون صافية</span>
+          <span class="badge-value" style="color:#db2777; font-size:15px; font-weight:800; display:block; margin-top:2px;" id="detail-workout-fat">~3 جم دهون</span>
         </div>
       </div>
 
       <!-- Diet Impact Summary -->
-      <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:12px; font-size:12px; line-height:1.6; margin-bottom:12px; color:#cbd5e1;">
-        <div style="font-weight:700; color:#60a5fa; margin-bottom:4px;">🎯 الأثر على خطتك للوصول إلى 80 كجم:</div>
-        <div id="detail-workout-diet-impact">هذا التمرين يدعم عجز السعرات ويحمي العضلات من الهدم.</div>
+      <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:14px; padding:12px 14px; font-size:12px; line-height:1.6; margin-bottom:12px; color:#1e3a8a;">
+        <div style="font-weight:800; color:#1d4ed8; margin-bottom:4px;">🎯 الأثر على خطتك للوصول إلى الوزن المثالي:</div>
+        <div id="detail-workout-diet-impact" style="color:#1e40af;">هذا التمرين يدعم عجز السعرات ويحمي العضلات من الهدم.</div>
       </div>
 
       <!-- Meal Suggestion -->
-      <div style="background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.25); border-radius:12px; padding:12px; font-size:12px; line-height:1.6; margin-bottom:14px;">
-        <div style="font-weight:700; color:#34d399; margin-bottom:4px;">🥗 الوجبة المقترحة للاستشفاء:</div>
-        <div id="detail-workout-meal" style="color:#e2e8f0;">سكوب بروتين أو بيض مسلوق + مصدر كارب نظيف.</div>
+      <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:14px; padding:12px 14px; font-size:12px; line-height:1.6; margin-bottom:16px;">
+        <div style="font-weight:800; color:#065f46; margin-bottom:4px;">🥗 الوجبة المقترحة للاستشفاء:</div>
+        <div id="detail-workout-meal" style="color:#047857;">سكوب بروتين أو بيض مسلوق + مصدر كارب نظيف.</div>
       </div>
 
-      <button type="button" class="dialog-btn-primary" id="btn-close-detail-modal-done" style="width:100%; padding:11px; font-size:13px; border-radius:12px;">
+      <button type="button" class="dialog-btn-primary" id="btn-close-detail-modal-done" style="width:100%; padding:12px; font-size:13.5px; font-weight:800; border-radius:14px; cursor:pointer;">
         إغلاق واستمرار في التمرين 🚀
       </button>
 

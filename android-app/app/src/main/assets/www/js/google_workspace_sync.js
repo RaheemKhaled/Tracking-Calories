@@ -102,6 +102,23 @@ class GoogleWorkspaceSync {
   }
 
   /**
+   * Sync Water Intake directly
+   */
+  async syncWater(date, water, burned) {
+    if (!this.isConfigured()) return;
+    return this.syncHabits(date, water, burned);
+  }
+
+  /**
+   * Sync Burned Calories directly
+   */
+  async syncBurned(date, burned) {
+    if (!this.isConfigured()) return;
+    const day = window.AppedietDB?.getDayLog(date) || {};
+    return this.syncHabits(date, day.water || 0, burned, day.mood);
+  }
+
+  /**
    * Sync Daily Habits (Water, Burned, Mood)
    */
   async syncHabits(date, water, burned, mood) {

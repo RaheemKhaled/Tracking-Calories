@@ -431,7 +431,11 @@ class AppedietApp {
     if (intakeValEl) {
       intakeValEl.textContent = `${waterMl} مل (${currentWater} كوب)`;
     }
-    document.getElementById('dash-water-goal-val').textContent = `Goal: ${profile.waterGoal || 64} fl oz (حوالي 2000 مل)`;
+    const goalMl = profile.waterGoal ? Math.round(profile.waterGoal * 29.5735) : 2000;
+    const goalValEl = document.getElementById('dash-water-goal-val');
+    if (goalValEl) {
+      goalValEl.textContent = `الهدف اليومي: ${goalMl.toLocaleString()} مل (حوالي ${Math.round(goalMl / 250)} كوب)`;
+    }
 
     // Update 4:00 AM - 12:00 AM Cutoff Notice
     const windowInfo = window.AppedietDB.getWaterWindowInfo();
@@ -441,7 +445,6 @@ class AppedietApp {
     }
 
     // Dynamic water glass update
-    const goalMl = profile.waterGoal ? Math.round(profile.waterGoal * 29.5735) : 2000;
     const fillPercent = Math.min(100, Math.round((waterMl / goalMl) * 100));
     const fillEl = document.getElementById('water-glass-fill');
     if (fillEl) fillEl.style.height = `${fillPercent}%`;
@@ -498,13 +501,19 @@ class AppedietApp {
     if (workoutsListContainer) {
       if (workouts.length === 0) {
         workoutsListContainer.innerHTML = `
-          <div style="text-align:center; padding:10px; color:var(--text-muted); font-size:11.5px; background:var(--bg-chip); border-radius:10px; border:1px dashed var(--border-subtle);">
-            <span>🏋️ لا توجد تمارين مسجلة لهذا اليوم بعد - اضغط للبدء</span>
+          <div class="empty-workouts-cta" style="text-align:center; padding:12px; color:var(--text-secondary); font-size:12px; font-weight:700; background:var(--bg-chip); border-radius:12px; border:1px dashed var(--border-subtle); cursor:pointer;">
+            <span>🏋️ لا توجد تمارين مسجلة لهذا اليوم بعد - اضغط هنا لتسجيل تمرينك</span>
           </div>
         `;
+        workoutsListContainer.querySelector('.empty-workouts-cta')?.addEventListener('click', () => {
+          this.openExerciseLoggerModal('exercise');
+        });
       } else {
         workoutsListContainer.innerHTML = workouts.map(w => {
-          const qtyText = w.isRepBased ? `${w.reps} تكرار` : `${w.minutes} دقيقة`;
+          const isReps = w.isRepBased || w.inputMode === 'reps';
+          const qtyVal = isReps ? (w.reps || w.quantity || 30) : (w.minutes || w.quantity || 20);
+          const qtyText = isReps ? `${qtyVal} تكرار` : `${qtyVal} دقيقة`;
+          const musclesText = w.targetMuscles || (Array.isArray(w.targetedMuscles) ? w.targetedMuscles.slice(0, 2).join('، ') : (w.impact?.muscleTarget || 'عضلات متعددة'));
           return `
             <div class="workout-item-card" data-workout-id="${w.id}">
               <div style="display:flex; align-items:center; gap:10px;">
@@ -517,7 +526,7 @@ class AppedietApp {
                     <span style="font-size:10px; background:var(--primary-blue-soft); color:var(--primary-blue); padding:1px 6px; border-radius:6px; font-weight:700;">${qtyText}</span>
                   </div>
                   <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">
-                    <strong style="color:var(--calorie-flame);">🔥 ${w.burnedKcal} kcal</strong> • <span style="color:var(--primary-blue);">${w.targetMuscles || 'عضلات متعددة'}</span>
+                    <strong style="color:var(--calorie-flame);">🔥 ${w.burnedKcal} kcal</strong> • <span style="color:var(--primary-blue);">${musclesText}</span>
                   </div>
                 </div>
               </div>
@@ -600,14 +609,21 @@ class AppedietApp {
       const dayData = window.AppedietDB.getDayLog(this.selectedDate);
       const currentWaterMl = dayData.waterMl || (dayData.water * 250) || 0;
       const newWaterMl = currentWaterMl + 250;
-      window.AppedietDB.updateWater(this.selectedDate, newWaterMl, 'ml');
-      window.GoogleWorkspaceSync?.syncWater(this.selectedDate, dayData.water + 1, dayData.burned || 0);
+      const res = window.AppedietDB.updateWater(this.selectedDate, newWaterMl, 'ml');
+      try {
+        window.GoogleWorkspaceSync?.syncWater?.(this.selectedDate, res.glasses, dayData.burned || 0);
+      } catch (e) {
+        console.warn('Sync water error:', e);
+      }
       this.showToast('تمت إضافة 250 مل ماء 💧');
       this.refreshDashboard();
     });
 
     // Add Workout / Steps buttons
     document.getElementById('btn-add-workout')?.addEventListener('click', () => {
+      this.openExerciseLoggerModal('exercise');
+    });
+    document.getElementById('btn-quick-add-workout')?.addEventListener('click', () => {
       this.openExerciseLoggerModal('exercise');
     });
     document.getElementById('link-more-burned')?.addEventListener('click', () => {
@@ -918,7 +934,11 @@ class AppedietApp {
       saveBtn.onclick = () => {
         const finalMl = Math.max(0, parseInt(inputMl.value) || 0);
         const res = window.AppedietDB.updateWater(this.selectedDate, finalMl, 'ml');
-        window.GoogleWorkspaceSync?.syncWater(this.selectedDate, res.glasses, dayData.burned || 0);
+        try {
+          window.GoogleWorkspaceSync?.syncWater?.(this.selectedDate, res.glasses, dayData.burned || 0);
+        } catch (e) {
+          console.warn('Sync water error:', e);
+        }
         this.showToast(`تم حفظ كمية الماء (${finalMl} مل / ${res.glasses} كوب) بنجاح! 💧`);
         this.refreshDashboard();
         modal.classList.remove('active');
@@ -1230,7 +1250,7 @@ class AppedietApp {
     document.getElementById('exercise-custom-input-box')?.classList.toggle('hidden', !isCustom);
 
     const exercise = window.ExerciseEngine ? window.ExerciseEngine.getExercise(type) : null;
-    const isRepBased = exercise ? exercise.isRepBased : true;
+    const isRepBased = isCustom ? true : (exercise ? (exercise.inputMode === 'reps') : true);
 
     document.getElementById('exercise-reps-container')?.classList.toggle('hidden', !isRepBased);
     document.getElementById('exercise-duration-container')?.classList.toggle('hidden', isRepBased);
@@ -1249,25 +1269,75 @@ class AppedietApp {
     const reps = repsInput ? (parseInt(repsInput.value) || 30) : 30;
     const minutes = minsInput ? (parseInt(minsInput.value) || 20) : 20;
 
-    const res = window.ExerciseEngine.calculateExercise(this.selectedExerciseType, { reps, minutes }, weight);
+    const isCustom = this.selectedExerciseType === 'custom';
+    const exercise = window.ExerciseEngine.getExercise(this.selectedExerciseType);
+    const isRepBased = isCustom ? true : (exercise ? (exercise.inputMode === 'reps') : true);
+    const qty = isRepBased ? reps : minutes;
+
+    let res = null;
+    if (isCustom) {
+      const customDesc = document.getElementById('input-custom-exercise-desc')?.value.trim() || 'تمرين حر / مخصص';
+      const burnedKcal = Math.round(isRepBased ? (reps * 0.45 * (weight / 95)) : (minutes * 6.5 * (weight / 95)));
+      res = {
+        exerciseId: 'custom',
+        name: customDesc,
+        icon: '⚡',
+        category: 'custom',
+        inputMode: isRepBased ? 'reps' : 'duration',
+        quantity: qty,
+        unitLabel: isRepBased ? 'عدة (Reps)' : 'دقيقة (Mins)',
+        isRepBased: isRepBased,
+        reps: reps,
+        minutes: minutes,
+        burnedKcal: Math.max(15, burnedKcal),
+        targetedMuscles: ['عضلات متعددة', 'كامل الجسم'],
+        impact: {
+          proteinNeeded: '25 - 30 جم بروتين للاستشفاء',
+          muscleTarget: 'عضلات متعددة وكامل الجسم',
+          deficitBoostKcal: Math.max(15, burnedKcal),
+          fatGramsBurned: Math.round((Math.max(15, burnedKcal) / 7.7) * 10) / 10,
+          postWorkoutMeal: 'وجبة متوازنة غنية بالبروتين والكارب المعقد وسلطة خضراء.',
+          coachTip: 'أي نشاط بدني تبذله يعزز عجز السعرات ويحافظ على قوتك العضلية.'
+        }
+      };
+    } else {
+      res = window.ExerciseEngine.calculateExercise(this.selectedExerciseType, qty, weight);
+      if (res) {
+        res.isRepBased = isRepBased;
+        res.reps = reps;
+        res.minutes = minutes;
+      }
+    }
+
     this.currentCalculatedWorkout = res;
     this.displayCalculatedImpact(res);
   }
 
   displayCalculatedImpact(res) {
     if (!res) return;
-    document.getElementById('impact-exercise-title').textContent = res.name;
-    document.getElementById('impact-burned-kcal').textContent = `${res.burnedKcal} kcal`;
-    document.getElementById('impact-protein-needed').textContent = res.proteinNeeded;
-    document.getElementById('impact-target-muscles').textContent = res.targetMuscles;
-    document.getElementById('impact-fat-loss').textContent = `~${res.fatLossGrams} جم دهون صافية`;
-    document.getElementById('impact-post-meal').textContent = res.postWorkoutMeal;
-    document.getElementById('impact-coach-advice').textContent = res.coachAdvice;
+    const impact = res.impact || {};
+    const titleEl = document.getElementById('impact-exercise-title');
+    if (titleEl) titleEl.textContent = res.name;
+    const burnedEl = document.getElementById('impact-burned-kcal');
+    if (burnedEl) burnedEl.textContent = `${res.burnedKcal} kcal`;
+    const proteinEl = document.getElementById('impact-protein-needed');
+    if (proteinEl) proteinEl.textContent = impact.proteinNeeded || '25-30 جم';
+    const musclesEl = document.getElementById('impact-target-muscles');
+    if (musclesEl) musclesEl.textContent = Array.isArray(res.targetedMuscles) ? res.targetedMuscles.slice(0, 3).join('، ') : (impact.muscleTarget || 'عضلات متعددة');
+    const fatEl = document.getElementById('impact-fat-loss');
+    if (fatEl) fatEl.textContent = impact.fatGramsBurned ? `~${impact.fatGramsBurned} جم دهون صافية` : `~${Math.round((res.burnedKcal/7.7)*10)/10} جم دهون صافية`;
+    const mealEl = document.getElementById('impact-post-meal');
+    if (mealEl) mealEl.textContent = impact.postWorkoutMeal || 'وجبة متوازنة بروتينية';
+    const adviceEl = document.getElementById('impact-coach-advice');
+    if (adviceEl) adviceEl.textContent = impact.coachTip || impact.coachAdvice || 'التمرين يعزز حرق الدهون ويقوي بنيتك العضلية.';
   }
 
   saveExerciseRecord() {
     this.updateLiveExerciseImpact();
-    if (!this.currentCalculatedWorkout) return;
+    if (!this.currentCalculatedWorkout) {
+      this.showToast('يرجى اختيار التمرين أولاً ⚡');
+      return;
+    }
 
     let workout = Object.assign({}, this.currentCalculatedWorkout);
 
@@ -1276,9 +1346,20 @@ class AppedietApp {
       if (customDesc) workout.name = customDesc;
     }
 
+    workout.isRepBased = (workout.inputMode === 'reps' || workout.isRepBased === true);
+    if (workout.isRepBased && !workout.reps) workout.reps = workout.quantity;
+    if (!workout.isRepBased && !workout.minutes) workout.minutes = workout.quantity;
+    if (!workout.targetMuscles && workout.targetedMuscles) {
+      workout.targetMuscles = Array.isArray(workout.targetedMuscles) ? workout.targetedMuscles.join('، ') : workout.targetedMuscles;
+    }
+
     const saved = window.AppedietDB.addWorkout(this.selectedDate, workout);
     const dayData = window.AppedietDB.getDayLog(this.selectedDate);
-    window.GoogleWorkspaceSync?.syncBurned?.(this.selectedDate, dayData.burned || 0);
+    try {
+      window.GoogleWorkspaceSync?.syncBurned?.(this.selectedDate, dayData.burned || 0);
+    } catch (e) {
+      console.warn('Sync burned error:', e);
+    }
 
     this.showToast(`تم تسجيل ${workout.name} (+${workout.burnedKcal} kcal) وحساب الأثر بنجاح! 🔥`);
     document.getElementById('exercise-logger-modal')?.classList.remove('active');
@@ -1327,19 +1408,21 @@ class AppedietApp {
     const modal = document.getElementById('workout-impact-details-modal');
     if (!modal || !workout) return;
 
+    const isReps = workout.isRepBased || workout.inputMode === 'reps';
+    const qtyVal = isReps ? (workout.reps || workout.quantity || 30) : (workout.minutes || workout.quantity || 20);
+    const impact = workout.impact || {};
+
     document.getElementById('detail-workout-icon').textContent = workout.icon || '🏋️';
     document.getElementById('detail-workout-name').textContent = workout.name;
-    document.getElementById('detail-workout-quantity').textContent = workout.isRepBased 
-      ? `${workout.reps} تكرار` 
-      : `${workout.minutes} دقيقة`;
+    document.getElementById('detail-workout-quantity').textContent = isReps ? `${qtyVal} تكرار` : `${qtyVal} دقيقة`;
 
     document.getElementById('detail-workout-burned').textContent = `${workout.burnedKcal} kcal`;
-    document.getElementById('detail-workout-protein').textContent = workout.proteinNeeded || '25-30 جم';
-    document.getElementById('detail-workout-muscles').textContent = workout.targetMuscles || 'عضلات متعددة';
-    document.getElementById('detail-workout-fat').textContent = `~${workout.fatLossGrams || Math.round((workout.burnedKcal/7.7)*10)/10} جم دهون`;
+    document.getElementById('detail-workout-protein').textContent = impact.proteinNeeded || workout.proteinNeeded || '25-30 جم';
+    document.getElementById('detail-workout-muscles').textContent = workout.targetMuscles || (Array.isArray(workout.targetedMuscles) ? workout.targetedMuscles.join('، ') : (impact.muscleTarget || 'عضلات متعددة'));
+    document.getElementById('detail-workout-fat').textContent = impact.fatGramsBurned ? `~${impact.fatGramsBurned} جم دهون` : `~${Math.round((workout.burnedKcal/7.7)*10)/10} جم دهون`;
 
-    document.getElementById('detail-workout-diet-impact').textContent = workout.dietGoalImpact || 'يزيد من عجز السعرات ويسرع نزول الوزن نحو 80 كجم مع الحفاظ على الكتلة العضلية.';
-    document.getElementById('detail-workout-meal').textContent = workout.postWorkoutMeal || 'وجبة متوازنة تحتوي بروتين وكارب نظيف.';
+    document.getElementById('detail-workout-diet-impact').textContent = impact.coachTip || workout.dietGoalImpact || 'يزيد من عجز السعرات ويسرع نزول الوزن نحو الوزن المثالي مع الحفاظ على الكتلة العضلية.';
+    document.getElementById('detail-workout-meal').textContent = impact.postWorkoutMeal || workout.postWorkoutMeal || 'وجبة متوازنة تحتوي بروتين عالي وكارب نظيف.';
 
     modal.classList.add('active');
   }
