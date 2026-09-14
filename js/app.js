@@ -36,9 +36,12 @@ class AppedietApp {
       return;
     }
     
-    // Hide auth screen if logged in
+    // Hide auth screen and show app if logged in
     const authScreen = document.getElementById('auth-screen');
     if (authScreen) authScreen.classList.add('hidden');
+    
+    const mobileShell = document.getElementById('mobile-shell');
+    if (mobileShell) mobileShell.classList.remove('hidden');
 
     // Initialize components
     this.googleAuth = new window.GoogleAuthManager();
@@ -70,8 +73,15 @@ class AppedietApp {
   }
 
   showAuthScreen() {
+    const mobileShell = document.getElementById('mobile-shell');
+    if (mobileShell) mobileShell.classList.add('hidden');
+    
     const authScreen = document.getElementById('auth-screen');
     if (authScreen) authScreen.classList.remove('hidden');
+    
+    // Ensure solid background to hide anything else
+    if (authScreen) authScreen.style.background = 'var(--bg-main, #f8fafc)';
+    
     this.bindAuthEvents();
   }
 
