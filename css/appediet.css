@@ -1,42 +1,87 @@
 /* ==========================================================================
-   Appediet Dark Theme & Core Design System
-   Matches Appediet Mobile Application UI
+   Raheem Coach - Luminous Vitality Design System
+   Inspired by modern Dribbble & Behance nutrition & fitness aesthetics
    ========================================================================== */
 
 :root {
-  --bg-app: #0c0f17;
-  --bg-surface: #141721;
-  --bg-card: #181d28;
-  --bg-card-elevated: #1e2433;
-  --bg-chip: #232a3b;
+  /* Default: Light Vitality Theme (Clean, breathable, vibrant) */
+  --bg-app: #f6f9fc;
+  --bg-mesh: radial-gradient(circle at 0% 0%, rgba(16, 185, 129, 0.08) 0%, transparent 45%),
+             radial-gradient(circle at 100% 10%, rgba(14, 165, 233, 0.08) 0%, transparent 45%),
+             radial-gradient(circle at 50% 100%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
+             #f6f9fc;
+  --bg-surface: #ffffff;
+  --bg-surface-glass: rgba(255, 255, 255, 0.88);
+  --bg-card: rgba(255, 255, 255, 0.92);
+  --bg-card-solid: #ffffff;
+  --bg-card-elevated: #ffffff;
+  --bg-chip: #f1f5f9;
+  --bg-chip-active: rgba(16, 185, 129, 0.15);
   
-  --border-subtle: rgba(255, 255, 255, 0.07);
-  --border-card: rgba(255, 255, 255, 0.1);
-  --border-active: rgba(59, 130, 246, 0.5);
+  --border-subtle: rgba(15, 23, 42, 0.07);
+  --border-card: rgba(226, 232, 240, 0.8);
+  --border-active: #10b981;
 
-  --primary-blue: #3b82f6;
-  --primary-blue-dark: #2563eb;
-  --primary-blue-light: #60a5fa;
-  --primary-blue-soft: rgba(59, 130, 246, 0.15);
+  --primary-blue: #0ea5e9;
+  --primary-blue-dark: #0284c7;
+  --primary-blue-light: #38bdf8;
+  --primary-blue-soft: rgba(14, 165, 233, 0.12);
 
-  --calorie-flame: #ff6b2b;
-  --carb-wheat: #f59e0b;
+  --vitality-green: #10b981;
+  --vitality-green-dark: #059669;
+  --vitality-green-soft: rgba(16, 185, 129, 0.12);
+
+  --calorie-flame: #f97316;
+  --calorie-flame-soft: rgba(249, 115, 22, 0.12);
+  --carb-wheat: #eab308;
   --protein-fish: #10b981;
-  --fat-drop: #f97316;
+  --fat-drop: #f43f5e;
 
-  --text-primary: #ffffff;
-  --text-secondary: #94a3b8;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
   --text-muted: #64748b;
   --text-dark: #0f172a;
 
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 20px;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
   --radius-full: 9999px;
 
-  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans Arabic', 'Segoe UI Arabic', sans-serif;
+  --font-family: 'Readex Pro', 'Tajawal', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --safe-bottom: env(safe-area-inset-bottom, 16px);
   --safe-top: env(safe-area-inset-top, 0px);
+
+  --card-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.04), 0 4px 12px -2px rgba(15, 23, 42, 0.02);
+  --card-shadow-hover: 0 16px 36px -6px rgba(15, 23, 42, 0.08), 0 6px 16px -2px rgba(15, 23, 42, 0.03);
+  --dock-shadow: 0 -8px 30px rgba(15, 23, 42, 0.06);
+}
+
+[data-theme="dark"] {
+  /* Dark Mode: Midnight Obsidian with neon vital accents */
+  --bg-app: #090d16;
+  --bg-mesh: radial-gradient(circle at 0% 0%, rgba(16, 185, 129, 0.12) 0%, transparent 45%),
+             radial-gradient(circle at 100% 10%, rgba(14, 165, 233, 0.12) 0%, transparent 45%),
+             radial-gradient(circle at 50% 100%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+             #090d16;
+  --bg-surface: #111726;
+  --bg-surface-glass: rgba(13, 18, 28, 0.88);
+  --bg-card: rgba(18, 24, 38, 0.88);
+  --bg-card-solid: #131b2e;
+  --bg-card-elevated: #1a2338;
+  --bg-chip: #1e293b;
+  --bg-chip-active: rgba(16, 185, 129, 0.22);
+
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-card: rgba(255, 255, 255, 0.1);
+  --border-active: #34d399;
+
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+
+  --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.45);
+  --card-shadow-hover: 0 16px 36px -6px rgba(0, 0, 0, 0.65);
+  --dock-shadow: 0 -8px 30px rgba(0, 0, 0, 0.5);
 }
 
 * {
@@ -47,33 +92,36 @@
 }
 
 body {
-  background-color: #06080d;
+  background-color: var(--bg-app);
+  background-image: var(--bg-mesh);
+  background-attachment: fixed;
   color: var(--text-primary);
   font-family: var(--font-family);
-  direction: ltr; /* Appediet has English interface with Arabic support */
+  direction: rtl;
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: flex-start;
   overflow-x: hidden;
   user-select: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Outer Shell for Desktop & Fullscreen for Mobile */
 #mobile-shell {
   width: 100%;
-  max-width: 440px;
+  max-width: 460px;
   min-height: 100vh;
-  background-color: var(--bg-app);
+  background-color: transparent;
   display: flex;
   flex-direction: column;
   position: relative;
-  box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
-  padding-bottom: calc(75px + var(--safe-bottom));
+  box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+  padding-bottom: calc(85px + var(--safe-bottom));
 }
 
 /* ==========================================================================
-   Header Bar (Matches Screenshot 3 & 4)
+   Header Bar
    ========================================================================== */
 .app-header {
   display: flex;
@@ -83,9 +131,11 @@ body {
   position: sticky;
   top: 0;
   z-index: 40;
-  background-color: rgba(12, 15, 23, 0.95);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background-color: var(--bg-surface-glass);
+  border-bottom: 1px solid var(--border-subtle);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .header-left {
@@ -98,45 +148,46 @@ body {
   align-items: center;
   gap: 8px;
   background-color: var(--bg-surface);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-full);
   padding: 5px 14px 5px 6px;
   cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
 
 .btn-ask-appediet:hover {
-  background-color: var(--bg-card);
   border-color: var(--primary-blue);
+  transform: translateY(-1px);
 }
 
 .btn-ask-appediet .app-logo-badge {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #3b82f6, #22c55e);
+  background: linear-gradient(135deg, #10b981, #0ea5e9);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
 }
 
-.btn-ask-appediet .app-logo-badge img,
 .btn-ask-appediet .app-logo-badge svg {
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
 }
 
 .btn-ask-appediet .ask-text {
-  font-size: 14px;
-  font-weight: 600;
-  color: #f1f5f9;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.2px;
 }
 
 .header-right {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .badge-pill {
@@ -147,10 +198,17 @@ body {
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-full);
   padding: 6px 12px;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 700;
   color: var(--text-primary);
   cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s ease;
+}
+
+.badge-pill:hover {
+  transform: translateY(-1px);
+  border-color: var(--border-active);
 }
 
 .badge-pill.badge-crown {
@@ -165,14 +223,37 @@ body {
   color: var(--calorie-flame);
 }
 
+.badge-pill.badge-theme-toggle {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 15px;
+}
+
+.badge-pill.badge-user-profile {
+  padding: 4px 8px;
+  border-radius: var(--radius-full);
+}
+
+.header-avatar-img {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 /* ==========================================================================
-   Calendar Date Strip (Screenshot 4)
+   Calendar Date Strip
    ========================================================================== */
 .calendar-strip {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 14px 14px 14px;
+  padding: 8px 16px 14px 16px;
 }
 
 .cal-day-item {
@@ -182,7 +263,7 @@ body {
   justify-content: center;
   gap: 6px;
   cursor: pointer;
-  padding: 4px;
+  padding: 6px 4px;
   border-radius: var(--radius-md);
   transition: all 0.2s ease;
   min-width: 44px;
@@ -190,7 +271,7 @@ body {
 
 .cal-day-name {
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-muted);
 }
 
@@ -202,32 +283,36 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-secondary);
   background-color: transparent;
   transition: all 0.2s ease;
 }
 
+.cal-day-item:hover .cal-day-number {
+  background-color: var(--bg-chip);
+}
+
 .cal-day-item.active .cal-day-name {
-  color: var(--text-primary);
+  color: var(--primary-blue);
   font-weight: 700;
 }
 
 .cal-day-item.active .cal-day-number {
-  background-color: #1e2433;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: linear-gradient(135deg, var(--primary-blue), #2563eb);
+  border: none;
   color: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.4);
 }
 
 /* ==========================================================================
    Main Content Views
    ========================================================================== */
 .view-container {
-  padding: 0 12px 16px 12px;
+  padding: 0 14px 18px 14px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
 .hidden {
@@ -239,62 +324,73 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0px;
+  margin-top: 4px;
+  margin-bottom: -2px;
 }
 
 .section-title {
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 15.5px;
+  font-weight: 800;
   color: var(--text-primary);
-  letter-spacing: -0.2px;
+  letter-spacing: -0.3px;
 }
 
 .section-more-link {
   font-size: 12px;
-  font-weight: 500;
-  color: var(--text-muted);
+  font-weight: 600;
+  color: var(--primary-blue);
   text-decoration: none;
   display: inline-flex;
   align-items: center;
   gap: 2px;
   cursor: pointer;
+  transition: color 0.2s ease;
 }
 
 .section-more-link:hover {
-  color: var(--primary-blue-light);
+  color: var(--primary-blue-dark);
 }
 
 /* ==========================================================================
-   Card Component Base (Compact & Modern for Mobile Ratio)
+   Card Component Base
    ========================================================================== */
 .app-card {
-  background-color: var(--bg-card);
-  border-radius: 16px;
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border-card);
-  padding: 13px 15px;
+  padding: 16px 16px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--card-shadow);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.app-card:hover {
+  box-shadow: var(--card-shadow-hover);
 }
 
 /* ==========================================================================
-   Bottom Navigation Dock (Screenshot 3 & 4)
+   Bottom Navigation Dock
    ========================================================================== */
 .bottom-nav {
   position: fixed;
   bottom: 0;
   width: 100%;
-  max-width: 440px;
+  max-width: 460px;
   height: calc(64px + var(--safe-bottom));
-  background-color: rgba(18, 22, 31, 0.96);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background-color: var(--bg-surface-glass);
+  border-top: 1px solid var(--border-subtle);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding: 0 8px var(--safe-bottom) 8px;
+  padding: 0 10px var(--safe-bottom) 10px;
   z-index: 50;
+  box-shadow: var(--dock-shadow);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .nav-tab-item {
@@ -307,10 +403,11 @@ body {
   cursor: pointer;
   background: none;
   border: none;
-  padding: 6px 12px;
+  padding: 6px 14px;
   transition: all 0.2s ease;
-  font-size: 11px;
-  font-weight: 500;
+  font-size: 11.5px;
+  font-weight: 600;
+  font-family: var(--font-family);
 }
 
 .nav-tab-item svg {
@@ -323,36 +420,42 @@ body {
 }
 
 .nav-tab-item.active {
-  color: var(--primary-blue);
+  color: var(--vitality-green);
 }
 
 .nav-tab-item.active svg {
-  stroke: var(--primary-blue);
+  stroke: var(--vitality-green);
+  transform: scale(1.08);
 }
 
-/* Floating Center Camera Button (Blue elevated circle) */
+/* Floating Center Camera Button (Luminous elevated circle) */
 .nav-camera-fab-container {
   position: relative;
-  top: -14px;
+  top: -16px;
 }
 
 .nav-camera-fab {
-  width: 56px;
-  height: 56px;
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #4f46e5, #3b82f6);
+  background: linear-gradient(135deg, #10b981, #0ea5e9);
   border: 4px solid var(--bg-app);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #ffffff;
   cursor: pointer;
-  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.45);
+  box-shadow: 0 10px 24px rgba(16, 185, 129, 0.4);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .nav-camera-fab:active {
   transform: scale(0.92);
+}
+
+.nav-camera-fab:hover {
+  box-shadow: 0 12px 28px rgba(14, 165, 233, 0.5);
+  transform: translateY(-2px);
 }
 
 .nav-camera-fab svg {

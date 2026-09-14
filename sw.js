@@ -1,5 +1,5 @@
 // Raheem Coach Service Worker - Network First with Auto-Update
-const CACHE_NAME = 'raheem-coach-v2.2';
+const CACHE_NAME = 'raheem-coach-v2.7';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -10,6 +10,8 @@ const ASSETS_TO_CACHE = [
   './css/responsive.css',
   './js/app.js',
   './js/storage.js',
+  './js/onboarding_wizard.js',
+  './js/exercise_engine.js',
   './js/google_auth.js',
   './js/nutrition_scanner.js',
   './js/weekly_report.js',

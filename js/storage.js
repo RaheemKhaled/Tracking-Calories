@@ -24,7 +24,9 @@ const DEFAULT_PROFILE = {
   proteinGoal: 88,   // g (matches user screenshot)
   fatGoal: 54,       // g (matches user screenshot)
   waterGoal: 64,     // fl oz (8 cups of 8 fl oz = 64 fl oz / approx 1900 ml)
-  streak: 3
+  streak: 3,
+  onboardingCompleted: false,
+  macroStyle: 'high_protein'
 };
 
 class AppedietStorage {
@@ -111,51 +113,115 @@ class AppedietStorage {
    * Recalculate daily calorie and macro goals automatically based on weight, height, age, gender, and goal weight
    */
   calculateGoals(profile) {
-    const w = parseFloat(profile.currentWeight) || 95;
-    const h = parseFloat(profile.height) || 180;
-    const a = parseFloat(profile.age) || 28;
-    const g = profile.gender || 'male';
-    const targetW = parseFloat(profile.goalWeight) || 80;
-
-    // Mifflin-St Jeor BMR formula
-    let bmr = (10 * w) + (6.25 * h) - (5 * a);
-    if (g === 'male') {
-      bmr += 5;
-    } else {
-      bmr -= 161;
-    }
-
-    // Activity multiplier
-    const actMultipliers = {
-      sedentary: 1.2,
-      light: 1.375,
-      moderate: 1.55,
-      active: 1.725
+    const plan = this.calculateDetailedPlan(profile);
+    return {
+      calorieGoal: plan.calorieGoal,
+      proteinGoal: plan.proteinGoal,
+      fatGoal: plan.fatGoal,
+      carbGoal: plan.carbGoal
     };
-    const tdee = Math.round(bmr * (actMultipliers[profile.activityLevel] || 1.4));
+  }
 
-    // Deficit for weight loss (aiming for steady, sustainable loss)
+  /**
+   * Calculate detailed Mifflin-St Jeor metabolic goals, TDEE, macros, and hydration
+   */
+  calculateDetailedPlan(params = {}) {
+    const profile = this.getProfile();
+    const w = parseFloat(params.currentWeight || params.weight || profile.currentWeight) || 75;
+    const h = parseFloat(params.height || profile.height) || 175;
+    const a = parseFloat(params.age || profile.age) || 25;
+    const g = params.gender || profile.gender || 'male';
+    const targetW = parseFloat(params.goalWeight || profile.goalWeight) || w;
+    const activity = params.activityLevel || profile.activityLevel || 'moderate';
+    const goal = params.goal || profile.goal || (w > targetW ? 'lose' : (w < targetW ? 'gain' : 'maintain'));
+    const macroStyle = params.macroStyle || profile.macroStyle || 'high_protein';
+
+    // 1. Mifflin-St Jeor BMR formula
+    let bmr = (10 * w) + (6.25 * h) - (5 * a);
+    bmr = (g === 'male') ? Math.round(bmr + 5) : Math.round(bmr - 161);
+
+    // 2. Activity Multiplier
+    const actMultipliers = {
+      sedentary: 1.2,    // خامل / قليل الحركة جداً
+      light: 1.375,      // نشاط خفيف (1-3 أيام أسبوعياً)
+      moderate: 1.55,    // نشاط متوسط (3-5 أيام أسبوعياً)
+      active: 1.725,     // نشاط عالي (6-7 أيام أسبوعياً)
+      extreme: 1.9       // نشاط شاق جداً
+    };
+    const mult = actMultipliers[activity] || 1.4;
+    const tdee = Math.round(bmr * mult);
+
+    // 3. Calorie Goal
     let calorieGoal;
-    if (w > targetW) {
-      calorieGoal = Math.max(1200, Math.round(tdee - 500));
-    } else if (w < targetW) {
-      calorieGoal = Math.round(tdee + 300);
+    let deficitOrSurplusLabel = '';
+    const minSafe = (g === 'female') ? 1200 : 1500;
+
+    if (goal === 'lose') {
+      calorieGoal = Math.max(minSafe, Math.round(tdee - 500));
+      deficitOrSurplusLabel = 'عجز صحي 500 سعرة حرارية للتخلص من الدهون';
+    } else if (goal === 'gain') {
+      calorieGoal = Math.round(tdee + 350);
+      deficitOrSurplusLabel = 'فائض محسوب 350 سعرة لبناء كتلة عضلية نقية';
     } else {
       calorieGoal = tdee;
+      deficitOrSurplusLabel = 'سعرات الثبات الكاملة للحفاظ على الوزن';
     }
 
-    // Protein: 1.6 - 2.0g per kg of lean mass or ~ 1.0 - 1.2g per kg total weight for calorie deficit
-    const proteinGoal = Math.round(Math.min(w * 1.6, calorieGoal * 0.25 / 4));
-    // Fat: 25% of calories
-    const fatGoal = Math.round((calorieGoal * 0.25) / 9);
-    // Carbs: Remaining calories
-    const carbGoal = Math.round((calorieGoal - (proteinGoal * 4) - (fatGoal * 9)) / 4);
+    // 4. Macro Splits
+    let proteinG, fatG, carbG;
+    if (macroStyle === 'high_protein') {
+      // 2.0g per kg of body weight (ideal for athletes & fat loss retention)
+      proteinG = Math.round(w * 2.0);
+      // Fat: 25% of calories
+      fatG = Math.round((calorieGoal * 0.25) / 9);
+      // Carbs: remainder
+      const remKcal = Math.max(0, calorieGoal - (proteinG * 4) - (fatG * 9));
+      carbG = Math.round(remKcal / 4);
+    } else if (macroStyle === 'low_carb') {
+      // 25% protein, 10% carb, 65% fat
+      proteinG = Math.round((calorieGoal * 0.25) / 4);
+      carbG = Math.round((calorieGoal * 0.10) / 4);
+      fatG = Math.round((calorieGoal * 0.65) / 9);
+    } else {
+      // Balanced: 30% protein, 40% carbs, 30% fat
+      proteinG = Math.round((calorieGoal * 0.30) / 4);
+      carbG = Math.round((calorieGoal * 0.40) / 4);
+      fatG = Math.round((calorieGoal * 0.30) / 9);
+    }
+
+    // Floor bounds
+    proteinG = Math.max(50, proteinG);
+    carbG = Math.max(30, carbG);
+    fatG = Math.max(30, fatG);
+
+    // Water: ~35ml per kg body weight
+    const waterMl = Math.round(w * 35);
+    const waterCups = Math.round(waterMl / 250);
 
     return {
+      w,
+      h,
+      a,
+      g,
+      targetW,
+      activity,
+      goal,
+      macroStyle,
+      bmr,
+      tdee,
       calorieGoal,
-      proteinGoal: Math.max(60, proteinGoal),
-      fatGoal: Math.max(35, fatGoal),
-      carbGoal: Math.max(80, carbGoal)
+      deficitOrSurplusLabel,
+      proteinGoal: proteinG,
+      proteinKcal: proteinG * 4,
+      proteinPct: Math.round(((proteinG * 4) / calorieGoal) * 100),
+      carbGoal: carbG,
+      carbKcal: carbG * 4,
+      carbPct: Math.round(((carbG * 4) / calorieGoal) * 100),
+      fatGoal: fatG,
+      fatKcal: fatG * 9,
+      fatPct: Math.round(((fatG * 9) / calorieGoal) * 100),
+      waterMl,
+      waterCups
     };
   }
 
@@ -181,12 +247,20 @@ class AppedietStorage {
       return {
         date: dateStr,
         water: 0,
+        waterMl: 0,
         burned: 0,
+        steps: 0,
+        stepGoal: 10000,
+        workouts: [],
         mood: null,
         meals: []
       };
     }
-    return logs[dateStr];
+    const day = logs[dateStr];
+    if (day.steps === undefined) day.steps = 0;
+    if (day.stepGoal === undefined) day.stepGoal = 10000;
+    if (!day.workouts) day.workouts = [];
+    return day;
   }
 
   /**
@@ -301,11 +375,85 @@ class AppedietStorage {
   }
 
   /**
-   * Update calories burned
+   * Calculate calories burned from walking steps based on user weight and height
+   */
+  calculateStepsCalories(steps, weight, height) {
+    const profile = this.getProfile();
+    const w = weight || profile.currentWeight || 95;
+    const h = height || profile.height || 180;
+    // Stride length estimated as height * 0.414 in cm -> meters
+    const strideMeters = (h * 0.414) / 100;
+    const distanceKm = (steps * strideMeters) / 1000;
+    // Calorie expenditure: ~ 0.75 kcal per kg per km
+    return Math.round(distanceKm * w * 0.75);
+  }
+
+  /**
+   * Recalculate total burned calories for the day (steps calories + workouts calories + manual adjustments)
+   */
+  recalculateDayBurned(day) {
+    const stepsBurned = this.calculateStepsCalories(day.steps || 0);
+    let workoutsBurned = 0;
+    (day.workouts || []).forEach(w => {
+      workoutsBurned += (w.burnedKcal || 0);
+    });
+    day.stepsBurned = stepsBurned;
+    day.workoutsBurned = workoutsBurned;
+    day.burned = stepsBurned + workoutsBurned + (day.manualBurned || 0);
+    return day.burned;
+  }
+
+  /**
+   * Update daily steps count and recalculate burned calories
+   */
+  updateSteps(dateStr, stepsCount, goal) {
+    const day = this.getDayLog(dateStr);
+    day.steps = Math.max(0, parseInt(stepsCount) || 0);
+    if (goal) day.stepGoal = parseInt(goal);
+    this.recalculateDayBurned(day);
+    this.saveDayLog(dateStr, day);
+    return {
+      steps: day.steps,
+      stepGoal: day.stepGoal || 10000,
+      stepsBurned: day.stepsBurned,
+      totalBurned: day.burned
+    };
+  }
+
+  /**
+   * Add a workout / exercise session with diet & goal impact
+   */
+  addWorkout(dateStr, workout) {
+    const day = this.getDayLog(dateStr);
+    if (!day.workouts) day.workouts = [];
+    workout.id = 'wk_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+    workout.loggedAt = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+    day.workouts.push(workout);
+    this.recalculateDayBurned(day);
+    this.saveDayLog(dateStr, day);
+    return workout;
+  }
+
+  /**
+   * Delete a workout session
+   */
+  deleteWorkout(dateStr, workoutId) {
+    const day = this.getDayLog(dateStr);
+    if (day.workouts) {
+      day.workouts = day.workouts.filter(w => w.id !== workoutId);
+      this.recalculateDayBurned(day);
+      this.saveDayLog(dateStr, day);
+    }
+    return day.workouts;
+  }
+
+  /**
+   * Update manual calories burned
    */
   updateBurned(dateStr, burnedKcal) {
     const day = this.getDayLog(dateStr);
-    day.burned = (day.burned || 0) + parseInt(burnedKcal || 0);
+    day.manualBurned = (day.manualBurned || 0) + parseInt(burnedKcal || 0);
+    this.recalculateDayBurned(day);
     this.saveDayLog(dateStr, day);
     return day.burned;
   }

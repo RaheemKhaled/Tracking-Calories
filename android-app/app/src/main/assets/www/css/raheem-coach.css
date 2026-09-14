@@ -1,364 +1,389 @@
 /* ==========================================================================
-   Appediet Dark Theme & Core Design System
-   Matches Appediet Mobile Application UI
+   Raheem Coach - Luminous Vitality Components & Bento Grid
    ========================================================================== */
 
-:root {
-  --bg-app: #0c0f17;
-  --bg-surface: #141721;
-  --bg-card: #181d28;
-  --bg-card-elevated: #1e2433;
-  --bg-chip: #232a3b;
-  
-  --border-subtle: rgba(255, 255, 255, 0.07);
-  --border-card: rgba(255, 255, 255, 0.1);
-  --border-active: rgba(59, 130, 246, 0.5);
-
-  --primary-blue: #3b82f6;
-  --primary-blue-dark: #2563eb;
-  --primary-blue-light: #60a5fa;
-  --primary-blue-soft: rgba(59, 130, 246, 0.15);
-
-  --calorie-flame: #ff6b2b;
-  --carb-wheat: #f59e0b;
-  --protein-fish: #10b981;
-  --fat-drop: #f97316;
-
-  --text-primary: #ffffff;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --text-dark: #0f172a;
-
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 20px;
-  --radius-full: 9999px;
-
-  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans Arabic', 'Segoe UI Arabic', sans-serif;
-  --safe-bottom: env(safe-area-inset-bottom, 16px);
-  --safe-top: env(safe-area-inset-top, 0px);
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
-}
-
-body {
-  background-color: #06080d;
-  color: var(--text-primary);
-  font-family: var(--font-family);
-  direction: ltr; /* Appediet has English interface with Arabic support */
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  overflow-x: hidden;
-  user-select: none;
-}
-
-/* Outer Shell for Desktop & Fullscreen for Mobile */
-#mobile-shell {
-  width: 100%;
-  max-width: 440px;
-  min-height: 100vh;
-  background-color: var(--bg-app);
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
-  padding-bottom: calc(75px + var(--safe-bottom));
-}
-
-/* ==========================================================================
-   Header Bar (Matches Screenshot 3 & 4)
-   ========================================================================== */
-.app-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: calc(14px + var(--safe-top)) 16px 12px 16px;
-  position: sticky;
-  top: 0;
-  z-index: 40;
-  background-color: rgba(12, 15, 23, 0.95);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-}
-
-.btn-ask-appediet {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background-color: var(--bg-surface);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: var(--radius-full);
-  padding: 5px 14px 5px 6px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-ask-appediet:hover {
-  background-color: var(--bg-card);
-  border-color: var(--primary-blue);
-}
-
-.btn-ask-appediet .app-logo-badge {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #3b82f6, #22c55e);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.btn-ask-appediet .app-logo-badge img,
-.btn-ask-appediet .app-logo-badge svg {
-  width: 22px;
-  height: 22px;
-}
-
-.btn-ask-appediet .ask-text {
-  font-size: 14px;
-  font-weight: 600;
-  color: #f1f5f9;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.badge-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background-color: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-full);
-  padding: 6px 12px;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text-primary);
-  cursor: pointer;
-}
-
-.badge-pill.badge-crown {
-  color: #f59e0b;
-}
-
-.badge-pill.badge-streak {
-  color: var(--text-primary);
-}
-
-.badge-pill.badge-streak .fire-icon {
-  color: var(--calorie-flame);
-}
-
-/* ==========================================================================
-   Calendar Date Strip (Screenshot 4)
-   ========================================================================== */
-.calendar-strip {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 6px 14px 14px 14px;
-}
-
-.cal-day-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  cursor: pointer;
-  padding: 4px;
-  border-radius: var(--radius-md);
-  transition: all 0.2s ease;
-  min-width: 44px;
-}
-
-.cal-day-name {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--text-muted);
-}
-
-.cal-day-number {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--text-secondary);
-  background-color: transparent;
-  transition: all 0.2s ease;
-}
-
-.cal-day-item.active .cal-day-name {
-  color: var(--text-primary);
-  font-weight: 700;
-}
-
-.cal-day-item.active .cal-day-number {
-  background-color: #1e2433;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-}
-
-/* ==========================================================================
-   Main Content Views
-   ========================================================================== */
-.view-container {
-  padding: 0 12px 16px 12px;
+/* Hero Vitality Greeting Banner */
+.hero-vitality-banner {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(240, 253, 250, 0.9));
+  border: 1px solid rgba(16, 185, 129, 0.22);
+  border-radius: var(--radius-lg);
+  padding: 16px 16px 14px 16px;
+  box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.1), var(--card-shadow);
   display: flex;
   flex-direction: column;
   gap: 12px;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: all 0.3s ease;
 }
 
-.hidden {
-  display: none !important;
+[data-theme="dark"] .hero-vitality-banner {
+  background: linear-gradient(135deg, rgba(17, 24, 39, 0.95), rgba(15, 23, 42, 0.9));
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 18px rgba(16, 185, 129, 0.08);
 }
 
-/* Section Header Titles */
-.section-title-row {
+.hero-banner-content {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.hero-avatar-wrapper {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10b981, #0ea5e9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  overflow: hidden;
+  border: 2px solid var(--bg-surface);
+}
+
+.hero-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-avatar-emoji {
+  font-size: 24px;
+}
+
+.hero-banner-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.hero-salute {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-muted);
+  display: block;
+}
+
+.hero-username {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--primary-blue);
+  line-height: 1.25;
+  margin: 1px 0 2px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hero-subtitle {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.hero-badges-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 10px;
+  margin-top: 2px;
+}
+
+.vitality-badge {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: var(--radius-full);
+  font-size: 11.5px;
+  font-weight: 700;
+  background: var(--bg-chip);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.vitality-badge strong {
+  color: var(--calorie-flame);
+}
+
+.vitality-badge.plan-badge {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.25);
+  color: var(--vitality-green-dark);
+}
+
+[data-theme="dark"] .vitality-badge.plan-badge {
+  color: #34d399;
+}
+
+/* ==========================================================================
+   Habits & Activity Bento Grid (2x2 Dynamic Layout)
+   ========================================================================== */
+.habits-bento-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.bento-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
+  padding: 14px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--card-shadow);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.bento-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.bento-card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0px;
+  margin-bottom: 8px;
 }
 
-.section-title {
-  font-size: 16px;
-  font-weight: 700;
+.bento-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bento-icon {
+  font-size: 22px;
+}
+
+.bento-title {
+  font-size: 13.5px;
+  font-weight: 800;
   color: var(--text-primary);
-  letter-spacing: -0.2px;
+  line-height: 1.2;
 }
 
-.section-more-link {
-  font-size: 12px;
-  font-weight: 500;
+.bento-badge-auto {
+  font-size: 10px;
+  font-weight: 700;
+  background: rgba(16, 185, 129, 0.15);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 8px;
+  padding: 1px 6px;
+  display: inline-block;
+  margin-top: 2px;
+}
+
+[data-theme="dark"] .bento-badge-auto {
+  color: #6ee7b7;
+}
+
+/* Steps Bento Card (Full Width Span 2) */
+.bento-card-steps {
+  grid-column: span 2;
+  background: linear-gradient(135deg, var(--bg-card), rgba(16, 185, 129, 0.05));
+  border-color: rgba(16, 185, 129, 0.22);
+}
+
+.bento-steps-metric {
+  text-align: left;
+}
+
+.bento-steps-kcal {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--primary-blue);
+  display: block;
+}
+
+.bento-steps-dist {
+  font-size: 10.5px;
   color: var(--text-muted);
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  cursor: pointer;
+  display: block;
 }
 
-.section-more-link:hover {
-  color: var(--primary-blue-light);
+.bento-main-stat {
+  margin: 6px 0 10px 0;
 }
 
-/* ==========================================================================
-   Card Component Base (Compact & Modern for Mobile Ratio)
-   ========================================================================== */
-.app-card {
-  background-color: var(--bg-card);
-  border-radius: 16px;
-  border: 1px solid var(--border-card);
-  padding: 13px 15px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+.bento-stat-highlight {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-primary);
 }
 
-/* ==========================================================================
-   Bottom Navigation Dock (Screenshot 3 & 4)
-   ========================================================================== */
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
+/* Steps Progress Track */
+.steps-progress-track {
   width: 100%;
-  max-width: 440px;
-  height: calc(64px + var(--safe-bottom));
-  background-color: rgba(18, 22, 31, 0.96);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  padding: 0 8px var(--safe-bottom) 8px;
-  z-index: 50;
+  height: 9px;
+  background-color: var(--bg-chip);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-bottom: 10px;
 }
 
-.nav-tab-item {
+.steps-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #0ea5e9);
+  border-radius: var(--radius-full);
+  transition: width 0.4s ease;
+}
+
+.steps-quick-btns {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 4px;
-  color: var(--text-muted);
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: 6px 12px;
-  transition: all 0.2s ease;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.btn-step-quick {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 5px 9px;
   font-size: 11px;
-  font-weight: 500;
-}
-
-.nav-tab-item svg {
-  width: 22px;
-  height: 22px;
-  stroke: currentColor;
-  fill: none;
-  stroke-width: 2;
+  font-weight: 700;
+  color: var(--text-secondary);
+  cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.nav-tab-item.active {
+.btn-step-quick:hover {
+  border-color: var(--vitality-green);
+  color: var(--vitality-green);
+  transform: translateY(-1px);
+}
+
+.bento-calc-btn {
+  margin-right: auto;
+  background: rgba(14, 165, 233, 0.12);
+  border-color: rgba(14, 165, 233, 0.25);
   color: var(--primary-blue);
 }
 
-.nav-tab-item.active svg {
-  stroke: var(--primary-blue);
+/* Water Bento Card (Span 1) */
+.bento-card-water {
+  grid-column: span 1;
+  background: linear-gradient(135deg, var(--bg-card), rgba(14, 165, 233, 0.05));
+  border-color: rgba(14, 165, 233, 0.22);
 }
 
-/* Floating Center Camera Button (Blue elevated circle) */
-.nav-camera-fab-container {
-  position: relative;
-  top: -14px;
+.bento-water-badge {
+  background: rgba(14, 165, 233, 0.1);
+  border: 1px solid rgba(14, 165, 233, 0.2);
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 10px;
+  color: var(--primary-blue);
+  margin: 6px 0 8px 0;
+  line-height: 1.3;
 }
 
-.nav-camera-fab {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #4f46e5, #3b82f6);
-  border: 4px solid var(--bg-app);
+/* Weight Bento Card (Span 1) */
+.bento-card-weight {
+  grid-column: span 1;
+  background: linear-gradient(135deg, var(--bg-card), rgba(139, 92, 246, 0.05));
+  border-color: rgba(139, 92, 246, 0.22);
+}
+
+.btn-bento-action {
+  background: var(--primary-blue);
+  color: #ffffff;
+  border: none;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-bento-action:hover {
+  background: var(--primary-blue-dark);
+  transform: translateY(-1px);
+}
+
+/* Burned Calories Bento Card (Span 2) */
+.bento-card-burned {
+  grid-column: span 2;
+  background: linear-gradient(135deg, var(--bg-card), rgba(249, 115, 22, 0.05));
+  border-color: rgba(249, 115, 22, 0.22);
+}
+
+.bento-burn-big {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--calorie-flame);
+}
+
+.bento-workouts-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+  margin-bottom: 6px;
+}
+
+.bento-sublabel {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.bento-workouts-num {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.bento-scroll-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 140px;
+  overflow-y: auto;
+}
+
+.bento-add-workout-btn {
+  margin-top: 10px;
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  color: #ffffff;
+  border: none;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
-  cursor: pointer;
-  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.45);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+  transition: all 0.2s ease;
 }
 
-.nav-camera-fab:active {
-  transform: scale(0.92);
-}
-
-.nav-camera-fab svg {
-  width: 26px;
-  height: 26px;
-  fill: #ffffff;
+.bento-add-workout-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(249, 115, 22, 0.4);
 }
 
 /* ==========================================================================
@@ -586,4 +611,233 @@ body {
   color: #93c5fd;
   font-weight: 600;
 }
+
+/* ==========================================================================
+   Exercise Logger & Daily Steps Tracking
+   ========================================================================== */
+.steps-widget-container {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.steps-stats-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.steps-progress-track {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.steps-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #06b6d4);
+  border-radius: 10px;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.steps-quick-btns {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+
+.btn-step-quick {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-step-quick:hover {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.4);
+  color: #93c5fd;
+}
+
+/* Logged Workouts List in Burned Card */
+.workouts-list-container {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.workout-item-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 9px 12px;
+  transition: background 0.2s ease;
+}
+
+.workout-item-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.workout-impact-badge-btn {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #6ee7b7;
+  padding: 3px 8px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+
+.workout-impact-badge-btn:hover {
+  background: rgba(16, 185, 129, 0.25);
+  transform: translateY(-1px);
+}
+
+/* Exercise Logger Modal */
+.exercise-modal-tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 8px;
+  margin-bottom: 14px;
+}
+
+.exercise-tab-btn {
+  flex: 1;
+  padding: 9px 12px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.exercise-tab-btn.active {
+  background: rgba(59, 130, 246, 0.18);
+  color: #60a5fa;
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+.exercise-chips-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 420px) {
+  .exercise-chips-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+}
+
+.exercise-chip {
+  background: #131926;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 9px 6px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.exercise-chip .chip-icon {
+  font-size: 20px;
+}
+
+.exercise-chip .chip-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #cbd5e1;
+}
+
+.exercise-chip:hover {
+  border-color: rgba(59, 130, 246, 0.5);
+  background: #1a2336;
+}
+
+.exercise-chip.active {
+  background: rgba(37, 99, 235, 0.25);
+  border-color: #3b82f6;
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.35);
+}
+
+.exercise-chip.active .chip-label {
+  color: #93c5fd;
+}
+
+/* Live Diet & Goal Impact Box */
+.exercise-impact-card {
+  background: linear-gradient(135deg, #0e1526, #111a2f);
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  border-radius: 16px;
+  padding: 14px;
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.impact-badge-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.impact-badge-item {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+
+.impact-badge-item .badge-label {
+  font-size: 10.5px;
+  color: #94a3b8;
+  display: block;
+}
+
+.impact-badge-item .badge-value {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #fff;
+  margin-top: 2px;
+  display: block;
+}
+
 

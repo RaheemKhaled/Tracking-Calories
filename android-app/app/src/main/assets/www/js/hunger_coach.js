@@ -76,7 +76,7 @@ class HungerCoachComponent {
       eatenFat += m.fat || 0;
     });
 
-    const remainingKcal = Math.max(0, (profile.calorieGoal || 1400) - eatenKcal + (dayData.burned || 0));
+    const remainingKcal = Math.max(0, (profile.calorieGoal || 1400) - eatenKcal);
 
     const welcomeHtml = `
       <p>أهلاً بك! أنا <strong>كوتش رحيم (Raheem Coach) الذكي</strong> 🥗</p>
@@ -99,7 +99,7 @@ class HungerCoachComponent {
       eatenProtein += m.protein || 0;
     });
 
-    const remainingKcal = Math.max(0, (profile.calorieGoal || 1400) - eatenKcal + (dayData.burned || 0));
+    const remainingKcal = Math.max(0, (profile.calorieGoal || 1400) - eatenKcal);
     const remainingProtein = Math.max(0, (profile.proteinGoal || 88) - eatenProtein);
 
     let responseHtml = `

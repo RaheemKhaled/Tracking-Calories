@@ -8,6 +8,9 @@ class AppedietApp {
     this.currentView = 'tracker';
     this.selectedDate = this.getTodayDateString();
     this.deferredInstallPrompt = null;
+    this.selectedExerciseType = 'pushups';
+    this.currentExerciseTab = 'exercise';
+    this.currentCalculatedWorkout = null;
 
     this.init();
   }
@@ -25,6 +28,9 @@ class AppedietApp {
   }
 
   init() {
+    // Initialize Dual Theme
+    this.initTheme();
+
     // Initialize components
     this.googleAuth = new window.GoogleAuthManager();
     this.scanner = new window.NutritionScanner();
@@ -35,6 +41,7 @@ class AppedietApp {
     this.bindNavigation();
     this.bindDashboardEvents();
     this.bindPwaInstall();
+    this.initAutoStepTracking();
     this.refreshDashboard();
 
     // Register Service Worker
@@ -42,6 +49,44 @@ class AppedietApp {
       navigator.serviceWorker.register('./sw.js').catch(err => {
         console.log('SW registration note:', err);
       });
+    }
+
+    // Auto launch Onboarding Wizard if not completed yet
+    setTimeout(() => {
+      const prof = window.AppedietDB.getProfile();
+      if (!prof.onboardingCompleted && window.OnboardingWizard) {
+        window.OnboardingWizard.open();
+      }
+    }, 600);
+  }
+
+  /* ==========================================================================
+     Theme Manager (Light Vitality ☀️ / Dark Obsidian 🌙)
+     ========================================================================== */
+  initTheme() {
+    const savedTheme = localStorage.getItem('raheem_theme') || 'light';
+    this.applyTheme(savedTheme);
+  }
+
+  toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    this.applyTheme(nextTheme);
+    this.showToast(nextTheme === 'dark' ? 'تم تفعيل المظهر الليلي 🌙' : 'تم تفعيل المظهر النهاري الإشراقي ☀️');
+  }
+
+  applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('raheem_theme', theme);
+    const iconEl = document.getElementById('theme-toggle-icon');
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+
+    if (theme === 'dark') {
+      if (iconEl) iconEl.textContent = '☀️';
+      if (metaThemeColor) metaThemeColor.setAttribute('content', '#090d16');
+    } else {
+      if (iconEl) iconEl.textContent = '🌙';
+      if (metaThemeColor) metaThemeColor.setAttribute('content', '#f6f9fc');
     }
   }
 
@@ -53,7 +98,7 @@ class AppedietApp {
     if (!calendarContainer) return;
 
     calendarContainer.innerHTML = '';
-    const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const daysOfWeek = ['أحد', 'إثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'];
     const today = new Date();
 
     // Generate current week (-3 days to +3 days)
@@ -143,6 +188,55 @@ class AppedietApp {
     const profile = window.AppedietDB.getProfile();
     const dayData = window.AppedietDB.getDayLog(this.selectedDate);
 
+    // 0. Update Hero Vitality Banner & Dynamic Time-Based Greeting
+    const hour = new Date().getHours();
+    let salute = 'صباح النشاط والحيوية، ☀️';
+    let quote = 'يوم جديد مليء بالحيوية لتحقيق أهدافك وخسارة الوزن 🎯';
+    if (hour >= 12 && hour < 17) {
+      salute = 'طاب يومك يا بطل، 🌤️';
+      quote = 'استمر في الحفاظ على توازن وجباتك ونشاطك الرياضي 💪';
+    } else if (hour >= 17 || hour < 4) {
+      salute = 'مساء الإنجاز والصحة، 🌙';
+      quote = 'أمسية مريحة! تأكد من استكمال شرب الماء وخطواتك اليومية ✨';
+    }
+
+    const saluteEl = document.getElementById('hero-greeting-salute');
+    if (saluteEl) saluteEl.textContent = salute;
+
+    const nameEl = document.getElementById('hero-greeting-name');
+    if (nameEl) {
+      let uName = profile.name || (this.googleAuth?.currentUser?.name) || 'بطل الصحة!';
+      if (uName.includes('(')) {
+        uName = uName.split('(')[0].trim();
+      }
+      nameEl.textContent = uName;
+    }
+
+    const quoteEl = document.getElementById('hero-daily-quote');
+    if (quoteEl) quoteEl.textContent = quote;
+
+    const streakTextEl = document.getElementById('hero-streak-text');
+    if (streakTextEl) streakTextEl.innerHTML = `أيام الالتزام: <strong>${profile.streak || 0}</strong>`;
+
+    const goalTextEl = document.getElementById('hero-goal-text');
+    if (goalTextEl) {
+      const goalStr = profile.goal === 'lose' ? 'خسارة وزن صحية 📉' : (profile.goal === 'gain' ? 'زيادة كتلة عضلية 🏋️' : 'تثبيت وزن ولياقة 🌟');
+      goalTextEl.textContent = `الهدف: ${goalStr}`;
+    }
+
+    // Hero Avatar Update
+    const heroAvatarImg = document.getElementById('hero-user-avatar');
+    const heroAvatarPlaceholder = document.getElementById('hero-user-avatar-placeholder');
+    const userPhoto = profile.picture || this.googleAuth?.currentUser?.picture;
+    if (userPhoto && heroAvatarImg && heroAvatarPlaceholder) {
+      heroAvatarImg.src = userPhoto;
+      heroAvatarImg.classList.remove('hidden');
+      heroAvatarPlaceholder.classList.add('hidden');
+    } else if (heroAvatarImg && heroAvatarPlaceholder) {
+      heroAvatarImg.classList.add('hidden');
+      heroAvatarPlaceholder.classList.remove('hidden');
+    }
+
     // Calculate totals
     let eatenKcal = 0;
     let eatenCarb = 0;
@@ -158,17 +252,18 @@ class AppedietApp {
 
     const burnedKcal = dayData.burned || 0;
     const goalKcal = profile.calorieGoal || 1400;
-    const remainingKcal = Math.max(0, goalKcal - eatenKcal + burnedKcal);
+    // Burned calories are tracked as deficit/activity and strictly NOT added back to food budget
+    const remainingKcal = Math.max(0, goalKcal - eatenKcal);
 
     // 1. Budget Card Updates
     document.getElementById('dash-remaining-kcal').textContent = remainingKcal;
-    document.getElementById('dash-goal-kcal-badge').textContent = `Goal: ${goalKcal} kcal >`;
+    document.getElementById('dash-goal-kcal-badge').textContent = `الهدف: ${goalKcal} سعرة 🎯`;
     document.getElementById('dash-eaten-kcal').textContent = `${eatenKcal} kcal`;
     document.getElementById('dash-burned-kcal').textContent = `${burnedKcal} kcal`;
 
     // Radial Progress Arc
     const progressPct = Math.min(1, eatenKcal / goalKcal);
-    const arcLength = 283; // Circumference of semicircle r=90
+    const arcLength = 298; // Circumference of semicircle r=95 (pi * 95 = 298.45)
     const offset = arcLength - (arcLength * progressPct);
     const arcEl = document.getElementById('dash-radial-arc');
     if (arcEl) arcEl.style.strokeDashoffset = offset;
@@ -207,7 +302,7 @@ class AppedietApp {
     if (mealsListContainer) {
       if (mealsLogged.length === 0) {
         mealsListContainer.innerHTML = `
-          <div style="text-align:center; padding:12px; color:var(--text-muted); font-size:12px; background:rgba(255,255,255,0.02); border-radius:10px;">
+          <div style="text-align:center; padding:12px; color:var(--text-muted); font-size:12px; background:var(--bg-chip); border-radius:12px; border:1px dashed var(--border-subtle);">
             <span>🍽️ لا توجد وجبات مسجلة لهذا اليوم بعد</span>
           </div>
         `;
@@ -216,24 +311,24 @@ class AppedietApp {
         mealsListContainer.innerHTML = mealsLogged.map(m => {
           const icon = mealIcons[m.mealType] || '🍴';
           const imgHtml = m.imageUrl 
-            ? `<img src="${m.imageUrl}" style="width:40px; height:40px; border-radius:10px; object-fit:cover; border:1px solid rgba(255,255,255,0.15);" alt="${m.name}">`
-            : `<div style="width:40px; height:40px; border-radius:10px; background:#1e293b; display:flex; align-items:center; justify-content:center; font-size:20px;">${icon}</div>`;
+            ? `<img src="${m.imageUrl}" style="width:42px; height:42px; border-radius:12px; object-fit:cover; border:1px solid var(--border-subtle);" alt="${m.name}">`
+            : `<div style="width:42px; height:42px; border-radius:12px; background:var(--bg-chip); border:1px solid var(--border-subtle); display:flex; align-items:center; justify-content:center; font-size:20px;">${icon}</div>`;
 
           return `
-            <div class="logged-meal-item-card" data-meal-id="${m.id}" style="display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:8px 10px; cursor:pointer; transition:background 0.2s;">
+            <div class="logged-meal-item-card" data-meal-id="${m.id}">
               <div style="display:flex; align-items:center; gap:10px;">
                 ${imgHtml}
                 <div>
-                  <div style="font-weight:700; font-size:13px; color:#f8fafc; display:flex; align-items:center; gap:6px;">
+                  <div style="font-weight:700; font-size:13px; color:var(--text-primary); display:flex; align-items:center; gap:6px;">
                     <span>${m.name}</span>
-                    <span style="font-size:10px; background:rgba(59,130,246,0.2); color:#93c5fd; padding:1px 6px; border-radius:6px;">${m.mealType}</span>
+                    <span style="font-size:10px; background:var(--primary-blue-soft); color:var(--primary-blue); padding:2px 8px; border-radius:6px; font-weight:700;">${m.mealType}</span>
                   </div>
-                  <div style="font-size:11px; color:#94a3b8; margin-top:2px;">
-                    <strong style="color:#f59e0b;">${m.calories} kcal</strong> • P: ${m.protein}g | C: ${m.carb}g | F: ${m.fat}g
+                  <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">
+                    <strong style="color:var(--calorie-flame);">${m.calories} kcal</strong> • P: ${m.protein}g | C: ${m.carb}g | F: ${m.fat}g
                   </div>
                 </div>
               </div>
-              <button class="btn-edit-meal-badge" style="background:#1e293b; color:#38bdf8; border:1px solid rgba(56,189,248,0.3); border-radius:8px; padding:4px 8px; font-size:11px; font-weight:700; cursor:pointer;">
+              <button class="btn-edit-meal-badge" style="background:var(--bg-chip); color:var(--primary-blue); border:1px solid var(--border-subtle); border-radius:8px; padding:5px 10px; font-size:11px; font-weight:700; cursor:pointer;">
                 تعديل ✏️
               </button>
             </div>
@@ -288,12 +383,113 @@ class AppedietApp {
 
     // 5. Streak & Crown
     document.getElementById('dash-streak-count').textContent = profile.streak || 0;
+
+    // 6. Burned Card & Daily Steps Updates
+    const burnedTotalEl = document.getElementById('dash-calories-burned-val');
+    if (burnedTotalEl) {
+      burnedTotalEl.textContent = `${burnedKcal} kcal`;
+    }
+
+    const steps = dayData.steps || 0;
+    const stepGoal = dayData.stepGoal || 10000;
+    const heightCm = profile.height || 180;
+    const stepsBurned = window.AppedietDB.calculateStepsCalories(steps, curW, heightCm);
+    const strideM = (heightCm * 0.414) / 100;
+    const stepsDistance = Math.round(((steps * strideM) / 1000) * 100) / 100;
+    const stepsPct = Math.min(100, Math.round((steps / stepGoal) * 100));
+
+    const stepsDetailsEl = document.getElementById('dash-steps-details');
+    if (stepsDetailsEl) stepsDetailsEl.textContent = `${steps.toLocaleString()} / ${stepGoal.toLocaleString()} خطوة`;
+    
+    const stepsKcalEl = document.getElementById('dash-steps-kcal');
+    if (stepsKcalEl) stepsKcalEl.textContent = `🔥 ${stepsBurned} kcal`;
+
+    const stepsDistEl = document.getElementById('dash-steps-distance');
+    if (stepsDistEl) stepsDistEl.textContent = `${stepsDistance} كم`;
+
+    const stepsBarEl = document.getElementById('dash-steps-progress-bar');
+    if (stepsBarEl) stepsBarEl.style.width = `${stepsPct}%`;
+
+    // Render Logged Workouts
+    const workouts = dayData.workouts || [];
+    const workoutsCountEl = document.getElementById('dash-workouts-count');
+    if (workoutsCountEl) workoutsCountEl.textContent = `${workouts.length} تمارين`;
+
+    const workoutsListContainer = document.getElementById('dash-logged-workouts-list');
+    if (workoutsListContainer) {
+      if (workouts.length === 0) {
+        workoutsListContainer.innerHTML = `
+          <div style="text-align:center; padding:10px; color:var(--text-muted); font-size:11.5px; background:var(--bg-chip); border-radius:10px; border:1px dashed var(--border-subtle);">
+            <span>🏋️ لا توجد تمارين مسجلة لهذا اليوم بعد - اضغط للبدء</span>
+          </div>
+        `;
+      } else {
+        workoutsListContainer.innerHTML = workouts.map(w => {
+          const qtyText = w.isRepBased ? `${w.reps} تكرار` : `${w.minutes} دقيقة`;
+          return `
+            <div class="workout-item-card" data-workout-id="${w.id}">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <div style="width:38px; height:38px; border-radius:10px; background:var(--bg-chip); border:1px solid var(--border-subtle); display:flex; align-items:center; justify-content:center; font-size:18px;">
+                  ${w.icon || '🏋️'}
+                </div>
+                <div>
+                  <div style="font-weight:700; font-size:12.5px; color:var(--text-primary); display:flex; align-items:center; gap:6px;">
+                    <span>${w.name}</span>
+                    <span style="font-size:10px; background:var(--primary-blue-soft); color:var(--primary-blue); padding:1px 6px; border-radius:6px; font-weight:700;">${qtyText}</span>
+                  </div>
+                  <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">
+                    <strong style="color:var(--calorie-flame);">🔥 ${w.burnedKcal} kcal</strong> • <span style="color:var(--primary-blue);">${w.targetMuscles || 'عضلات متعددة'}</span>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <button class="workout-impact-badge-btn" data-workout-id="${w.id}" title="عرض أثر التمرين على الدايت">
+                  <span>أثر التمرين 💡</span>
+                </button>
+                <button class="btn-delete-workout" data-workout-id="${w.id}" style="background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.25); color:#ef4444; border-radius:8px; width:28px; height:28px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:12px;" title="حذف التمرين">
+                  🗑️
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        // Bind View Impact
+        workoutsListContainer.querySelectorAll('.workout-impact-badge-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const wId = btn.dataset.workoutId;
+            const w = workouts.find(item => item.id === wId);
+            if (w) this.openWorkoutDetailModal(w);
+          });
+        });
+
+        // Bind Delete Workout
+        workoutsListContainer.querySelectorAll('.btn-delete-workout').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const wId = btn.dataset.workoutId;
+            if (confirm('هل تريد حذف هذا التمرين المسجل؟')) {
+              window.AppedietDB.deleteWorkout(this.selectedDate, wId);
+              const updatedDay = window.AppedietDB.getDayLog(this.selectedDate);
+              window.GoogleWorkspaceSync?.syncBurned?.(this.selectedDate, updatedDay.burned || 0);
+              this.showToast('تم حذف التمرين بنجاح 🗑️');
+              this.refreshDashboard();
+            }
+          });
+        });
+      }
+    }
   }
 
   /* ==========================================================================
      Dashboard Interactive Clicks (Water, Weight Update, Workout, Mood, Settings)
      ========================================================================== */
   bindDashboardEvents() {
+    // Theme Switcher Toggle
+    document.getElementById('btn-theme-toggle')?.addEventListener('click', () => {
+      this.toggleTheme();
+    });
     // Eaten Card "Log Now" button -> Trigger Food Camera / Scan
     document.getElementById('btn-eaten-log-now')?.addEventListener('click', () => {
       this.scanner.openWithCapture('Breakfast');
@@ -330,15 +526,30 @@ class AppedietApp {
       });
     });
 
-    // Add Workout button
+    // Add Workout / Steps buttons
     document.getElementById('btn-add-workout')?.addEventListener('click', () => {
-      const kcal = prompt('أدخل السعرات المحروقة في التمرين (kcal):', '250');
-      if (kcal && !isNaN(kcal)) {
-        window.AppedietDB.updateBurned(this.selectedDate, parseInt(kcal));
-        this.showToast(`تمت إضافة ${kcal} سعر محروق بنجاح! 🔥`);
-        this.refreshDashboard();
-      }
+      this.openExerciseLoggerModal('exercise');
     });
+    document.getElementById('link-more-burned')?.addEventListener('click', () => {
+      this.openExerciseLoggerModal('exercise');
+    });
+    document.getElementById('btn-open-steps-calculator')?.addEventListener('click', () => {
+      this.openExerciseLoggerModal('steps');
+    });
+
+    // Quick Step Buttons on Dashboard
+    document.getElementById('btn-quick-step-500')?.addEventListener('click', () => {
+      this.quickAddSteps(500);
+    });
+    document.getElementById('btn-quick-step-1000')?.addEventListener('click', () => {
+      this.quickAddSteps(1000);
+    });
+    document.getElementById('btn-quick-step-2000')?.addEventListener('click', () => {
+      this.quickAddSteps(2000);
+    });
+
+    // Initialize Exercise Logger Modal Handlers
+    this.initExerciseLoggerModal();
 
     // Update Weight button
     document.getElementById('btn-update-weight-modal')?.addEventListener('click', () => {
@@ -350,8 +561,11 @@ class AppedietApp {
       this.openMoodModal();
     });
 
-    // Goal Pill click
+    // Goal Pill & Hero Goal Badge click -> Open Onboarding & Macro Wizard
     document.getElementById('dash-goal-kcal-badge')?.addEventListener('click', () => {
+      this.openWeightModal();
+    });
+    document.getElementById('hero-badge-target')?.addEventListener('click', () => {
       this.openWeightModal();
     });
 
@@ -365,18 +579,22 @@ class AppedietApp {
      Modal Dialogs Handlers
      ========================================================================== */
   openWeightModal() {
-    const profile = window.AppedietDB.getProfile();
-    const newWeight = prompt('تحديث وزنك الحالي (كجم):', profile.currentWeight);
-    if (newWeight && !isNaN(newWeight)) {
-      profile.currentWeight = parseFloat(newWeight);
-      const newGoals = window.AppedietDB.calculateGoals(profile);
-      profile.calorieGoal = newGoals.calorieGoal;
-      profile.proteinGoal = newGoals.proteinGoal;
-      profile.fatGoal = newGoals.fatGoal;
-      profile.carbGoal = newGoals.carbGoal;
-      window.AppedietDB.saveProfile(profile);
-      this.showToast(`تم تحديث الوزن (${profile.currentWeight} كجم) وحساب الميزانية بنجاح! ⚖️`);
-      this.refreshDashboard();
+    if (window.OnboardingWizard) {
+      window.OnboardingWizard.open();
+    } else {
+      const profile = window.AppedietDB.getProfile();
+      const newWeight = prompt('تحديث وزنك الحالي (كجم):', profile.currentWeight);
+      if (newWeight && !isNaN(newWeight)) {
+        profile.currentWeight = parseFloat(newWeight);
+        const newGoals = window.AppedietDB.calculateGoals(profile);
+        profile.calorieGoal = newGoals.calorieGoal;
+        profile.proteinGoal = newGoals.proteinGoal;
+        profile.fatGoal = newGoals.fatGoal;
+        profile.carbGoal = newGoals.carbGoal;
+        window.AppedietDB.saveProfile(profile);
+        this.showToast(`تم تحديث الوزن (${profile.currentWeight} كجم) وحساب الميزانية بنجاح! ⚖️`);
+        this.refreshDashboard();
+      }
     }
   }
 
@@ -631,6 +849,419 @@ class AppedietApp {
     document.getElementById('btn-close-water-modal')?.addEventListener('click', () => {
       modal.classList.remove('active');
     }, { once: true });
+  }
+
+  /* ==========================================================================
+     Automatic Hardware Step Tracking (Android 14+ StepCounterService & Web Sensors)
+     ========================================================================== */
+  initAutoStepTracking() {
+    // 1. Global callback called by Android Kotlin evaluateJavascript
+    window.onStepCountUpdate = (steps) => {
+      this.handleAutoStepCount(steps);
+    };
+
+    // 2. Query initial cached steps from AndroidStepBridge if running natively
+    if (window.AndroidStepBridge) {
+      try {
+        const todaySteps = window.AndroidStepBridge.getTodaySteps();
+        if (todaySteps > 0) {
+          this.handleAutoStepCount(todaySteps);
+        }
+        const statusText = document.getElementById('steps-sensor-status-text');
+        if (statusText) {
+          statusText.textContent = 'متصل بحساس الهاتف العتادي (Android Health Service 🟢)';
+        }
+      } catch (e) {
+        console.log('AndroidStepBridge init note:', e);
+      }
+    } else {
+      // 3. Fallback for mobile web browsers: DeviceMotion Pedometer
+      this.initWebPedometerFallback();
+    }
+  }
+
+  initWebPedometerFallback() {
+    if (typeof window !== 'undefined' && 'DeviceMotionEvent' in window && !window.AndroidStepBridge) {
+      let lastStepTime = 0;
+      const threshold = 12.0; // Acceleration peak threshold for walking
+      window.addEventListener('devicemotion', (event) => {
+        const acc = event.accelerationIncludingGravity;
+        if (!acc) return;
+        const mag = Math.sqrt((acc.x || 0) ** 2 + (acc.y || 0) ** 2 + (acc.z || 0) ** 2);
+        const now = Date.now();
+        if (mag > threshold && (now - lastStepTime) > 350) {
+          lastStepTime = now;
+          const today = this.getTodayDateString();
+          const curSteps = window.AppedietDB.getDayLog(today).steps || 0;
+          this.handleAutoStepCount(curSteps + 1);
+        }
+      }, { passive: true });
+    }
+  }
+
+  handleAutoStepCount(steps) {
+    if (typeof steps !== 'number' || isNaN(steps) || steps < 0) return;
+    const today = this.getTodayDateString();
+
+    // Persist to local database
+    const dayData = window.AppedietDB.getDayLog(today);
+    window.AppedietDB.updateSteps(today, steps, dayData.stepGoal || 10000);
+
+    // Refresh view if looking at today
+    if (this.selectedDate === today) {
+      this.refreshDashboard();
+      const badge = document.getElementById('dash-steps-auto-badge');
+      if (badge) {
+        badge.textContent = 'تلقائي 📱🟢';
+        badge.style.background = 'rgba(16, 185, 129, 0.2)';
+        badge.style.color = '#6ee7b7';
+      }
+      const modalText = document.getElementById('steps-sensor-status-text');
+      if (modalText) {
+        modalText.textContent = `حساس الهاتف يسجل الخطوات آلياً: ${steps.toLocaleString()} خطوة 👟`;
+      }
+    }
+  }
+
+  quickAddSteps(delta) {
+    const dayData = window.AppedietDB.getDayLog(this.selectedDate);
+    const newSteps = (dayData.steps || 0) + delta;
+    window.AppedietDB.updateSteps(this.selectedDate, newSteps, dayData.stepGoal || 10000);
+    const updatedDay = window.AppedietDB.getDayLog(this.selectedDate);
+    window.GoogleWorkspaceSync?.syncBurned?.(this.selectedDate, updatedDay.burned || 0);
+    this.showToast(`+${delta.toLocaleString()} خطوة! إجمالي اليوم: ${newSteps.toLocaleString()} 👟`);
+    this.refreshDashboard();
+  }
+
+  initExerciseLoggerModal() {
+    const modal = document.getElementById('exercise-logger-modal');
+    if (!modal) return;
+
+    // Tab switching
+    document.getElementById('tab-btn-exercise')?.addEventListener('click', () => {
+      this.switchExerciseModalTab('exercise');
+    });
+    document.getElementById('tab-btn-steps')?.addEventListener('click', () => {
+      this.switchExerciseModalTab('steps');
+    });
+
+    // Exercise Chips Selection
+    document.querySelectorAll('.exercise-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const type = chip.dataset.type;
+        this.selectExerciseChip(type);
+      });
+    });
+
+    // Reps Stepper (+/-)
+    document.getElementById('btn-exercise-reps-minus')?.addEventListener('click', () => {
+      const input = document.getElementById('input-exercise-reps');
+      if (input) {
+        input.value = Math.max(5, (parseInt(input.value) || 30) - 5);
+        this.updateLiveExerciseImpact();
+      }
+    });
+    document.getElementById('btn-exercise-reps-plus')?.addEventListener('click', () => {
+      const input = document.getElementById('input-exercise-reps');
+      if (input) {
+        input.value = (parseInt(input.value) || 30) + 5;
+        this.updateLiveExerciseImpact();
+      }
+    });
+    document.getElementById('input-exercise-reps')?.addEventListener('input', () => {
+      this.updateLiveExerciseImpact();
+    });
+    document.querySelectorAll('.exercise-reps-preset').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const val = parseInt(btn.dataset.val);
+        const input = document.getElementById('input-exercise-reps');
+        if (input) {
+          input.value = val;
+          this.updateLiveExerciseImpact();
+        }
+      });
+    });
+
+    // Minutes Stepper (+/-)
+    document.getElementById('btn-exercise-mins-minus')?.addEventListener('click', () => {
+      const input = document.getElementById('input-exercise-minutes');
+      if (input) {
+        input.value = Math.max(5, (parseInt(input.value) || 20) - 5);
+        this.updateLiveExerciseImpact();
+      }
+    });
+    document.getElementById('btn-exercise-mins-plus')?.addEventListener('click', () => {
+      const input = document.getElementById('input-exercise-minutes');
+      if (input) {
+        input.value = (parseInt(input.value) || 20) + 5;
+        this.updateLiveExerciseImpact();
+      }
+    });
+    document.getElementById('input-exercise-minutes')?.addEventListener('input', () => {
+      this.updateLiveExerciseImpact();
+    });
+    document.querySelectorAll('.exercise-mins-preset').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const val = parseInt(btn.dataset.val);
+        const input = document.getElementById('input-exercise-minutes');
+        if (input) {
+          input.value = val;
+          this.updateLiveExerciseImpact();
+        }
+      });
+    });
+
+    // AI Analysis for Custom Exercise Button
+    document.getElementById('btn-ai-analyze-custom-exercise')?.addEventListener('click', async () => {
+      const descInput = document.getElementById('input-custom-exercise-desc');
+      const text = descInput ? descInput.value.trim() : '';
+      if (!text) {
+        this.showToast('يرجى كتابة وصف للتمرين أو النشاط أولاً ✍️');
+        return;
+      }
+      const btn = document.getElementById('btn-ai-analyze-custom-exercise');
+      const origText = btn.textContent;
+      btn.textContent = 'جاري تحليل كوتش رحيم بالذكاء الاصطناعي... ⏳';
+      btn.disabled = true;
+
+      try {
+        const profile = window.AppedietDB.getProfile();
+        const customRes = await window.ExerciseEngine.analyzeCustomExercise(text, profile.currentWeight || 95);
+        this.currentCalculatedWorkout = customRes;
+        this.displayCalculatedImpact(customRes);
+        this.showToast('تم التحليل الذكي للتمرين بنجاح! ✨');
+      } catch (err) {
+        console.error('Custom exercise AI error:', err);
+      } finally {
+        btn.textContent = origText;
+        btn.disabled = false;
+      }
+    });
+
+    // Save Workout Button
+    document.getElementById('btn-save-exercise-record')?.addEventListener('click', () => {
+      this.saveExerciseRecord();
+    });
+
+    // Steps Modal Stepper & Presets
+    document.getElementById('btn-modal-steps-minus-500')?.addEventListener('click', () => {
+      const input = document.getElementById('input-modal-steps-count');
+      if (input) {
+        input.value = Math.max(0, (parseInt(input.value) || 0) - 500);
+        this.updateLiveStepsImpact();
+      }
+    });
+    document.getElementById('btn-modal-steps-plus-500')?.addEventListener('click', () => {
+      const input = document.getElementById('input-modal-steps-count');
+      if (input) {
+        input.value = (parseInt(input.value) || 0) + 500;
+        this.updateLiveStepsImpact();
+      }
+    });
+    document.getElementById('input-modal-steps-count')?.addEventListener('input', () => {
+      this.updateLiveStepsImpact();
+    });
+    document.getElementById('input-modal-steps-goal')?.addEventListener('input', () => {
+      this.updateLiveStepsImpact();
+    });
+    document.querySelectorAll('.modal-steps-preset').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const steps = parseInt(btn.dataset.steps);
+        const input = document.getElementById('input-modal-steps-count');
+        if (input) {
+          input.value = steps;
+          this.updateLiveStepsImpact();
+        }
+      });
+    });
+
+    // Save Steps Button
+    document.getElementById('btn-save-steps-record')?.addEventListener('click', () => {
+      this.saveStepsRecord();
+    });
+
+    // Request / Re-check Hardware Sensor Permissions
+    document.getElementById('btn-request-step-sensor')?.addEventListener('click', () => {
+      if (window.AndroidStepBridge) {
+        window.AndroidStepBridge.requestStepPermissions();
+        const steps = window.AndroidStepBridge.getTodaySteps();
+        if (steps > 0) {
+          this.handleAutoStepCount(steps);
+        }
+        this.showToast(`حساس الهاتف متصل! الخطوات المسجلة: ${steps.toLocaleString()} 📱`);
+      } else {
+        this.showToast('حساس الحركة بالمتصفح يعمل تلقائياً أثناء المشي 📱');
+      }
+    });
+
+    // Close buttons
+    document.getElementById('btn-close-exercise-modal')?.addEventListener('click', () => {
+      modal.classList.remove('active');
+    });
+
+    document.getElementById('btn-close-workout-detail-modal')?.addEventListener('click', () => {
+      document.getElementById('workout-impact-details-modal')?.classList.remove('active');
+    });
+    document.getElementById('btn-close-detail-modal-done')?.addEventListener('click', () => {
+      document.getElementById('workout-impact-details-modal')?.classList.remove('active');
+    });
+  }
+
+  openExerciseLoggerModal(tab = 'exercise') {
+    const modal = document.getElementById('exercise-logger-modal');
+    if (!modal) return;
+
+    this.switchExerciseModalTab(tab);
+
+    const dayData = window.AppedietDB.getDayLog(this.selectedDate);
+    const stepsInput = document.getElementById('input-modal-steps-count');
+    if (stepsInput) stepsInput.value = dayData.steps || 0;
+    const goalInput = document.getElementById('input-modal-steps-goal');
+    if (goalInput) goalInput.value = dayData.stepGoal || 10000;
+
+    this.selectExerciseChip(this.selectedExerciseType || 'pushups');
+    this.updateLiveStepsImpact();
+
+    modal.classList.add('active');
+  }
+
+  switchExerciseModalTab(tab) {
+    this.currentExerciseTab = tab;
+    const isExercise = tab === 'exercise';
+
+    document.getElementById('tab-btn-exercise')?.classList.toggle('active', isExercise);
+    document.getElementById('tab-btn-steps')?.classList.toggle('active', !isExercise);
+
+    document.getElementById('exercise-tab-content-exercise')?.classList.toggle('hidden', !isExercise);
+    document.getElementById('exercise-tab-content-steps')?.classList.toggle('hidden', isExercise);
+
+    if (!isExercise) {
+      this.updateLiveStepsImpact();
+    }
+  }
+
+  selectExerciseChip(type) {
+    this.selectedExerciseType = type;
+    document.querySelectorAll('.exercise-chip').forEach(chip => {
+      chip.classList.toggle('active', chip.dataset.type === type);
+    });
+
+    const isCustom = type === 'custom';
+    document.getElementById('exercise-custom-input-box')?.classList.toggle('hidden', !isCustom);
+
+    const exercise = window.ExerciseEngine ? window.ExerciseEngine.getExercise(type) : null;
+    const isRepBased = exercise ? exercise.isRepBased : true;
+
+    document.getElementById('exercise-reps-container')?.classList.toggle('hidden', !isRepBased);
+    document.getElementById('exercise-duration-container')?.classList.toggle('hidden', isRepBased);
+
+    this.updateLiveExerciseImpact();
+  }
+
+  updateLiveExerciseImpact() {
+    if (!window.ExerciseEngine) return;
+    const profile = window.AppedietDB.getProfile();
+    const weight = profile.currentWeight || 95;
+
+    const repsInput = document.getElementById('input-exercise-reps');
+    const minsInput = document.getElementById('input-exercise-minutes');
+
+    const reps = repsInput ? (parseInt(repsInput.value) || 30) : 30;
+    const minutes = minsInput ? (parseInt(minsInput.value) || 20) : 20;
+
+    const res = window.ExerciseEngine.calculateExercise(this.selectedExerciseType, { reps, minutes }, weight);
+    this.currentCalculatedWorkout = res;
+    this.displayCalculatedImpact(res);
+  }
+
+  displayCalculatedImpact(res) {
+    if (!res) return;
+    document.getElementById('impact-exercise-title').textContent = res.name;
+    document.getElementById('impact-burned-kcal').textContent = `${res.burnedKcal} kcal`;
+    document.getElementById('impact-protein-needed').textContent = res.proteinNeeded;
+    document.getElementById('impact-target-muscles').textContent = res.targetMuscles;
+    document.getElementById('impact-fat-loss').textContent = `~${res.fatLossGrams} جم دهون صافية`;
+    document.getElementById('impact-post-meal').textContent = res.postWorkoutMeal;
+    document.getElementById('impact-coach-advice').textContent = res.coachAdvice;
+  }
+
+  saveExerciseRecord() {
+    this.updateLiveExerciseImpact();
+    if (!this.currentCalculatedWorkout) return;
+
+    let workout = Object.assign({}, this.currentCalculatedWorkout);
+
+    if (this.selectedExerciseType === 'custom') {
+      const customDesc = document.getElementById('input-custom-exercise-desc')?.value.trim();
+      if (customDesc) workout.name = customDesc;
+    }
+
+    const saved = window.AppedietDB.addWorkout(this.selectedDate, workout);
+    const dayData = window.AppedietDB.getDayLog(this.selectedDate);
+    window.GoogleWorkspaceSync?.syncBurned?.(this.selectedDate, dayData.burned || 0);
+
+    this.showToast(`تم تسجيل ${workout.name} (+${workout.burnedKcal} kcal) وحساب الأثر بنجاح! 🔥`);
+    document.getElementById('exercise-logger-modal')?.classList.remove('active');
+    this.refreshDashboard();
+  }
+
+  updateLiveStepsImpact() {
+    const profile = window.AppedietDB.getProfile();
+    const weight = profile.currentWeight || 95;
+    const height = profile.height || 180;
+
+    const stepsInput = document.getElementById('input-modal-steps-count');
+    const goalInput = document.getElementById('input-modal-steps-goal');
+
+    const steps = stepsInput ? Math.max(0, parseInt(stepsInput.value) || 0) : 0;
+    const goal = goalInput ? Math.max(1000, parseInt(goalInput.value) || 10000) : 10000;
+
+    const burned = window.AppedietDB.calculateStepsCalories(steps, weight, height);
+    const strideM = (height * 0.414) / 100;
+    const distanceKm = Math.round(((steps * strideM) / 1000) * 100) / 100;
+    const pct = Math.min(100, Math.round((steps / goal) * 100));
+
+    document.getElementById('modal-steps-calc-kcal').textContent = `${burned} kcal`;
+    document.getElementById('modal-steps-calc-dist').textContent = `${distanceKm} كم`;
+    document.getElementById('modal-steps-calc-pct').textContent = `${pct}%`;
+    document.getElementById('modal-steps-calc-deficit').textContent = `+${burned} kcal عجز`;
+  }
+
+  saveStepsRecord() {
+    const stepsInput = document.getElementById('input-modal-steps-count');
+    const goalInput = document.getElementById('input-modal-steps-goal');
+
+    const steps = stepsInput ? Math.max(0, parseInt(stepsInput.value) || 0) : 0;
+    const goal = goalInput ? Math.max(1000, parseInt(goalInput.value) || 10000) : 10000;
+
+    window.AppedietDB.updateSteps(this.selectedDate, steps, goal);
+    const dayData = window.AppedietDB.getDayLog(this.selectedDate);
+    window.GoogleWorkspaceSync?.syncBurned?.(this.selectedDate, dayData.burned || 0);
+
+    this.showToast(`تم حفظ خطوات اليوم (${steps.toLocaleString()} خطوة) بنجاح! 👟`);
+    document.getElementById('exercise-logger-modal')?.classList.remove('active');
+    this.refreshDashboard();
+  }
+
+  openWorkoutDetailModal(workout) {
+    const modal = document.getElementById('workout-impact-details-modal');
+    if (!modal || !workout) return;
+
+    document.getElementById('detail-workout-icon').textContent = workout.icon || '🏋️';
+    document.getElementById('detail-workout-name').textContent = workout.name;
+    document.getElementById('detail-workout-quantity').textContent = workout.isRepBased 
+      ? `${workout.reps} تكرار` 
+      : `${workout.minutes} دقيقة`;
+
+    document.getElementById('detail-workout-burned').textContent = `${workout.burnedKcal} kcal`;
+    document.getElementById('detail-workout-protein').textContent = workout.proteinNeeded || '25-30 جم';
+    document.getElementById('detail-workout-muscles').textContent = workout.targetMuscles || 'عضلات متعددة';
+    document.getElementById('detail-workout-fat').textContent = `~${workout.fatLossGrams || Math.round((workout.burnedKcal/7.7)*10)/10} جم دهون`;
+
+    document.getElementById('detail-workout-diet-impact').textContent = workout.dietGoalImpact || 'يزيد من عجز السعرات ويسرع نزول الوزن نحو 80 كجم مع الحفاظ على الكتلة العضلية.';
+    document.getElementById('detail-workout-meal').textContent = workout.postWorkoutMeal || 'وجبة متوازنة تحتوي بروتين وكارب نظيف.';
+
+    modal.classList.add('active');
   }
 
   /* ==========================================================================

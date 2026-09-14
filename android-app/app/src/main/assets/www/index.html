@@ -1,12 +1,17 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="theme-color" content="#0c0f17">
+  <meta name="theme-color" content="#f6f9fc">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Raheem Coach | تتبع السعرات وتحليل الجسم</title>
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>Raheem Coach | كوتش رحيم - تتبع السعرات والحيوية الذكي</title>
+
+  <!-- Modern Typography Fonts (Plus Jakarta Sans, Readex Pro, Tajawal) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Readex+Pro:wght@400;500;600;700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 
   <!-- PWA Manifest & Icons -->
   <link rel="manifest" href="manifest.webmanifest">
@@ -14,10 +19,10 @@
   <link rel="apple-touch-icon" href="assets/icon-192.png">
 
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="css/raheem-coach.css?v=2.0">
-  <link rel="stylesheet" href="css/appediet.css?v=2.0">
-  <link rel="stylesheet" href="css/components.css?v=2.0">
-  <link rel="stylesheet" href="css/responsive.css?v=2.0">
+  <link rel="stylesheet" href="css/appediet.css?v=2.5">
+  <link rel="stylesheet" href="css/raheem-coach.css?v=2.5">
+  <link rel="stylesheet" href="css/components.css?v=2.5">
+  <link rel="stylesheet" href="css/responsive.css?v=2.5">
 
   <script>
     if ('serviceWorker' in navigator) {
@@ -43,11 +48,15 @@
               <path d="M 52 18 C 32 18 24 38 24 58 C 24 74 38 82 50 82 C 68 82 76 66 76 46 Z" fill="#ffffff"/>
             </svg>
           </div>
-          <span class="ask-text">Ask Raheem Coach</span>
+          <span class="ask-text">Raheem Coach 🌟</span>
         </button>
       </div>
 
       <div class="header-right">
+        <!-- Dual Theme Toggle (Light / Dark) -->
+        <button class="badge-pill badge-theme-toggle" id="btn-theme-toggle" title="تبديل المظهر (فاتح / داكن)">
+          <span id="theme-toggle-icon">🌙</span>
+        </button>
         <!-- Google Account Profile Avatar Button -->
         <button class="badge-pill badge-user-profile" id="btn-user-profile" title="حسابي والملف الشخصي">
           <img id="header-user-avatar" src="" class="header-avatar-img hidden" alt="صورة حساب Google">
@@ -71,50 +80,76 @@
         <img src="assets/icon-192.png" alt="Raheem Coach" class="pwa-banner-icon" style="border-radius: 8px;">
         <div>
           <div class="pwa-banner-title">تطبيق Raheem Coach على هاتفك</div>
-          <div class="pwa-banner-sub">ثبّت التطبيق ليعمل بملء الشاشة</div>
+          <div class="pwa-banner-sub">ثبّت التطبيق ليعمل بملء الشاشة وسلاسة فائقة</div>
         </div>
       </div>
       <button class="btn-pwa-install-action" id="btn-pwa-install">تثبيت الآن</button>
     </div>
 
-    <!-- Calendar Date Strip (Matches Screenshot 4) -->
+    <!-- Calendar Date Strip (Floating Capsule Style) -->
     <div class="calendar-strip" id="calendar-strip-container">
       <!-- Injected by JavaScript -->
     </div>
 
-    <!-- VIEW 1: MAIN TRACKER DASHBOARD (Matches Screenshots 3 & 4) -->
+    <!-- VIEW 1: MAIN TRACKER DASHBOARD -->
     <main id="view-tracker" class="view-container">
+
+      <!-- Hero Greeting & Vitality Motivation Banner -->
+      <div class="hero-vitality-banner" id="hero-vitality-banner">
+        <div class="hero-banner-content">
+          <div class="hero-avatar-wrapper" id="hero-user-avatar-wrap">
+            <img id="hero-user-avatar" src="" class="hero-avatar-img hidden" alt="User">
+            <span id="hero-user-avatar-placeholder" class="hero-avatar-emoji">🌟</span>
+          </div>
+          <div class="hero-banner-text">
+            <span class="hero-salute" id="hero-greeting-salute">صباح الخير، ☀️</span>
+            <div class="hero-username" id="hero-greeting-name">بطل الصحة!</div>
+            <p class="hero-subtitle" id="hero-daily-quote">يوم جديد مليء بالحيوية لتحقيق هدفك وخسارة الوزن 🎯</p>
+          </div>
+        </div>
+        <div class="hero-badges-row">
+          <div class="vitality-badge streak-badge" id="hero-badge-streak">
+            <span>🔥</span>
+            <span id="hero-streak-text">أيام الالتزام: <strong>0</strong></span>
+          </div>
+          <div class="vitality-badge plan-badge" id="hero-badge-target">
+            <span>🥗</span>
+            <span id="hero-goal-text">الهدف: تثبيت وزن ولياقة</span>
+          </div>
+        </div>
+      </div>
 
       <!-- Budget Section Header -->
       <div class="section-title-row">
-        <h2 class="section-title">Budget</h2>
+        <h2 class="section-title">ميزانية السعرات اليومية</h2>
       </div>
 
       <!-- Budget Card (Semi-arc Radial & Macros) -->
       <div class="app-card budget-card">
         <!-- Radial Semi-Arc Gauge -->
         <div class="budget-radial-container">
-          <svg class="radial-svg" viewBox="0 0 220 125">
+          <svg class="radial-svg" viewBox="0 0 240 135">
             <defs>
               <linearGradient id="radialGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stop-color="#3b82f6" />
-                <stop offset="100%" stop-color="#60a5fa" />
+                <stop offset="0%" stop-color="#10b981" />
+                <stop offset="50%" stop-color="#0ea5e9" />
+                <stop offset="100%" stop-color="#6366f1" />
               </linearGradient>
             </defs>
             <!-- Background Arc -->
-            <path class="radial-track" d="M 20 115 A 90 90 0 0 1 200 115" />
+            <path class="radial-track" d="M 25 125 A 95 95 0 0 1 215 125" />
             <!-- Active Progress Arc -->
-            <path class="radial-progress" id="dash-radial-arc" d="M 20 115 A 90 90 0 0 1 200 115" stroke-dasharray="283" stroke-dashoffset="283" />
+            <path class="radial-progress" id="dash-radial-arc" d="M 25 125 A 95 95 0 0 1 215 125" stroke-dasharray="298" stroke-dashoffset="298" />
           </svg>
           <div class="radial-center-content">
-            <span class="radial-label">Remaining</span>
+            <span class="radial-label">المتبقي اليوم</span>
             <span class="radial-value" id="dash-remaining-kcal">1400</span>
             <div class="radial-unit">
-              <span>kcal</span>
+              <span>سعرة حرارية (kcal)</span>
               <span style="cursor: pointer; opacity: 0.8;" title="مبني على وزنك والهدف">❔</span>
             </div>
-            <div class="budget-goal-pill" id="dash-goal-kcal-badge" style="margin-top: 6px;">
-              Goal: 1400 kcal &gt;
+            <div class="budget-goal-pill" id="dash-goal-kcal-badge">
+              الهدف: 1400 سعرة 🎯
             </div>
           </div>
         </div>
@@ -124,14 +159,14 @@
           <div class="budget-side-stat">
             <div class="stat-icon-wrapper">🍴</div>
             <div class="stat-content">
-              <span class="stat-title">Eaten</span>
+              <span class="stat-title">المأكول</span>
               <span class="stat-num" id="dash-eaten-kcal">0 kcal</span>
             </div>
           </div>
           <div class="budget-side-stat">
             <div class="stat-icon-wrapper">🔥</div>
             <div class="stat-content">
-              <span class="stat-title">Burned</span>
+              <span class="stat-title">المحروق</span>
               <span class="stat-num" id="dash-burned-kcal">0 kcal</span>
             </div>
           </div>
@@ -142,7 +177,7 @@
           <!-- Carb -->
           <div class="macro-col">
             <div class="macro-header">
-              <span class="macro-name">Carb</span>
+              <span class="macro-name">كاربوهيدرات</span>
               <span class="macro-val" id="dash-carb-val">0 / 140 g</span>
             </div>
             <div class="macro-bar-track">
@@ -152,7 +187,7 @@
           <!-- Protein -->
           <div class="macro-col">
             <div class="macro-header">
-              <span class="macro-name">Protein</span>
+              <span class="macro-name">بروتين</span>
               <span class="macro-val" id="dash-protein-val">0 / 88 g</span>
             </div>
             <div class="macro-bar-track">
@@ -162,7 +197,7 @@
           <!-- Fat -->
           <div class="macro-col">
             <div class="macro-header">
-              <span class="macro-name">Fat</span>
+              <span class="macro-name">دهون صحية</span>
               <span class="macro-val" id="dash-fat-val">0 / 54 g</span>
             </div>
             <div class="macro-bar-track">
@@ -174,19 +209,19 @@
 
       <!-- Eaten Section Header -->
       <div class="section-title-row">
-        <h2 class="section-title">Eaten</h2>
+        <h2 class="section-title">سجل الوجبات اليومية</h2>
       </div>
 
-      <!-- Eaten Hero Card (Matches Screenshot 3 & 4) -->
+      <!-- Eaten Hero Card -->
       <div class="eaten-hero-card">
         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
           <div>
-            <div class="eaten-hero-title">Daily Meals & Tracking</div>
+            <div class="eaten-hero-title">الوجبات والتغذية المتوازنة 🍽️</div>
             <div class="eaten-hero-subtitle" id="eaten-health-report-link" style="cursor:pointer;" title="اضغط لفتح التقرير الأسبوعي">
               Your Health Report 📊
             </div>
           </div>
-          <button class="btn-quick-report-tag" id="btn-open-weekly-report" style="background:rgba(59,130,246,0.2); border:1px solid rgba(59,130,246,0.4); color:#93c5fd; padding:4px 10px; border-radius:20px; font-size:11px; font-weight:700; cursor:pointer;">
+          <button class="btn-quick-report-tag" id="btn-open-weekly-report">
             📊 تقرير التقييم
           </button>
         </div>
@@ -202,68 +237,136 @@
         <button class="btn-eaten-log" id="btn-eaten-log-now">Log Now</button>
 
         <!-- Logged Meals List Container (Allows clicking to review and re-edit) -->
-        <div id="dash-logged-meals-list" class="logged-meals-container" style="margin-top:14px; border-top:1px solid rgba(255,255,255,0.08); padding-top:12px; display:flex; flex-direction:column; gap:8px;">
+        <div id="dash-logged-meals-list" class="logged-meals-container">
           <!-- Dynamically populated by AppedietApp.refreshDashboard() -->
         </div>
       </div>
 
-      <!-- Burned Section Header & Card -->
+      <!-- Habits & Health Bento Section Header -->
       <div class="section-title-row">
-        <h2 class="section-title">Burned</h2>
-        <a class="section-more-link" id="link-more-burned">More &gt;</a>
-      </div>
-      <div class="app-card">
-        <div class="card-single-stat-row">
-          <span class="card-stat-label">Calories Burned</span>
-          <span class="card-stat-big-val" id="dash-calories-burned-val">0 kcal</span>
-        </div>
-        <button class="btn-card-action" id="btn-add-workout">+ Add Workout</button>
+        <h2 class="section-title">العادات والنشاط اليومي (Bento Grid)</h2>
       </div>
 
-      <!-- Water Section Header & Card (Matches Screenshot 3 & 4) -->
-      <div class="section-title-row">
-        <h2 class="section-title">Water</h2>
-        <a class="section-more-link" id="link-more-water">تعديل &gt;</a>
-      </div>
-      <div class="app-card">
-        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-          <div>
-            <div class="card-stat-label">Today's Intake</div>
-            <div class="card-stat-big-val" id="dash-water-intake-val" style="margin-top: 4px;">0 مل (0 كوب)</div>
+      <!-- 2x2 Bento Grid for Habits -->
+      <div class="habits-bento-grid">
+        
+        <!-- Bento Card 1: Automatic Step Tracker -->
+        <div class="bento-card bento-card-steps">
+          <div class="bento-card-header">
+            <div class="bento-title-wrap">
+              <span class="bento-icon">👟</span>
+              <div>
+                <div class="bento-title">عداد الخطوات</div>
+                <span id="dash-steps-auto-badge" class="bento-badge-auto">تلقائي 📱🟢</span>
+              </div>
+            </div>
+            <div class="bento-steps-metric">
+              <span class="bento-steps-kcal" id="dash-steps-kcal">🔥 0 kcal</span>
+              <span class="bento-steps-dist" id="dash-steps-distance">0.0 كم</span>
+            </div>
           </div>
-          <button class="btn-update-weight" id="btn-open-water-modal" style="background:#0284c7; color:#fff; border:none; padding:6px 12px; font-size:11.5px; border-radius:10px; cursor:pointer;">
-            💧 تعديل كمية الماء
+
+          <div class="bento-main-stat">
+            <span class="bento-stat-highlight" id="dash-steps-details">0 / 10,000 خطوة</span>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="steps-progress-track">
+            <div class="steps-progress-fill" id="dash-steps-progress-bar" style="width: 0%;"></div>
+          </div>
+
+          <!-- Quick Step Controls -->
+          <div class="steps-quick-btns">
+            <button class="btn-step-quick" id="btn-quick-step-500">+500</button>
+            <button class="btn-step-quick" id="btn-quick-step-1000">+1k</button>
+            <button class="btn-step-quick" id="btn-quick-step-2000">+2k</button>
+            <button class="btn-step-quick bento-calc-btn" id="btn-open-steps-calculator">
+              حاسبة ⚙️
+            </button>
+          </div>
+        </div>
+
+        <!-- Bento Card 2: Water Hydration Tracker -->
+        <div class="bento-card bento-card-water">
+          <div class="bento-card-header">
+            <div class="bento-title-wrap">
+              <span class="bento-icon">💧</span>
+              <div>
+                <div class="bento-title">ترطيب الجسم</div>
+                <a class="section-more-link" id="link-more-water">تعديل &gt;</a>
+              </div>
+            </div>
+            <button class="btn-bento-action" id="btn-open-water-modal">
+              💧 تعديل
+            </button>
+          </div>
+
+          <div class="bento-main-stat">
+            <div class="card-stat-label">شرب اليوم</div>
+            <div class="card-stat-big-val" id="dash-water-intake-val">0 مل (0 كوب)</div>
+          </div>
+
+          <!-- 4:00 AM to 12:00 AM Cutoff Indicator -->
+          <div id="dash-water-window-badge" class="bento-water-badge">
+            ⏱️ تسجيل من 4:00 فجراً حتى 12:00 منتصف الليل
+          </div>
+
+          <!-- 8 Glass Cups Row -->
+          <div class="water-cups-grid">
+            <div class="water-cup-item first-add" title="انقر لإضافة كوب">+</div>
+            <div class="water-cup-item" title="كوب 2"></div>
+            <div class="water-cup-item" title="كوب 3"></div>
+            <div class="water-cup-item" title="كوب 4"></div>
+            <div class="water-cup-item" title="كوب 5"></div>
+            <div class="water-cup-item" title="كوب 6"></div>
+            <div class="water-cup-item" title="كوب 7"></div>
+            <div class="water-cup-item" title="كوب 8"></div>
+          </div>
+
+          <div class="water-footer-goal" id="dash-water-goal-val">Goal: 64 fl oz (حوالي 2000 مل)</div>
+        </div>
+
+        <!-- Bento Card 3: Burned Calories & Workouts -->
+        <div class="bento-card bento-card-burned">
+          <div class="bento-card-header">
+            <div class="bento-title-wrap">
+              <span class="bento-icon">🔥</span>
+              <div>
+                <div class="bento-title">السعرات المحروقة</div>
+                <a class="section-more-link" id="link-more-burned">تفاصيل النشاط &gt;</a>
+              </div>
+            </div>
+            <span class="bento-burn-big" id="dash-calories-burned-val">0 kcal</span>
+          </div>
+
+          <div class="bento-workouts-header">
+            <span class="bento-sublabel">تمارين اليوم:</span>
+            <span class="bento-workouts-num" id="dash-workouts-count">0 تمارين</span>
+          </div>
+
+          <!-- Logged Workouts Container -->
+          <div id="dash-logged-workouts-list" class="workouts-list-container bento-scroll-list">
+            <!-- Dynamically populated -->
+          </div>
+
+          <button class="btn-card-action bento-add-workout-btn" id="btn-add-workout">
+            <span>⚡ تسجيل تمرين رياضي أو خطوات</span>
           </button>
         </div>
 
-        <!-- 4:00 AM to 12:00 AM Cutoff Indicator -->
-        <div id="dash-water-window-badge" style="background:rgba(2,132,199,0.15); border:1px solid rgba(2,132,199,0.3); border-radius:8px; padding:6px 10px; font-size:11px; color:#7dd3fc; margin:8px 0 10px 0; text-align:center; line-height:1.4;">
-          ⏱️ فترة التسجيل والتعديل اليومية نشطة (من 4:00 فجراً حتى 12:00 منتصف الليل)
-        </div>
+        <!-- Bento Card 4: Weight & Goals -->
+        <div class="bento-card bento-card-weight">
+          <div class="bento-card-header">
+            <div class="bento-title-wrap">
+              <span class="bento-icon">⚖️</span>
+              <div>
+                <div class="bento-title">الوزن الحالي</div>
+                <a class="section-more-link" id="link-more-weight">More &gt;</a>
+              </div>
+            </div>
+            <button class="btn-bento-action" id="btn-update-weight-modal">+ تحديث</button>
+          </div>
 
-        <!-- 8 Glass Cups Row -->
-        <div class="water-cups-grid">
-          <div class="water-cup-item first-add" title="انقر لإضافة كوب">+</div>
-          <div class="water-cup-item" title="كوب 2"></div>
-          <div class="water-cup-item" title="كوب 3"></div>
-          <div class="water-cup-item" title="كوب 4"></div>
-          <div class="water-cup-item" title="كوب 5"></div>
-          <div class="water-cup-item" title="كوب 6"></div>
-          <div class="water-cup-item" title="كوب 7"></div>
-          <div class="water-cup-item" title="كوب 8"></div>
-        </div>
-
-        <div class="water-footer-goal" id="dash-water-goal-val">Goal: 64 fl oz (حوالي 2000 مل)</div>
-      </div>
-
-      <!-- Weight Section Header & Card (Matches Screenshot 3 & 4) -->
-      <div class="section-title-row">
-        <h2 class="section-title">Weight</h2>
-        <a class="section-more-link" id="link-more-weight">More &gt;</a>
-      </div>
-      <div class="app-card">
-        <span class="card-stat-label">Current Weight</span>
-        <div class="weight-row-main">
           <div class="weight-current-block">
             <div class="weight-val-unit">
               <span class="weight-number" id="dash-current-weight-val">95</span>
@@ -271,22 +374,22 @@
             </div>
             <span class="weight-bmi-badge" id="dash-weight-bmi">BMI: 29.3</span>
           </div>
-          <button class="btn-update-weight" id="btn-update-weight-modal">+ Update Weight</button>
+
+          <div class="weight-footer-goals">
+            <span id="dash-goal-weight-val">Goal Weight: 80 kg</span>
+            <span id="dash-weight-to-lose-val">Weight to Lose: 15 kg</span>
+          </div>
         </div>
 
-        <div class="weight-footer-goals">
-          <span id="dash-goal-weight-val">Goal Weight: 80 kg</span>
-          <span id="dash-weight-to-lose-val">Weight to Lose: 15 kg</span>
-        </div>
       </div>
 
-      <!-- Mood Section Header & Card (Matches Screenshot 3) -->
+      <!-- Mood Section Header & Card -->
       <div class="section-title-row">
-        <h2 class="section-title">Mood</h2>
+        <h2 class="section-title">الحالة النفسية والمزاج (Mood)</h2>
         <a class="section-more-link" id="link-more-mood">More &gt;</a>
       </div>
       <div class="app-card mood-card">
-        <div class="mood-title-ask">How are you feeling right now?</div>
+        <div class="mood-title-ask">كيف تشعر اليوم يا بطل؟</div>
 
         <!-- Mascot Cartoon Blobs Graphic -->
         <div class="mood-mascots-preview">
@@ -312,7 +415,7 @@
           </svg>
         </div>
 
-        <button class="btn-log-feeling" id="btn-log-feeling-modal">+ Log Feeling</button>
+        <button class="btn-log-feeling" id="btn-log-feeling-modal">+ تسجيل المزاج</button>
       </div>
 
     </main>
@@ -922,6 +1025,15 @@
           </p>
         </div>
 
+        <!-- Calorie & Macro Calculator Re-run button -->
+        <div style="background: linear-gradient(135deg, rgba(14, 165, 233, 0.15), rgba(99, 102, 241, 0.15)); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 12px; padding: 12px; display: flex; align-items: center; justify-content: space-between;">
+          <div>
+            <div style="font-weight: 700; color: #fff; font-size: 13px;">🎯 استبيان وحاسبة السعرات والماكروز</div>
+            <div style="font-size: 11px; color: #94a3b8;">إعادة حساب BMR و TDEE وتقسيم الجرامات بدقة</div>
+          </div>
+          <button id="btn-reopen-onboarding" class="dialog-btn-primary" style="padding: 7px 14px; font-size: 12px; border-radius: 8px;">فتح الاستبيان 🚀</button>
+        </div>
+
         <!-- Google Gemini API Key Section -->
         <div style="background:#131722; border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:8px;">
           <label style="color:#94a3b8; font-size:11.5px; font-weight:600;">مفتاح Google Gemini API:</label>
@@ -1215,19 +1327,578 @@
     </div>
   </div>
 
+  <!-- ==========================================================================
+       MODAL: EXERCISE LOGGER & STEPS CALCULATOR
+       ========================================================================== -->
+  <div class="dialog-modal-overlay" id="exercise-logger-modal">
+    <div style="background:#0e1422; border:1px solid rgba(59,130,246,0.35); border-radius:22px; width:94%; max-width:460px; max-height:90vh; overflow-y:auto; padding:20px 16px; box-shadow:0 20px 60px rgba(0,0,0,0.85); color:#fff; position:relative;">
+      
+      <!-- Modal Header -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:22px;">⚡</span>
+          <div>
+            <h3 style="font-size:16px; font-weight:800; color:#fff;" id="exercise-modal-title">النشاط الرياضي والخطوات</h3>
+            <span style="font-size:11px; color:#94a3b8;" id="exercise-modal-subtitle">حساب السعرات وتحليل الأثر على الدايت والهدف</span>
+          </div>
+        </div>
+        <button class="dialog-close-btn" id="btn-close-exercise-modal">✕</button>
+      </div>
+
+      <!-- Tabs Navigation: Exercise vs Steps -->
+      <div class="exercise-modal-tabs">
+        <button type="button" class="exercise-tab-btn active" id="tab-btn-exercise" data-tab="exercise">
+          <span>🏋️‍♂️</span>
+          <span>تسجيل تمرين رياضي</span>
+        </button>
+        <button type="button" class="exercise-tab-btn" id="tab-btn-steps" data-tab="steps">
+          <span>👟</span>
+          <span>حاسبة الخطوات اليومية</span>
+        </button>
+      </div>
+
+      <!-- ================= TAB 1: EXERCISE LOGGER ================= -->
+      <div id="exercise-tab-content-exercise">
+        <!-- Quick Select Exercise Chips -->
+        <div style="font-size:12px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">اختر التمرين:</div>
+        <div class="exercise-chips-grid" id="exercise-chips-grid">
+          <div class="exercise-chip active" data-type="pushups">
+            <span class="chip-icon">🤸</span>
+            <span class="chip-label">تمارين ضغط</span>
+          </div>
+          <div class="exercise-chip" data-type="pullups">
+            <span class="chip-icon">🏋️‍♀️</span>
+            <span class="chip-label">عقلة</span>
+          </div>
+          <div class="exercise-chip" data-type="squats">
+            <span class="chip-icon">🦵</span>
+            <span class="chip-label">سكوات (قرفصاء)</span>
+          </div>
+          <div class="exercise-chip" data-type="running">
+            <span class="chip-icon">🏃‍♂️</span>
+            <span class="chip-label">جري</span>
+          </div>
+          <div class="exercise-chip" data-type="walking">
+            <span class="chip-icon">🚶‍♂️</span>
+            <span class="chip-label">مشي سريع</span>
+          </div>
+          <div class="exercise-chip" data-type="cycling">
+            <span class="chip-icon">🚴‍♂️</span>
+            <span class="chip-label">دراجة</span>
+          </div>
+          <div class="exercise-chip" data-type="plank">
+            <span class="chip-icon">⏱️</span>
+            <span class="chip-label">بلانك</span>
+          </div>
+          <div class="exercise-chip" data-type="jump_rope">
+            <span class="chip-icon">🪢</span>
+            <span class="chip-label">نط حبل</span>
+          </div>
+          <div class="exercise-chip" data-type="gym_weights">
+            <span class="chip-icon">🏋️</span>
+            <span class="chip-label">حديد وجيم</span>
+          </div>
+          <div class="exercise-chip" data-type="custom" style="grid-column: span 3;">
+            <span class="chip-icon">✍️</span>
+            <span class="chip-label">تمرين مخصص آخر (أو نشاط حر)</span>
+          </div>
+        </div>
+
+        <!-- Custom Exercise Description Input (Hidden by default) -->
+        <div id="exercise-custom-input-box" class="hidden" style="background:#131926; border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:10px; margin-bottom:10px;">
+          <label style="font-size:11.5px; color:#94a3b8; display:block; margin-bottom:4px;">صف التمرين أو النشاط (مثال: لعبت ماتش كورة 45 دقيقة):</label>
+          <input type="text" id="input-custom-exercise-desc" placeholder="اكتب اسم التمرين أو النشاط..." style="width:100%; background:#0a0f1d; border:1px solid rgba(255,255,255,0.15); color:#fff; border-radius:8px; padding:8px 10px; font-size:12px; direction:rtl;">
+          <button type="button" id="btn-ai-analyze-custom-exercise" style="width:100%; margin-top:8px; background:linear-gradient(135deg, #3b82f6, #2563eb); border:none; border-radius:8px; padding:7px; color:#fff; font-size:11.5px; font-weight:700; cursor:pointer;">
+            ✨ تحليل التمرين بالذكاء الاصطناعي
+          </button>
+        </div>
+
+        <!-- Quantity Input: Reps vs Duration (Switches dynamically) -->
+        <div style="background:#131926; border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:12px; margin-bottom:12px;">
+          <!-- Reps Container -->
+          <div id="exercise-reps-container">
+            <label style="font-size:11.5px; color:#94a3b8; display:block; margin-bottom:6px; text-align:center;">عدد التكرارات (Reps):</label>
+            <div style="display:flex; align-items:center; justify-content:center; gap:12px;">
+              <button type="button" id="btn-exercise-reps-minus" style="background:#1e293b; color:#fff; border:none; width:38px; height:38px; border-radius:50%; font-size:18px; font-weight:800; cursor:pointer;">-</button>
+              <input type="number" id="input-exercise-reps" value="30" min="1" max="1000" style="width:90px; background:#0a0f1d; border:1px solid rgba(59,130,246,0.3); color:#38bdf8; font-size:22px; font-weight:800; text-align:center; border-radius:10px; padding:6px;">
+              <button type="button" id="btn-exercise-reps-plus" style="background:#1e293b; color:#fff; border:none; width:38px; height:38px; border-radius:50%; font-size:18px; font-weight:800; cursor:pointer;">+</button>
+            </div>
+            <!-- Presets -->
+            <div style="display:flex; justify-content:center; gap:6px; margin-top:8px;">
+              <button type="button" class="btn-step-quick exercise-reps-preset" data-val="15">15 تكرار</button>
+              <button type="button" class="btn-step-quick exercise-reps-preset" data-val="30">30 تكرار</button>
+              <button type="button" class="btn-step-quick exercise-reps-preset" data-val="50">50 تكرار</button>
+              <button type="button" class="btn-step-quick exercise-reps-preset" data-val="100">100 تكرار</button>
+            </div>
+          </div>
+
+          <!-- Duration Container -->
+          <div id="exercise-duration-container" class="hidden">
+            <label style="font-size:11.5px; color:#94a3b8; display:block; margin-bottom:6px; text-align:center;">المدة بالدقائق (Minutes):</label>
+            <div style="display:flex; align-items:center; justify-content:center; gap:12px;">
+              <button type="button" id="btn-exercise-mins-minus" style="background:#1e293b; color:#fff; border:none; width:38px; height:38px; border-radius:50%; font-size:18px; font-weight:800; cursor:pointer;">-</button>
+              <input type="number" id="input-exercise-minutes" value="20" min="1" max="300" style="width:90px; background:#0a0f1d; border:1px solid rgba(59,130,246,0.3); color:#38bdf8; font-size:22px; font-weight:800; text-align:center; border-radius:10px; padding:6px;">
+              <button type="button" id="btn-exercise-mins-plus" style="background:#1e293b; color:#fff; border:none; width:38px; height:38px; border-radius:50%; font-size:18px; font-weight:800; cursor:pointer;">+</button>
+            </div>
+            <!-- Presets -->
+            <div style="display:flex; justify-content:center; gap:6px; margin-top:8px;">
+              <button type="button" class="btn-step-quick exercise-mins-preset" data-val="15">15 دقيقة</button>
+              <button type="button" class="btn-step-quick exercise-mins-preset" data-val="30">30 دقيقة</button>
+              <button type="button" class="btn-step-quick exercise-mins-preset" data-val="45">45 دقيقة</button>
+              <button type="button" class="btn-step-quick exercise-mins-preset" data-val="60">60 دقيقة</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Diet & Goal Impact Card -->
+        <div class="exercise-impact-card" id="exercise-live-impact-card">
+          <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:8px;">
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span style="font-size:18px;">💡</span>
+              <span style="font-size:13px; font-weight:800; color:#60a5fa;">أثر التمرين على الدايت والهدف:</span>
+            </div>
+            <span style="background:rgba(59,130,246,0.2); color:#93c5fd; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:700;" id="impact-exercise-title">تمارين ضغط</span>
+          </div>
+
+          <!-- Impact Badges 2x2 Grid -->
+          <div class="impact-badge-grid">
+            <div class="impact-badge-item">
+              <span class="badge-label">🔥 السعرات المحروقة المقدرة</span>
+              <span class="badge-value" style="color:#f59e0b;" id="impact-burned-kcal">0 kcal</span>
+            </div>
+            <div class="impact-badge-item">
+              <span class="badge-label">🥩 بروتين الاستشفاء المطلوب</span>
+              <span class="badge-value" style="color:#34d399;" id="impact-protein-needed">20-25 جم</span>
+            </div>
+            <div class="impact-badge-item">
+              <span class="badge-label">🎯 العضلات المستهدفة</span>
+              <span class="badge-value" style="color:#38bdf8; font-size:12px;" id="impact-target-muscles">صدر، ترايسبس، أكتاف</span>
+            </div>
+            <div class="impact-badge-item">
+              <span class="badge-label">📉 تسريع حرق الدهون</span>
+              <span class="badge-value" style="color:#ec4899;" id="impact-fat-loss">~0 جم دهون صافية</span>
+            </div>
+          </div>
+
+          <!-- Post-workout Nutrition & Coach Advice -->
+          <div style="background:rgba(0,0,0,0.25); border-radius:10px; padding:8px 10px; font-size:11.5px; line-height:1.5;">
+            <div style="color:#7dd3fc; font-weight:700; margin-bottom:2px;">🥗 أنسب وجبة بعد التمرين:</div>
+            <div style="color:#cbd5e1;" id="impact-post-meal">وجبة بروتينية مع كارب معتدل (مثال: صدور دجاج مع أرز أو تونة مع خبز أسمر).</div>
+          </div>
+          <div style="background:rgba(37,99,235,0.1); border:1px solid rgba(59,130,246,0.2); border-radius:10px; padding:8px 10px; font-size:11.5px; line-height:1.5;">
+            <div style="color:#93c5fd; font-weight:700; margin-bottom:2px;">💬 نصيحة كوتش رحيم:</div>
+            <div style="color:#e2e8f0;" id="impact-coach-advice">التمرين يزيد من عجز السعرات ويحافظ على كتلتك العضلية أثناء نزول الوزن نحو 80 كجم.</div>
+          </div>
+        </div>
+
+        <!-- Save Button -->
+        <button type="button" class="dialog-btn-primary" id="btn-save-exercise-record" style="width:100%; margin-top:14px; padding:12px; font-size:13.5px; border-radius:14px;">
+          حفظ التمرين وإضافته لميزانية اليوم 🔥
+        </button>
+      </div>
+
+      <!-- ================= TAB 2: STEPS CALCULATOR ================= -->
+      <div id="exercise-tab-content-steps" class="hidden">
+        <!-- Hardware Sensor Status Card -->
+        <div id="steps-sensor-status-card" style="background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.25); border-radius:12px; padding:10px 12px; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:20px;">📱</span>
+            <div>
+              <span style="font-size:12px; font-weight:700; color:#6ee7b7; display:block;">حساس الخطوات التلقائي بالهاتف</span>
+              <span style="font-size:10.5px; color:#94a3b8;" id="steps-sensor-status-text">التتبع الآلي بالخلفية نشط (StepCounterService)</span>
+            </div>
+          </div>
+          <button type="button" id="btn-request-step-sensor" style="background:rgba(16,185,129,0.2); border:1px solid rgba(16,185,129,0.4); color:#a7f3d0; border-radius:8px; padding:5px 10px; font-size:11px; font-weight:700; cursor:pointer;">
+            إعادة الفحص 🔄
+          </button>
+        </div>
+
+        <div style="background:#131926; border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:14px; margin-bottom:12px; text-align:center;">
+          <label style="font-size:12px; color:#94a3b8; display:block; margin-bottom:6px;">إجمالي خطوات اليوم (Steps):</label>
+          <div style="display:flex; align-items:center; justify-content:center; gap:12px;">
+            <button type="button" id="btn-modal-steps-minus-500" style="background:#1e293b; color:#fff; border:none; width:40px; height:40px; border-radius:50%; font-size:18px; font-weight:800; cursor:pointer;">-500</button>
+            <input type="number" id="input-modal-steps-count" value="0" min="0" max="100000" step="100" style="width:130px; background:#0a0f1d; border:1px solid rgba(59,130,246,0.4); color:#38bdf8; font-size:24px; font-weight:800; text-align:center; border-radius:10px; padding:6px;">
+            <button type="button" id="btn-modal-steps-plus-500" style="background:#1e293b; color:#fff; border:none; width:40px; height:40px; border-radius:50%; font-size:18px; font-weight:800; cursor:pointer;">+500</button>
+          </div>
+
+          <!-- Quick Presets -->
+          <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:6px; margin-top:12px;">
+            <button type="button" class="btn-step-quick modal-steps-preset" data-steps="3000">3,000</button>
+            <button type="button" class="btn-step-quick modal-steps-preset" data-steps="5000">5,000</button>
+            <button type="button" class="btn-step-quick modal-steps-preset" data-steps="8000">8,000</button>
+            <button type="button" class="btn-step-quick modal-steps-preset" data-steps="10000">10,000</button>
+            <button type="button" class="btn-step-quick modal-steps-preset" data-steps="12000">12,000</button>
+          </div>
+        </div>
+
+        <!-- Goal Setting -->
+        <div style="display:flex; align-items:center; justify-content:space-between; background:#131926; border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:10px 14px; margin-bottom:12px;">
+          <span style="font-size:12px; color:#cbd5e1; font-weight:600;">الهدف اليومي للخطوات:</span>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <input type="number" id="input-modal-steps-goal" value="10000" step="500" min="1000" max="50000" style="width:85px; background:#0a0f1d; border:1px solid rgba(255,255,255,0.15); color:#fff; font-size:13px; font-weight:700; text-align:center; border-radius:8px; padding:4px;">
+            <span style="font-size:11px; color:#94a3b8;">خطوة</span>
+          </div>
+        </div>
+
+        <!-- Scientific Calculation Breakdown Box -->
+        <div style="background:linear-gradient(135deg, #0e1526, #111a2f); border:1px solid rgba(16,185,129,0.3); border-radius:14px; padding:12px; margin-bottom:12px;">
+          <div style="font-size:12px; font-weight:700; color:#34d399; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+            <span>🔬</span>
+            <span>التحليل العلمي للخطوات (بناءً على طولك ووزنك الحالي):</span>
+          </div>
+          <div class="impact-badge-grid">
+            <div class="impact-badge-item">
+              <span class="badge-label">🔥 السعرات المحروقة</span>
+              <span class="badge-value" style="color:#f59e0b;" id="modal-steps-calc-kcal">0 kcal</span>
+            </div>
+            <div class="impact-badge-item">
+              <span class="badge-label">📏 المسافة المقدرة</span>
+              <span class="badge-value" style="color:#38bdf8;" id="modal-steps-calc-dist">0.0 كم</span>
+            </div>
+            <div class="impact-badge-item">
+              <span class="badge-label">🎯 إنجاز الهدف اليومي</span>
+              <span class="badge-value" style="color:#10b981;" id="modal-steps-calc-pct">0%</span>
+            </div>
+            <div class="impact-badge-item">
+              <span class="badge-label">📉 عجز إضافي للدايت</span>
+              <span class="badge-value" style="color:#a78bfa;" id="modal-steps-calc-deficit">+0 kcal</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Save Steps Button -->
+        <button type="button" class="dialog-btn-primary" id="btn-save-steps-record" style="width:100%; padding:12px; font-size:13.5px; background:linear-gradient(135deg, #10b981, #059669); border-radius:14px;">
+          حفظ وتحديث الخطوات لليوم 👟
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL: WORKOUT IMPACT & DIET DETAILS (View Any Logged Workout)
+       ========================================================================== -->
+  <div class="dialog-modal-overlay" id="workout-impact-details-modal">
+    <div style="background:#0e1422; border:1px solid rgba(59,130,246,0.4); border-radius:22px; width:92%; max-width:420px; max-height:85vh; overflow-y:auto; padding:20px 16px; box-shadow:0 20px 60px rgba(0,0,0,0.85); color:#fff; position:relative;">
+      
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:10px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:22px;" id="detail-workout-icon">🏋️</span>
+          <div>
+            <h3 style="font-size:15px; font-weight:800; color:#fff;" id="detail-workout-name">تفاصيل التمرين</h3>
+            <span style="font-size:11px; color:#38bdf8;" id="detail-workout-quantity">30 تكرار</span>
+          </div>
+        </div>
+        <button class="dialog-close-btn" id="btn-close-workout-detail-modal">✕</button>
+      </div>
+
+      <!-- Detail Badges -->
+      <div class="impact-badge-grid" style="margin-bottom:12px;">
+        <div class="impact-badge-item">
+          <span class="badge-label">السعرات المحروقة</span>
+          <span class="badge-value" style="color:#f59e0b;" id="detail-workout-burned">0 kcal</span>
+        </div>
+        <div class="impact-badge-item">
+          <span class="badge-label">احتياج البروتين</span>
+          <span class="badge-value" style="color:#34d399;" id="detail-workout-protein">25-30 جم</span>
+        </div>
+        <div class="impact-badge-item">
+          <span class="badge-label">العضلات المشتركة</span>
+          <span class="badge-value" style="color:#38bdf8; font-size:12px;" id="detail-workout-muscles">الصدر والذراعين</span>
+        </div>
+        <div class="impact-badge-item">
+          <span class="badge-label">حرق دهون صافية</span>
+          <span class="badge-value" style="color:#ec4899;" id="detail-workout-fat">~3 جم دهون</span>
+        </div>
+      </div>
+
+      <!-- Diet Impact Summary -->
+      <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:12px; font-size:12px; line-height:1.6; margin-bottom:12px; color:#cbd5e1;">
+        <div style="font-weight:700; color:#60a5fa; margin-bottom:4px;">🎯 الأثر على خطتك للوصول إلى 80 كجم:</div>
+        <div id="detail-workout-diet-impact">هذا التمرين يدعم عجز السعرات ويحمي العضلات من الهدم.</div>
+      </div>
+
+      <!-- Meal Suggestion -->
+      <div style="background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.25); border-radius:12px; padding:12px; font-size:12px; line-height:1.6; margin-bottom:14px;">
+        <div style="font-weight:700; color:#34d399; margin-bottom:4px;">🥗 الوجبة المقترحة للاستشفاء:</div>
+        <div id="detail-workout-meal" style="color:#e2e8f0;">سكوب بروتين أو بيض مسلوق + مصدر كارب نظيف.</div>
+      </div>
+
+      <button type="button" class="dialog-btn-primary" id="btn-close-detail-modal-done" style="width:100%; padding:11px; font-size:13px; border-radius:12px;">
+        إغلاق واستمرار في التمرين 🚀
+      </button>
+
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL: ONBOARDING & SMART MACRO / CALORIE CALCULATOR WIZARD
+       ========================================================================== -->
+  <div class="dialog-modal-overlay" id="onboarding-quiz-modal">
+    <div class="coach-modal-container wizard-modal-container" style="max-height: 90vh; overflow-y: auto;">
+      <!-- Header -->
+      <div class="coach-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:22px;">🎯</span>
+          <div>
+            <div style="font-size:15px; font-weight:800; color:#fff;">حاسبة السعرات وتوزيع الماكروز</div>
+            <div style="font-size:11px; color:#38bdf8;" id="wizard-step-counter">الخطوة 1 من 5</div>
+          </div>
+        </div>
+        <button class="dialog-close-btn" id="btn-close-onboarding" title="إغلاق">✕</button>
+      </div>
+
+      <!-- Top Wizard Progress Bar -->
+      <div class="wizard-progress-track">
+        <div class="wizard-progress-fill" id="wizard-progress-bar-fill" style="width: 20%;"></div>
+      </div>
+
+      <!-- Wizard Body Container -->
+      <div class="wizard-body-content">
+
+        <!-- STEP 1: Basic Stats (Gender, Age, Height, Weight) -->
+        <div class="wizard-step-pane active" id="wizard-step-1">
+          <h3 class="wizard-step-title">1. بياناتك الجسدية الأساسية 📏</h3>
+          <p class="wizard-step-desc">لحساب معدل الحرق الأساسي لجسمك بدقة متناهية (معادلة Mifflin-St Jeor العلمية):</p>
+
+          <!-- Gender Cards -->
+          <div class="wizard-cards-grid two-cols">
+            <div class="wizard-select-card gender-select-card selected" data-gender="male">
+              <span class="card-icon">👨</span>
+              <span class="card-title">ذكر</span>
+            </div>
+            <div class="wizard-select-card gender-select-card" data-gender="female">
+              <span class="card-icon">👩</span>
+              <span class="card-title">أنثى</span>
+            </div>
+          </div>
+
+          <!-- Numeric Inputs Grid -->
+          <div class="wizard-inputs-grid">
+            <div class="wizard-input-group">
+              <label>العمر (سنة)</label>
+              <input type="number" id="wizard-input-age" value="25" min="14" max="99">
+            </div>
+            <div class="wizard-input-group">
+              <label>الطول (سم)</label>
+              <input type="number" id="wizard-input-height" value="175" min="110" max="230">
+            </div>
+            <div class="wizard-input-group full-width">
+              <label>الوزن الحالي (كجم)</label>
+              <input type="number" id="wizard-input-weight" value="80" step="0.5" min="30" max="250">
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 2: Activity Level -->
+        <div class="wizard-step-pane" id="wizard-step-2">
+          <h3 class="wizard-step-title">2. ما هو مستوى نشاطك الحقيقي؟ ⚡</h3>
+          <p class="wizard-step-desc">حدد نمط حركتك الأسبوعي لحساب إجمالي الطاقة المستهلكة (TDEE):</p>
+
+          <div class="wizard-cards-stack">
+            <div class="wizard-select-card activity-select-card" data-activity="sedentary">
+              <span class="card-icon">🛋️</span>
+              <div class="card-info">
+                <span class="card-title">خامل / قليل الحركة جداً</span>
+                <span class="card-desc">عمل مكتبي أو جلوس مستمر، بدون تمارين منتظمة</span>
+              </div>
+            </div>
+            <div class="wizard-select-card activity-select-card" data-activity="light">
+              <span class="card-icon">🚶</span>
+              <div class="card-info">
+                <span class="card-title">نشاط خفيف</span>
+                <span class="card-desc">مشي يومي أو تمارين خفيفة 1-3 أيام أسبوعياً</span>
+              </div>
+            </div>
+            <div class="wizard-select-card activity-select-card selected" data-activity="moderate">
+              <span class="card-icon">🏃</span>
+              <div class="card-info">
+                <span class="card-title">نشاط متوسط (جيم / تمارين)</span>
+                <span class="card-desc">تمارين مقاومة أو لياقة 3-5 أيام أسبوعياً</span>
+              </div>
+            </div>
+            <div class="wizard-select-card activity-select-card" data-activity="active">
+              <span class="card-icon">🔥</span>
+              <div class="card-info">
+                <span class="card-title">نشاط عالي / رياضي شاق</span>
+                <span class="card-desc">تدريب مكثف أو عمل بدني شاق 6-7 أيام أسبوعياً</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 3: Primary Goal -->
+        <div class="wizard-step-pane" id="wizard-step-3">
+          <h3 class="wizard-step-title">3. ما هو هدفك البدني الأساسي؟ 🎯</h3>
+          <p class="wizard-step-desc">سنحدد عجز أو فائض السعرات الأنسب للوصول إلى هدفك:</p>
+
+          <div class="wizard-cards-stack">
+            <div class="wizard-select-card goal-select-card selected" data-goal="lose">
+              <span class="card-icon">📉</span>
+              <div class="card-info">
+                <span class="card-title">خسارة دهون وتنشيف</span>
+                <span class="card-desc">عجز صحي 500 سعرة يومياً لحرق الدهون مع الحفاظ على العضلات</span>
+              </div>
+            </div>
+            <div class="wizard-select-card goal-select-card" data-goal="maintain">
+              <span class="card-icon">⚖️</span>
+              <div class="card-info">
+                <span class="card-title">تثبيت الوزن وتحسين القوام</span>
+                <span class="card-desc">تناول سعرات الثبات الكاملة مع بناء القوة والنشاط</span>
+              </div>
+            </div>
+            <div class="wizard-select-card goal-select-card" data-goal="gain">
+              <span class="card-icon">🏋️</span>
+              <div class="card-info">
+                <span class="card-title">زيادة وزن وبناء كتلة عضلية</span>
+                <span class="card-desc">فائض محسوب 350 سعرة لدعم تضخيم العضلات النقي</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="wizard-input-group" style="margin-top:12px;">
+            <label>الوزن المستهدف (كجم):</label>
+            <input type="number" id="wizard-input-goal-weight" value="75" step="0.5" min="30" max="250">
+          </div>
+        </div>
+
+        <!-- STEP 4: Macro Style -->
+        <div class="wizard-step-pane" id="wizard-step-4">
+          <h3 class="wizard-step-title">4. أسلوب توزيع المغذيات الكبرى (Macros) 🥗</h3>
+          <p class="wizard-step-desc">اختر النمط الغذائي الأنسب لجسمك وأسلوب حياتك الرياضي:</p>
+
+          <div class="wizard-cards-stack">
+            <div class="wizard-select-card macro-select-card selected" data-macro="high_protein">
+              <span class="card-icon">🥩</span>
+              <div class="card-info">
+                <span class="card-title">نمط رياضي عالي البروتين (High Protein)</span>
+                <span class="card-desc">2.0 جم بروتين لكل كجم وزن، حماية عضلية كاملة وسد الشهية، 25% دهون، والباقي كارب</span>
+              </div>
+            </div>
+            <div class="wizard-select-card macro-select-card" data-macro="balanced">
+              <span class="card-icon">⚖️</span>
+              <div class="card-info">
+                <span class="card-title">نمط متوازن مرن (Balanced 40/30/30)</span>
+                <span class="card-desc">30% بروتين، 40% كاربوهيدرات معقدة، 30% دهون صحية</span>
+              </div>
+            </div>
+            <div class="wizard-select-card macro-select-card" data-macro="low_carb">
+              <span class="card-icon">🥑</span>
+              <div class="card-info">
+                <span class="card-title">نمط قليل الكاربوهيدرات (Low-Carb / Keto)</span>
+                <span class="card-desc">25% بروتين، 10% كارب، 65% دهون صحية</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 5: Results & Confirmation -->
+        <div class="wizard-step-pane" id="wizard-step-5">
+          <h3 class="wizard-step-title">5. خطتك الغذائية العلمية المحسوبة 📊</h3>
+          <p class="wizard-step-desc">إليك أرقامك الدقيقة المحسوبة خصيصاً لجسمك وهدفك:</p>
+
+          <!-- Main Target Kcal Display -->
+          <div class="wizard-result-hero">
+            <span class="res-subtitle">هدفك اليومي الموصى به:</span>
+            <div class="res-calories-val" id="res-target-kcal">1850 سعرة</div>
+            <div class="res-badge" id="res-goal-badge">عجز صحي 500 سعرة لنزول الوزن</div>
+          </div>
+
+          <!-- BMR vs TDEE Stats -->
+          <div class="wizard-meta-stats-row">
+            <div class="meta-stat-box">
+              <span class="meta-label">معدل الأيض الأساسي (BMR)</span>
+              <span class="meta-val" id="res-bmr-val">1720 kcal</span>
+            </div>
+            <div class="meta-stat-box">
+              <span class="meta-label">إجمالي حرقك بالنشاط (TDEE)</span>
+              <span class="meta-val" id="res-tdee-val">2350 kcal</span>
+            </div>
+          </div>
+
+          <!-- 3 Macros Breakdown Cards -->
+          <div class="wizard-macros-container">
+            <!-- Protein -->
+            <div class="res-macro-row">
+              <div class="res-macro-info">
+                <span class="res-macro-title">🍗 البروتين (بناء وحماية العضلات)</span>
+                <span class="res-macro-qty" id="res-protein-val">160 جم</span>
+              </div>
+              <div class="res-macro-track">
+                <div class="res-macro-fill protein" id="res-protein-bar" style="width: 35%;"></div>
+              </div>
+              <span class="res-macro-kcal" id="res-protein-kcal">640 kcal (35%)</span>
+            </div>
+
+            <!-- Carbs -->
+            <div class="res-macro-row">
+              <div class="res-macro-info">
+                <span class="res-macro-title">🥔 الكاربوهيدرات (طاقة التدريب)</span>
+                <span class="res-macro-qty" id="res-carb-val">170 جم</span>
+              </div>
+              <div class="res-macro-track">
+                <div class="res-macro-fill carb" id="res-carb-bar" style="width: 40%;"></div>
+              </div>
+              <span class="res-macro-kcal" id="res-carb-kcal">680 kcal (40%)</span>
+            </div>
+
+            <!-- Fat -->
+            <div class="res-macro-row">
+              <div class="res-macro-info">
+                <span class="res-macro-title">🥑 الدهون الصحية (دعم الهرمونات)</span>
+                <span class="res-macro-qty" id="res-fat-val">53 جم</span>
+              </div>
+              <div class="res-macro-track">
+                <div class="res-macro-fill fat" id="res-fat-bar" style="width: 25%;"></div>
+              </div>
+              <span class="res-macro-kcal" id="res-fat-kcal">477 kcal (25%)</span>
+            </div>
+          </div>
+
+          <!-- Water Recommendation -->
+          <div class="res-water-box">
+            <span>💧</span>
+            <div>
+              <div style="font-weight:700; font-size:12px; color:#38bdf8;">الاحتياج اليومي للماء:</div>
+              <div id="res-water-val" style="font-size:13px; font-weight:800; color:#fff;">2800 مل (~11 كوب)</div>
+            </div>
+          </div>
+
+          <!-- Coach Guidance Advice Box -->
+          <div class="res-coach-advice-box" id="res-coach-advice">
+            🎯 <strong>توجيه كوتش رحيم:</strong> خطة ممتازة ومتوازنة! تذكر أن أي سعرات تحرقها بالتمارين أو المشي هي لتعميق عجز الدهون ولن تُضاف لطعامك.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer Action Buttons -->
+      <div class="wizard-footer-actions">
+        <button type="button" class="wizard-btn-prev" id="btn-wizard-prev">السابق ➡️</button>
+        <button type="button" class="dialog-btn-primary wizard-btn-next" id="btn-wizard-next">التالي ⬅️</button>
+        <button type="button" class="dialog-btn-primary wizard-btn-apply" id="btn-wizard-apply-plan" style="display:none;">
+          اعتماد الخطة وحفظها في حسابي 🚀
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div id="toast-container"></div>
 
   <!-- Application Scripts with Cache-Busters -->
-  <script src="js/storage.js?v=2.2"></script>
-  <script src="js/google_auth.js?v=2.2"></script>
-  <script src="js/gemini_api.js?v=2.2"></script>
-  <script src="js/google_workspace_sync.js?v=2.2"></script>
-  <script src="js/nutrition_scanner.js?v=2.2"></script>
-  <script src="js/weekly_report.js?v=2.2"></script>
-  <script src="js/body_analyzer.js?v=2.2"></script>
-  <script src="js/hunger_coach.js?v=2.2"></script>
-  <script src="js/app.js?v=2.2"></script>
+  <script src="js/storage.js?v=2.6"></script>
+  <script src="js/google_auth.js?v=2.6"></script>
+  <script src="js/gemini_api.js?v=2.6"></script>
+  <script src="js/google_workspace_sync.js?v=2.6"></script>
+  <script src="js/nutrition_scanner.js?v=2.6"></script>
+  <script src="js/weekly_report.js?v=2.6"></script>
+  <script src="js/body_analyzer.js?v=2.6"></script>
+  <script src="js/hunger_coach.js?v=2.6"></script>
+  <script src="js/exercise_engine.js?v=2.6"></script>
+  <script src="js/onboarding_wizard.js?v=2.6"></script>
+  <script src="js/app.js?v=2.6"></script>
 
 </body>
 </html>
